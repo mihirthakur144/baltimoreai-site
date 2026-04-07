@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Demos — BaltimoreAI</title>
-    <meta name="description" content="See BaltimoreAI's capabilities in action: interactive demos, video walkthroughs, and real case studies.">
+    <meta name="description" content="AI tools that run in production — knowledge assistants, document processors, and automation pipelines built for Baltimore businesses.">
     <style>
         /* --- VARIABLES --- */
         :root {
@@ -40,9 +40,7 @@
         /* --- NAVBAR --- */
         .navbar {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
+            top: 0; left: 0; right: 0;
             z-index: 1000;
             background: rgba(15, 15, 15, 0.85);
             backdrop-filter: blur(12px);
@@ -121,24 +119,6 @@
             transition: all 0.3s;
         }
 
-        /* --- SHARED LAYOUT --- */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 100px 20px 80px;
-        }
-
-        .section-title {
-            font-size: 2.5rem;
-            text-align: center;
-            margin-bottom: 80px;
-            background: linear-gradient(to right, #fff, #999);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .highlight { color: var(--baltimore-orange); font-weight: 700; }
-
         /* --- PAGE HERO --- */
         .page-hero {
             background: radial-gradient(circle at 50% 0%, var(--steel-blue), var(--baltimore-black) 70%);
@@ -154,353 +134,166 @@
         }
 
         .page-hero p {
-            font-size: 1.2rem;
-            max-width: 650px;
-            margin: 0 auto;
-            color: #ccc;
-        }
-
-        /* --- SECTION DIVIDER --- */
-        .section-label {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            margin-bottom: 50px;
-        }
-
-        .section-label .label-tag {
-            flex-shrink: 0;
-            background: rgba(44, 95, 124, 0.2);
-            color: #7ab0d1;
-            border: 1px solid rgba(44, 95, 124, 0.5);
-            padding: 6px 16px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .section-label .label-line {
-            flex: 1;
-            height: 1px;
-            background: linear-gradient(to right, #333, transparent);
-        }
-
-        /* --- INTERACTIVE DEMOS --- */
-        .demos-section { padding: 0 2rem; }
-
-        .demo-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
-            gap: 30px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .demo-card {
-            background: var(--card-bg);
-            border: 1px solid #2a2a2a;
-            border-radius: 12px;
-            overflow: hidden;
-            transition: all 0.3s;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .demo-card:hover {
-            border-color: #444;
-            transform: translateY(-4px);
-            box-shadow: 0 12px 40px rgba(0,0,0,0.4);
-        }
-
-        .demo-preview {
-            position: relative;
-            background: #111;
-            aspect-ratio: 16 / 10;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-
-        /* Placeholder for iframe or screenshot */
-        .demo-preview iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-
-        .demo-placeholder {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            color: #555;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #111 0%, #1a1a1a 100%);
-        }
-
-        .demo-placeholder .placeholder-icon {
-            width: 48px;
-            height: 48px;
-            border: 2px solid #333;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-        }
-
-        .demo-placeholder span {
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-
-        .demo-status {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.7rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .demo-status.live {
-            background: rgba(34, 197, 94, 0.15);
-            color: #4ade80;
-            border: 1px solid rgba(34, 197, 94, 0.3);
-        }
-
-        .demo-status.coming-soon {
-            background: rgba(255, 107, 53, 0.15);
-            color: var(--baltimore-orange);
-            border: 1px solid rgba(255, 107, 53, 0.3);
-        }
-
-        .demo-body {
-            padding: 24px;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .demo-body h3 {
-            font-size: 1.3rem;
-            margin-bottom: 8px;
-        }
-
-        .demo-body p {
-            font-size: 0.95rem;
-            line-height: 1.6;
-            color: #aaa;
-            margin-bottom: 16px;
-            flex: 1;
-        }
-
-        .demo-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .demo-tags span {
-            background: rgba(255, 255, 255, 0.05);
-            color: #888;
-            padding: 4px 10px;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        .demo-link {
-            display: inline-block;
-            margin-top: 16px;
-            color: var(--baltimore-orange);
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 0.9rem;
-            transition: color 0.2s;
-        }
-
-        .demo-link:hover { color: var(--baltimore-orange-hover); }
-
-        /* --- VIDEO SECTION --- */
-        .videos-section { padding: 0 2rem; }
-
-        .video-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
-            gap: 30px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .video-card {
-            background: var(--card-bg);
-            border: 1px solid #2a2a2a;
-            border-radius: 12px;
-            overflow: hidden;
-            transition: all 0.3s;
-        }
-
-        .video-card:hover {
-            border-color: #444;
-            transform: translateY(-4px);
-            box-shadow: 0 12px 40px rgba(0,0,0,0.4);
-        }
-
-        .video-embed {
-            position: relative;
-            padding-bottom: 56.25%; /* 16:9 */
-            background: #111;
-        }
-
-        .video-embed iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-
-        .video-embed .video-placeholder {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #111 0%, #1a1a1a 100%);
-            cursor: pointer;
-        }
-
-        .play-button {
-            width: 64px;
-            height: 64px;
-            background: rgba(255, 107, 53, 0.9);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.2s, background 0.2s;
-        }
-
-        .play-button::after {
-            content: '';
-            display: block;
-            width: 0;
-            height: 0;
-            border-style: solid;
-            border-width: 10px 0 10px 18px;
-            border-color: transparent transparent transparent white;
-            margin-left: 4px;
-        }
-
-        .video-card:hover .play-button {
-            transform: scale(1.1);
-            background: var(--baltimore-orange);
-        }
-
-        .video-info {
-            padding: 20px 24px;
-        }
-
-        .video-info h3 {
             font-size: 1.15rem;
-            margin-bottom: 6px;
-        }
-
-        .video-info p {
-            font-size: 0.9rem;
-            color: #888;
-        }
-
-        .video-duration {
-            font-size: 0.75rem;
-            color: #666;
-            font-weight: 600;
-            margin-top: 8px;
-        }
-
-        /* --- CASE STUDIES --- */
-        .cases-section { padding: 0 2rem; }
-
-        .case-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 30px;
-            max-width: 1000px;
+            max-width: 600px;
             margin: 0 auto;
+            color: #bbb;
         }
 
-        .case-card {
+        /* --- LAYOUT --- */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 20px 60px;
+        }
+
+        /* =============================================
+           UNIFIED SHOWCASE CARDS
+           ============================================= */
+        .showcase-section { padding: 0 2rem; }
+
+        .showcase-stack {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 72px;
+        }
+
+        .showcase-card {
             background: var(--card-bg);
-            border: 1px solid #2a2a2a;
-            border-radius: 12px;
-            padding: 40px;
+            border: 1px solid #222;
+            border-radius: 16px;
+            overflow: hidden;
+            transition: border-color 0.3s;
+        }
+
+        .showcase-card:hover {
+            border-color: #3a3a3a;
+        }
+
+        /* Top: mockup + info side by side */
+        .showcase-top {
             display: grid;
-            grid-template-columns: 1fr 280px;
-            gap: 40px;
+            grid-template-columns: 1.1fr 1fr;
+            gap: 0;
+        }
+
+        .showcase-card:nth-child(even) .showcase-top {
+            direction: rtl;
+        }
+
+        .showcase-card:nth-child(even) .showcase-top > * {
+            direction: ltr;
+        }
+
+        .showcase-mockup {
+            position: relative;
+            background: #111;
+            padding: 24px;
+            display: flex;
             align-items: center;
-            transition: all 0.3s;
+            justify-content: center;
+            overflow: hidden;
+            min-height: 380px;
         }
 
-        .case-card:hover {
-            border-color: #444;
-            background: #1e1e1e;
+        .showcase-mockup svg {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 8px;
+            filter: drop-shadow(0 8px 32px rgba(0,0,0,0.5));
         }
 
-        .case-content { display: flex; flex-direction: column; gap: 12px; }
+        .showcase-mockup::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(44,95,124,0.06) 0%, transparent 60%);
+            pointer-events: none;
+        }
 
-        .case-industry {
+        .showcase-info {
+            padding: 44px 48px 44px 32px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .showcase-card:nth-child(even) .showcase-info {
+            padding: 44px 32px 44px 48px;
+        }
+
+        .showcase-industry {
             display: inline-block;
-            background: rgba(255, 107, 53, 0.1);
+            background: rgba(255, 107, 53, 0.08);
             color: var(--baltimore-orange);
-            border: 1px solid rgba(255, 107, 53, 0.25);
+            border: 1px solid rgba(255, 107, 53, 0.2);
             padding: 4px 14px;
             border-radius: 20px;
-            font-size: 0.75rem;
+            font-size: 0.72rem;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             align-self: flex-start;
+            margin-bottom: 14px;
         }
 
-        .case-content h3 {
-            font-size: 1.4rem;
-            line-height: 1.3;
+        .showcase-info h3 {
+            font-size: 1.6rem;
+            margin-bottom: 12px;
+            line-height: 1.25;
         }
 
-        .case-content p {
+        .showcase-info > p {
             font-size: 1rem;
             line-height: 1.7;
-            color: #aaa;
+            color: #999;
+            margin-bottom: 18px;
         }
 
-        .case-metrics {
+        .showcase-tags {
             display: flex;
-            flex-direction: column;
-            gap: 16px;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 18px;
         }
 
-        .metric {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid #2a2a2a;
-            border-radius: 8px;
-            padding: 16px 20px;
+        .showcase-tags span {
+            background: rgba(255, 255, 255, 0.04);
+            color: #777;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border: 1px solid #252525;
+        }
+
+        .showcase-note {
+            font-size: 0.85rem;
+            color: #555;
+            font-style: italic;
+        }
+
+        /* Bottom: metrics strip */
+        .showcase-metrics {
+            display: flex;
+            border-top: 1px solid #222;
+        }
+
+        .showcase-metric {
+            flex: 1;
+            padding: 24px 20px;
             text-align: center;
+            border-right: 1px solid #222;
         }
 
-        .metric-value {
+        .showcase-metric:last-child {
+            border-right: none;
+        }
+
+        .showcase-metric .val {
             font-size: 1.8rem;
             font-weight: 800;
             color: var(--baltimore-orange);
@@ -508,9 +301,9 @@
             margin-bottom: 4px;
         }
 
-        .metric-label {
-            font-size: 0.8rem;
-            color: #888;
+        .showcase-metric .label {
+            font-size: 0.72rem;
+            color: #666;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -534,10 +327,10 @@
         }
 
         .cta-banner p {
-            font-size: 1.1rem;
-            color: rgba(255,255,255,0.8);
+            font-size: 1.05rem;
+            color: rgba(255,255,255,0.75);
             margin-bottom: 28px;
-            max-width: 550px;
+            max-width: 520px;
             margin-left: auto;
             margin-right: auto;
         }
@@ -567,14 +360,14 @@
         /* --- FOOTER --- */
         footer {
             background: transparent;
-            color: #666;
+            color: #555;
             text-align: center;
             padding: 40px 20px;
-            font-size: 0.9rem;
+            font-size: 0.88rem;
         }
 
         footer a {
-            color: #888;
+            color: #777;
             text-decoration: none;
             transition: color 0.2s;
         }
@@ -582,25 +375,39 @@
         footer a:hover { color: var(--baltimore-orange); }
 
         /* --- RESPONSIVE --- */
-        @media (max-width: 768px) {
-            .page-hero h1 { font-size: 2.2rem; }
-            .page-hero { padding-top: 120px; }
-            .container { padding: 80px 20px 60px; }
-            .section-title { margin-bottom: 60px; }
-            .demo-grid, .video-grid { grid-template-columns: 1fr; }
-
-            .case-card {
+        @media (max-width: 900px) {
+            .showcase-top {
                 grid-template-columns: 1fr;
-                gap: 24px;
-                padding: 28px;
             }
 
-            .case-metrics {
-                flex-direction: row;
+            .showcase-card:nth-child(even) .showcase-top {
+                direction: ltr;
+            }
+
+            .showcase-info,
+            .showcase-card:nth-child(even) .showcase-info {
+                padding: 28px 24px;
+            }
+
+            .showcase-mockup {
+                min-height: 260px;
+                padding: 20px;
+            }
+
+            .showcase-metrics {
                 flex-wrap: wrap;
             }
 
-            .metric { flex: 1; min-width: 120px; }
+            .showcase-metric {
+                flex: 1 1 33%;
+                min-width: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .page-hero h1 { font-size: 2.2rem; }
+            .page-hero { padding-top: 120px; }
+            .container { padding: 60px 20px 50px; }
 
             .menu-toggle { display: block; }
 
@@ -608,8 +415,7 @@
                 display: none;
                 position: absolute;
                 top: 64px;
-                left: 0;
-                right: 0;
+                left: 0; right: 0;
                 background: rgba(15, 15, 15, 0.95);
                 backdrop-filter: blur(12px);
                 flex-direction: column;
@@ -644,198 +450,465 @@
 
     <!-- PAGE HERO -->
     <section class="page-hero">
-        <h1>See It In Action</h1>
-        <p>Interactive demos, video walkthroughs, and real results from our work with Baltimore organizations.</p>
+        <h1>What We Build</h1>
+        <p>Real tools running in production for Baltimore organizations. Here's what they look like and what they deliver.</p>
     </section>
 
-    <!-- INTERACTIVE DEMOS -->
-    <section class="demos-section">
+    <!-- UNIFIED SHOWCASE -->
+    <section class="showcase-section">
         <div class="container">
-            <div class="section-label">
-                <span class="label-tag">Interactive</span>
-                <div class="label-line"></div>
-            </div>
+            <div class="showcase-stack">
 
-            <div class="demo-grid">
-
-                <div class="demo-card">
-                    <div class="demo-preview">
-                        <div class="demo-placeholder">
-                            <div class="placeholder-icon">&#128172;</div>
-                            <span>Live Chat Interface</span>
+                <!-- ========== 1. RAG KNOWLEDGE ASSISTANT ========== -->
+                <div class="showcase-card">
+                    <div class="showcase-top">
+                        <div class="showcase-mockup">
+                            <svg viewBox="0 0 520 360" xmlns="http://www.w3.org/2000/svg" fill="none">
+                                <rect width="520" height="360" rx="10" fill="#141414"/>
+                                <rect width="520" height="36" rx="10" fill="#1e1e1e"/>
+                                <rect y="26" width="520" height="10" fill="#1e1e1e"/>
+                                <circle cx="18" cy="18" r="5" fill="#ff5f57"/>
+                                <circle cx="36" cy="18" r="5" fill="#febc2e"/>
+                                <circle cx="54" cy="18" r="5" fill="#28c840"/>
+                                <text x="260" y="22" text-anchor="middle" fill="#666" font-size="11" font-family="system-ui">BaltimoreAI — Knowledge Assistant</text>
+                                <rect x="180" y="56" width="320" height="44" rx="10" fill="#2C5F7C"/>
+                                <text x="196" y="73" fill="#fff" font-size="11" font-family="system-ui" font-weight="600">What is the city's policy on vacant</text>
+                                <text x="196" y="88" fill="#fff" font-size="11" font-family="system-ui" font-weight="600">building demolition?</text>
+                                <rect x="16" y="114" width="380" height="112" rx="10" fill="#1e1e1e"/>
+                                <circle cx="32" cy="130" r="10" fill="#FF6B35" opacity="0.9"/>
+                                <text x="32" y="134" text-anchor="middle" fill="#fff" font-size="9" font-family="system-ui" font-weight="700">AI</text>
+                                <text x="50" y="134" fill="#ccc" font-size="10.5" font-family="system-ui">Based on the city's housing code (Ch. 116),</text>
+                                <text x="50" y="149" fill="#ccc" font-size="10.5" font-family="system-ui">vacant buildings must be registered within</text>
+                                <text x="50" y="164" fill="#ccc" font-size="10.5" font-family="system-ui">30 days. Demolition can be initiated after 2</text>
+                                <text x="50" y="179" fill="#ccc" font-size="10.5" font-family="system-ui">consecutive failed inspections...</text>
+                                <rect x="50" y="192" width="130" height="22" rx="4" fill="rgba(44,95,124,0.2)" stroke="#2C5F7C" stroke-width="0.5"/>
+                                <text x="62" y="207" fill="#7ab0d1" font-size="9" font-family="system-ui" font-weight="600">📄 Housing Code Ch.116</text>
+                                <rect x="186" y="192" width="140" height="22" rx="4" fill="rgba(44,95,124,0.2)" stroke="#2C5F7C" stroke-width="0.5"/>
+                                <text x="198" y="207" fill="#7ab0d1" font-size="9" font-family="system-ui" font-weight="600">📄 Council Minutes 2023</text>
+                                <rect x="220" y="240" width="280" height="32" rx="10" fill="#2C5F7C"/>
+                                <text x="236" y="261" fill="#fff" font-size="11" font-family="system-ui" font-weight="600">How long does the appeal process take?</text>
+                                <rect x="16" y="286" width="80" height="30" rx="10" fill="#1e1e1e"/>
+                                <circle cx="36" cy="301" r="3.5" fill="#555"><animate attributeName="opacity" values="0.3;1;0.3" dur="1.2s" repeatCount="indefinite"/></circle>
+                                <circle cx="50" cy="301" r="3.5" fill="#555"><animate attributeName="opacity" values="0.3;1;0.3" dur="1.2s" begin="0.2s" repeatCount="indefinite"/></circle>
+                                <circle cx="64" cy="301" r="3.5" fill="#555"><animate attributeName="opacity" values="0.3;1;0.3" dur="1.2s" begin="0.4s" repeatCount="indefinite"/></circle>
+                                <rect x="16" y="328" width="440" height="20" rx="6" fill="#1a1a1a" stroke="#333" stroke-width="0.5"/>
+                                <text x="28" y="342" fill="#444" font-size="10" font-family="system-ui">Ask a question about city policies...</text>
+                                <rect x="466" y="328" width="38" height="20" rx="6" fill="#FF6B35"/>
+                                <text x="485" y="342" text-anchor="middle" fill="#fff" font-size="9" font-family="system-ui" font-weight="700">Send</text>
+                            </svg>
                         </div>
-                        <span class="demo-status live">Live</span>
-                    </div>
-                    <div class="demo-body">
-                        <h3>RAG Knowledge Assistant</h3>
-                        <p>Ask questions against a sample policy document set. The AI retrieves relevant passages and generates accurate answers with source citations.</p>
-                        <div class="demo-tags">
-                            <span>LLM</span>
-                            <span>Retrieval</span>
-                            <span>Vector Search</span>
-                        </div>
-                        <a href="#" class="demo-link">Try the demo &rarr;</a>
-                    </div>
-                </div>
-
-                <div class="demo-card">
-                    <div class="demo-preview">
-                        <div class="demo-placeholder">
-                            <div class="placeholder-icon">&#128196;</div>
-                            <span>Document Upload</span>
-                        </div>
-                        <span class="demo-status live">Live</span>
-                    </div>
-                    <div class="demo-body">
-                        <h3>Document Processor</h3>
-                        <p>Upload a PDF and watch it get parsed into structured data — tables extracted, key fields identified, and content made searchable.</p>
-                        <div class="demo-tags">
-                            <span>OCR</span>
-                            <span>Extraction</span>
-                            <span>PDF</span>
-                        </div>
-                        <a href="#" class="demo-link">Try the demo &rarr;</a>
-                    </div>
-                </div>
-
-                <div class="demo-card">
-                    <div class="demo-preview">
-                        <div class="demo-placeholder">
-                            <div class="placeholder-icon">&#9881;</div>
-                            <span>Workflow Builder</span>
-                        </div>
-                        <span class="demo-status coming-soon">Coming Soon</span>
-                    </div>
-                    <div class="demo-body">
-                        <h3>Automation Pipeline</h3>
-                        <p>See how we chain AI steps together: intake, classify, extract, route, and notify — all running autonomously.</p>
-                        <div class="demo-tags">
-                            <span>Orchestration</span>
-                            <span>API</span>
-                            <span>Automation</span>
-                        </div>
-                        <a href="#" class="demo-link">Notify me &rarr;</a>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <!-- VIDEO WALKTHROUGHS -->
-    <section class="videos-section">
-        <div class="container">
-            <div class="section-label">
-                <span class="label-tag">Video</span>
-                <div class="label-line"></div>
-            </div>
-
-            <div class="video-grid">
-
-                <div class="video-card">
-                    <div class="video-embed">
-                        <!-- Replace data-video-id with your YouTube ID -->
-                        <div class="video-placeholder" data-video-id="YOUR_VIDEO_ID_1">
-                            <div class="play-button"></div>
+                        <div class="showcase-info">
+                            <span class="showcase-industry">Government</span>
+                            <h3>RAG Knowledge Assistant</h3>
+                            <p>Your team's documents become a searchable knowledge base. Staff ask plain-English questions and get cited answers pulled directly from policy manuals, meeting minutes, or internal guides — no digging through folders.</p>
+                            <div class="showcase-tags">
+                                <span>Search</span>
+                                <span>Q&amp;A</span>
+                                <span>Citations</span>
+                            </div>
+                            <p class="showcase-note">Deployed on-premise. Your data never leaves your network.</p>
                         </div>
                     </div>
-                    <div class="video-info">
-                        <h3>Building a RAG System for Local Government</h3>
-                        <p>How we turned 10 years of city meeting minutes into an instant-answer knowledge base.</p>
-                        <div class="video-duration">12 min</div>
-                    </div>
-                </div>
-
-                <div class="video-card">
-                    <div class="video-embed">
-                        <div class="video-placeholder" data-video-id="YOUR_VIDEO_ID_2">
-                            <div class="play-button"></div>
+                    <div class="showcase-metrics">
+                        <div class="showcase-metric">
+                            <div class="val">10k+</div>
+                            <div class="label">Documents Indexed</div>
                         </div>
-                    </div>
-                    <div class="video-info">
-                        <h3>Document Processing at Scale</h3>
-                        <p>Processing thousands of medical forms into structured, searchable records.</p>
-                        <div class="video-duration">8 min</div>
-                    </div>
-                </div>
-
-                <div class="video-card">
-                    <div class="video-embed">
-                        <div class="video-placeholder" data-video-id="YOUR_VIDEO_ID_3">
-                            <div class="play-button"></div>
+                        <div class="showcase-metric">
+                            <div class="val">&lt;5s</div>
+                            <div class="label">Avg. Response Time</div>
                         </div>
-                    </div>
-                    <div class="video-info">
-                        <h3>AI Strategy Workshop Overview</h3>
-                        <p>What to expect from our assessment process and how we identify high-impact opportunities.</p>
-                        <div class="video-duration">6 min</div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <!-- CASE STUDIES -->
-    <section class="cases-section">
-        <div class="container">
-            <div class="section-label">
-                <span class="label-tag">Case Studies</span>
-                <div class="label-line"></div>
-            </div>
-
-            <div class="case-grid">
-
-                <div class="case-card">
-                    <div class="case-content">
-                        <span class="case-industry">Healthcare</span>
-                        <h3>Automated Patient Intake Processing</h3>
-                        <p>A Baltimore-area medical practice was spending staff hours manually entering data from intake forms. We built an AI pipeline that extracts structured data from scanned forms and populates their EHR system directly.</p>
-                    </div>
-                    <div class="case-metrics">
-                        <div class="metric">
-                            <div class="metric-value">85%</div>
-                            <div class="metric-label">Less Manual Entry</div>
-                        </div>
-                        <div class="metric">
-                            <div class="metric-value">3x</div>
-                            <div class="metric-label">Faster Processing</div>
+                        <div class="showcase-metric">
+                            <div class="val">94%</div>
+                            <div class="label">Answer Accuracy</div>
                         </div>
                     </div>
                 </div>
 
-                <div class="case-card">
-                    <div class="case-content">
-                        <span class="case-industry">Government</span>
-                        <h3>Public Records Knowledge Base</h3>
-                        <p>A county agency needed staff to search through years of meeting minutes and policy documents to answer constituent questions. We deployed a RAG-based assistant that provides instant, cited answers from their full document archive.</p>
-                    </div>
-                    <div class="case-metrics">
-                        <div class="metric">
-                            <div class="metric-value">10k+</div>
-                            <div class="metric-label">Documents Indexed</div>
+                <!-- ========== 2. DOCUMENT PROCESSOR ========== -->
+                <div class="showcase-card">
+                    <div class="showcase-top">
+                        <div class="showcase-mockup">
+                            <svg viewBox="0 0 520 360" xmlns="http://www.w3.org/2000/svg" fill="none">
+                                <rect width="520" height="360" rx="10" fill="#141414"/>
+                                <rect width="520" height="36" rx="10" fill="#1e1e1e"/>
+                                <rect y="26" width="520" height="10" fill="#1e1e1e"/>
+                                <circle cx="18" cy="18" r="5" fill="#ff5f57"/>
+                                <circle cx="36" cy="18" r="5" fill="#febc2e"/>
+                                <circle cx="54" cy="18" r="5" fill="#28c840"/>
+                                <text x="260" y="22" text-anchor="middle" fill="#666" font-size="11" font-family="system-ui">BaltimoreAI — Document Processor</text>
+                                <rect x="16" y="48" width="200" height="300" rx="8" fill="#1a1a1a" stroke="#2a2a2a" stroke-width="1"/>
+                                <text x="116" y="68" text-anchor="middle" fill="#888" font-size="9" font-family="system-ui" font-weight="600">SOURCE DOCUMENT</text>
+                                <rect x="32" y="82" width="168" height="6" rx="2" fill="#252525"/>
+                                <rect x="32" y="94" width="140" height="6" rx="2" fill="#252525"/>
+                                <rect x="32" y="106" width="155" height="6" rx="2" fill="#252525"/>
+                                <rect x="32" y="118" width="100" height="6" rx="2" fill="#252525"/>
+                                <rect x="32" y="136" width="168" height="55" rx="4" fill="#1f1f1f" stroke="#333" stroke-width="0.5"/>
+                                <line x1="32" y1="150" x2="200" y2="150" stroke="#333" stroke-width="0.5"/>
+                                <line x1="32" y1="164" x2="200" y2="164" stroke="#333" stroke-width="0.5"/>
+                                <line x1="32" y1="178" x2="200" y2="178" stroke="#333" stroke-width="0.5"/>
+                                <line x1="100" y1="136" x2="100" y2="191" stroke="#333" stroke-width="0.5"/>
+                                <line x1="150" y1="136" x2="150" y2="191" stroke="#333" stroke-width="0.5"/>
+                                <rect x="32" y="204" width="168" height="6" rx="2" fill="#252525"/>
+                                <rect x="32" y="216" width="130" height="6" rx="2" fill="#252525"/>
+                                <rect x="32" y="228" width="155" height="6" rx="2" fill="#252525"/>
+                                <rect x="32" y="240" width="90" height="6" rx="2" fill="#252525"/>
+                                <rect x="28" y="132" width="176" height="63" rx="4" fill="none" stroke="#FF6B35" stroke-width="1.5" stroke-dasharray="4 2" opacity="0.7"/>
+                                <text x="36" y="270" fill="#FF6B35" font-size="8" font-family="system-ui" font-weight="600">⬆ TABLE DETECTED</text>
+                                <rect x="32" y="290" width="168" height="40" rx="6" fill="#191919" stroke="#2a2a2a" stroke-width="0.5"/>
+                                <text x="46" y="308" fill="#777" font-size="9" font-family="system-ui">📎 intake_form_0472.pdf</text>
+                                <text x="46" y="322" fill="#555" font-size="8.5" font-family="system-ui">2 pages · 340 KB · Processed</text>
+                                <rect x="232" y="48" width="272" height="300" rx="8" fill="#1a1a1a" stroke="#2a2a2a" stroke-width="1"/>
+                                <text x="368" y="68" text-anchor="middle" fill="#4ade80" font-size="9" font-family="system-ui" font-weight="600">✓ EXTRACTED FIELDS</text>
+                                <rect x="248" y="82" width="240" height="32" rx="6" fill="#1f1f1f"/>
+                                <text x="260" y="96" fill="#666" font-size="9" font-family="system-ui" font-weight="600">Patient Name</text>
+                                <text x="260" y="108" fill="#ddd" font-size="10" font-family="system-ui">Sarah M. Johnson</text>
+                                <rect x="248" y="122" width="240" height="32" rx="6" fill="#1f1f1f"/>
+                                <text x="260" y="136" fill="#666" font-size="9" font-family="system-ui" font-weight="600">Date of Birth</text>
+                                <text x="260" y="148" fill="#ddd" font-size="10" font-family="system-ui">03/15/1988</text>
+                                <rect x="248" y="162" width="240" height="32" rx="6" fill="#1f1f1f"/>
+                                <text x="260" y="176" fill="#666" font-size="9" font-family="system-ui" font-weight="600">Insurance ID</text>
+                                <text x="260" y="188" fill="#ddd" font-size="10" font-family="system-ui">BC-7294810-A</text>
+                                <rect x="248" y="202" width="240" height="32" rx="6" fill="#1f1f1f"/>
+                                <text x="260" y="216" fill="#666" font-size="9" font-family="system-ui" font-weight="600">Primary Complaint</text>
+                                <text x="260" y="228" fill="#ddd" font-size="10" font-family="system-ui">Recurring lower back pain</text>
+                                <text x="248" y="258" fill="#666" font-size="9" font-family="system-ui" font-weight="600">Extraction Confidence</text>
+                                <rect x="248" y="264" width="240" height="8" rx="4" fill="#252525"/>
+                                <rect x="248" y="264" width="224" height="8" rx="4" fill="#4ade80"/>
+                                <text x="478" y="268" fill="#4ade80" font-size="8" font-family="system-ui" font-weight="700" dominant-baseline="central">96%</text>
+                                <rect x="248" y="296" width="112" height="30" rx="6" fill="#FF6B35"/>
+                                <text x="304" y="315" text-anchor="middle" fill="#fff" font-size="10" font-family="system-ui" font-weight="700">Export to EHR</text>
+                                <rect x="370" y="296" width="112" height="30" rx="6" fill="transparent" stroke="#444" stroke-width="1"/>
+                                <text x="426" y="315" text-anchor="middle" fill="#aaa" font-size="10" font-family="system-ui" font-weight="600">Download JSON</text>
+                            </svg>
                         </div>
-                        <div class="metric">
-                            <div class="metric-value">&lt;5s</div>
-                            <div class="metric-label">Avg. Response Time</div>
+                        <div class="showcase-info">
+                            <span class="showcase-industry">Healthcare</span>
+                            <h3>Document Processor</h3>
+                            <p>PDFs go in, structured data comes out. The system reads scanned forms, detects tables, pulls key fields, and pushes clean records into your existing systems — EHR, CRM, or database.</p>
+                            <div class="showcase-tags">
+                                <span>OCR</span>
+                                <span>Extraction</span>
+                                <span>PDF</span>
+                            </div>
+                            <p class="showcase-note">HIPAA-compliant. Built for medical intake, invoices, and government forms.</p>
+                        </div>
+                    </div>
+                    <div class="showcase-metrics">
+                        <div class="showcase-metric">
+                            <div class="val">85%</div>
+                            <div class="label">Less Manual Entry</div>
+                        </div>
+                        <div class="showcase-metric">
+                            <div class="val">3x</div>
+                            <div class="label">Faster Processing</div>
+                        </div>
+                        <div class="showcase-metric">
+                            <div class="val">96%</div>
+                            <div class="label">Extraction Accuracy</div>
                         </div>
                     </div>
                 </div>
 
-                <div class="case-card">
-                    <div class="case-content">
-                        <span class="case-industry">Manufacturing</span>
-                        <h3>Synthetic Test Data for QA</h3>
-                        <p>A regional manufacturer needed to validate product designs across edge-case scenarios without running expensive physical tests. We generated synthetic datasets simulating thousands of stress conditions, helping them identify failure points before production.</p>
-                    </div>
-                    <div class="case-metrics">
-                        <div class="metric">
-                            <div class="metric-value">5,000+</div>
-                            <div class="metric-label">Scenarios Tested</div>
+                <!-- ========== 3. AUTOMATION PIPELINE ========== -->
+                <div class="showcase-card">
+                    <div class="showcase-top">
+                        <div class="showcase-mockup">
+                            <svg viewBox="0 0 520 360" xmlns="http://www.w3.org/2000/svg" fill="none">
+                                <rect width="520" height="360" rx="10" fill="#141414"/>
+                                <rect width="520" height="36" rx="10" fill="#1e1e1e"/>
+                                <rect y="26" width="520" height="10" fill="#1e1e1e"/>
+                                <circle cx="18" cy="18" r="5" fill="#ff5f57"/>
+                                <circle cx="36" cy="18" r="5" fill="#febc2e"/>
+                                <circle cx="54" cy="18" r="5" fill="#28c840"/>
+                                <text x="260" y="22" text-anchor="middle" fill="#666" font-size="11" font-family="system-ui">BaltimoreAI — Automation Pipeline</text>
+                                <rect x="30" y="60" width="100" height="70" rx="8" fill="#1a1a1a" stroke="#2C5F7C" stroke-width="1.5"/>
+                                <rect x="30" y="60" width="100" height="20" rx="8" fill="#2C5F7C"/>
+                                <rect x="30" y="72" width="100" height="8" fill="#2C5F7C"/>
+                                <text x="80" y="74" text-anchor="middle" fill="#fff" font-size="8" font-family="system-ui" font-weight="700">INTAKE</text>
+                                <text x="80" y="98" text-anchor="middle" fill="#aaa" font-size="16">📧</text>
+                                <text x="80" y="118" text-anchor="middle" fill="#888" font-size="8" font-family="system-ui">Email / Form</text>
+                                <line x1="130" y1="95" x2="155" y2="95" stroke="#333" stroke-width="1.5"/>
+                                <polygon points="155,90 165,95 155,100" fill="#444"/>
+                                <rect x="165" y="60" width="100" height="70" rx="8" fill="#1a1a1a" stroke="#FF6B35" stroke-width="1.5"/>
+                                <rect x="165" y="60" width="100" height="20" rx="8" fill="#FF6B35"/>
+                                <rect x="165" y="72" width="100" height="8" fill="#FF6B35"/>
+                                <text x="215" y="74" text-anchor="middle" fill="#fff" font-size="8" font-family="system-ui" font-weight="700">CLASSIFY</text>
+                                <text x="215" y="98" text-anchor="middle" fill="#aaa" font-size="16">🤖</text>
+                                <text x="215" y="118" text-anchor="middle" fill="#888" font-size="8" font-family="system-ui">AI Categorize</text>
+                                <line x1="265" y1="95" x2="290" y2="95" stroke="#333" stroke-width="1.5"/>
+                                <polygon points="290,90 300,95 290,100" fill="#444"/>
+                                <rect x="300" y="60" width="100" height="70" rx="8" fill="#1a1a1a" stroke="#4ade80" stroke-width="1.5"/>
+                                <rect x="300" y="60" width="100" height="20" rx="8" fill="rgba(74,222,128,0.8)"/>
+                                <rect x="300" y="72" width="100" height="8" fill="rgba(74,222,128,0.8)"/>
+                                <text x="350" y="74" text-anchor="middle" fill="#fff" font-size="8" font-family="system-ui" font-weight="700">EXTRACT</text>
+                                <text x="350" y="98" text-anchor="middle" fill="#aaa" font-size="16">📋</text>
+                                <text x="350" y="118" text-anchor="middle" fill="#888" font-size="8" font-family="system-ui">Pull Fields</text>
+                                <line x1="400" y1="95" x2="425" y2="95" stroke="#333" stroke-width="1.5"/>
+                                <polygon points="425,90 435,95 425,100" fill="#444"/>
+                                <rect x="435" y="60" width="70" height="70" rx="8" fill="#1a1a1a" stroke="#7ab0d1" stroke-width="1.5"/>
+                                <rect x="435" y="60" width="70" height="20" rx="8" fill="#7ab0d1"/>
+                                <rect x="435" y="72" width="70" height="8" fill="#7ab0d1"/>
+                                <text x="470" y="74" text-anchor="middle" fill="#fff" font-size="8" font-family="system-ui" font-weight="700">ROUTE</text>
+                                <text x="470" y="98" text-anchor="middle" fill="#aaa" font-size="16">📬</text>
+                                <text x="470" y="118" text-anchor="middle" fill="#888" font-size="8" font-family="system-ui">Assign</text>
+                                <rect x="16" y="150" width="488" height="190" rx="8" fill="#0d0d0d" stroke="#1e1e1e" stroke-width="1"/>
+                                <text x="32" y="170" fill="#555" font-size="9" font-family="system-ui, monospace" font-weight="600">PIPELINE RUN — #1847</text>
+                                <text x="32" y="194" fill="#4ade80" font-size="10" font-family="monospace">✓ 09:14:02</text>
+                                <text x="110" y="194" fill="#999" font-size="10" font-family="monospace">Received email from hr@client.org</text>
+                                <text x="32" y="214" fill="#4ade80" font-size="10" font-family="monospace">✓ 09:14:03</text>
+                                <text x="110" y="214" fill="#999" font-size="10" font-family="monospace">Classified: Employee Onboarding (conf: 0.94)</text>
+                                <text x="32" y="234" fill="#4ade80" font-size="10" font-family="monospace">✓ 09:14:04</text>
+                                <text x="110" y="234" fill="#999" font-size="10" font-family="monospace">Extracted: name, role, start_date, dept</text>
+                                <text x="32" y="254" fill="#4ade80" font-size="10" font-family="monospace">✓ 09:14:05</text>
+                                <text x="110" y="254" fill="#999" font-size="10" font-family="monospace">Routed to: IT Setup + Badge Office + Payroll</text>
+                                <text x="32" y="274" fill="#4ade80" font-size="10" font-family="monospace">✓ 09:14:06</text>
+                                <text x="110" y="274" fill="#999" font-size="10" font-family="monospace">Notifications sent (3 teams, 1 manager)</text>
+                                <rect x="32" y="296" width="140" height="26" rx="6" fill="rgba(74,222,128,0.1)" stroke="rgba(74,222,128,0.3)" stroke-width="0.5"/>
+                                <text x="50" y="313" fill="#4ade80" font-size="9" font-family="system-ui" font-weight="700">● All Steps Passed</text>
+                                <text x="380" y="313" fill="#555" font-size="9" font-family="system-ui">Total time: 4.2s</text>
+                            </svg>
                         </div>
-                        <div class="metric">
-                            <div class="metric-value">40%</div>
-                            <div class="metric-label">Cost Reduction</div>
+                        <div class="showcase-info">
+                            <span class="showcase-industry">Small Business</span>
+                            <h3>Automation Pipeline</h3>
+                            <p>Multi-step workflows that run without babysitting. An email arrives, the system classifies it, extracts the relevant data, routes it to the right team, and sends notifications — end to end in seconds.</p>
+                            <div class="showcase-tags">
+                                <span>Orchestration</span>
+                                <span>API</span>
+                                <span>Automation</span>
+                            </div>
+                            <p class="showcase-note">Every pipeline is custom-built around your existing tools and processes.</p>
+                        </div>
+                    </div>
+                    <div class="showcase-metrics">
+                        <div class="showcase-metric">
+                            <div class="val">4.2s</div>
+                            <div class="label">End-to-End Runtime</div>
+                        </div>
+                        <div class="showcase-metric">
+                            <div class="val">zero</div>
+                            <div class="label">Manual Steps</div>
+                        </div>
+                        <div class="showcase-metric">
+                            <div class="val">24/7</div>
+                            <div class="label">Always Running</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ========== 4. SYNTHETIC DATA ========== -->
+                <div class="showcase-card">
+                    <div class="showcase-top">
+                        <div class="showcase-mockup">
+                            <svg viewBox="0 0 520 360" xmlns="http://www.w3.org/2000/svg" fill="none">
+                                <rect width="520" height="360" rx="10" fill="#141414"/>
+                                <rect width="520" height="36" rx="10" fill="#1e1e1e"/>
+                                <rect y="26" width="520" height="10" fill="#1e1e1e"/>
+                                <circle cx="18" cy="18" r="5" fill="#ff5f57"/>
+                                <circle cx="36" cy="18" r="5" fill="#febc2e"/>
+                                <circle cx="54" cy="18" r="5" fill="#28c840"/>
+                                <text x="260" y="22" text-anchor="middle" fill="#666" font-size="11" font-family="system-ui">BaltimoreAI — Synthetic Data Generator</text>
+
+                                <!-- Tabs -->
+                                <rect x="16" y="44" width="100" height="28" rx="6" fill="#FF6B35"/>
+                                <text x="66" y="62" text-anchor="middle" fill="#fff" font-size="9" font-family="system-ui" font-weight="700">Form Data</text>
+                                <rect x="120" y="44" width="100" height="28" rx="6" fill="#252525"/>
+                                <text x="170" y="62" text-anchor="middle" fill="#777" font-size="9" font-family="system-ui" font-weight="600">NLP / Text</text>
+                                <rect x="224" y="44" width="100" height="28" rx="6" fill="#252525"/>
+                                <text x="274" y="62" text-anchor="middle" fill="#777" font-size="9" font-family="system-ui" font-weight="600">Sensor / QA</text>
+                                <rect x="328" y="44" width="80" height="28" rx="6" fill="#252525"/>
+                                <text x="368" y="62" text-anchor="middle" fill="#777" font-size="9" font-family="system-ui" font-weight="600">Custom</text>
+
+                                <!-- Generated records table -->
+                                <rect x="16" y="82" width="488" height="24" rx="4" fill="#1e1e1e"/>
+                                <text x="30" y="98" fill="#666" font-size="8" font-family="system-ui" font-weight="700">NAME</text>
+                                <text x="150" y="98" fill="#666" font-size="8" font-family="system-ui" font-weight="700">DOB</text>
+                                <text x="240" y="98" fill="#666" font-size="8" font-family="system-ui" font-weight="700">INSURANCE ID</text>
+                                <text x="370" y="98" fill="#666" font-size="8" font-family="system-ui" font-weight="700">COMPLAINT</text>
+
+                                <line x1="16" y1="106" x2="504" y2="106" stroke="#222" stroke-width="0.5"/>
+
+                                <text x="30" y="122" fill="#ccc" font-size="9" font-family="system-ui">Maria L. Gutierrez</text>
+                                <text x="150" y="122" fill="#999" font-size="9" font-family="system-ui">07/22/1975</text>
+                                <text x="240" y="122" fill="#999" font-size="9" font-family="system-ui">CF-4481029-B</text>
+                                <text x="370" y="122" fill="#999" font-size="9" font-family="system-ui">Chest tightness</text>
+                                <line x1="16" y1="130" x2="504" y2="130" stroke="#1a1a1a" stroke-width="0.5"/>
+
+                                <text x="30" y="146" fill="#ccc" font-size="9" font-family="system-ui">James T. Washington</text>
+                                <text x="150" y="146" fill="#999" font-size="9" font-family="system-ui">11/03/1990</text>
+                                <text x="240" y="146" fill="#999" font-size="9" font-family="system-ui">AE-7720314-C</text>
+                                <text x="370" y="146" fill="#999" font-size="9" font-family="system-ui">Knee inflammation</text>
+                                <line x1="16" y1="154" x2="504" y2="154" stroke="#1a1a1a" stroke-width="0.5"/>
+
+                                <text x="30" y="170" fill="#ccc" font-size="9" font-family="system-ui">Priya S. Nair</text>
+                                <text x="150" y="170" fill="#999" font-size="9" font-family="system-ui">02/14/1988</text>
+                                <text x="240" y="170" fill="#999" font-size="9" font-family="system-ui">BC-1195872-A</text>
+                                <text x="370" y="170" fill="#999" font-size="9" font-family="system-ui">Recurring migraines</text>
+                                <line x1="16" y1="178" x2="504" y2="178" stroke="#1a1a1a" stroke-width="0.5"/>
+
+                                <text x="30" y="194" fill="#ccc" font-size="9" font-family="system-ui">Robert K. Chen</text>
+                                <text x="150" y="194" fill="#999" font-size="9" font-family="system-ui">09/30/1962</text>
+                                <text x="240" y="194" fill="#999" font-size="9" font-family="system-ui">MH-6638201-D</text>
+                                <text x="370" y="194" fill="#999" font-size="9" font-family="system-ui">Post-surgical follow-up</text>
+                                <line x1="16" y1="202" x2="504" y2="202" stroke="#1a1a1a" stroke-width="0.5"/>
+
+                                <text x="30" y="218" fill="#555" font-size="9" font-family="system-ui" font-style="italic">... 4,996 more rows</text>
+
+                                <!-- Config panel -->
+                                <rect x="16" y="236" width="240" height="110" rx="8" fill="#1a1a1a" stroke="#2a2a2a" stroke-width="1"/>
+                                <text x="32" y="256" fill="#888" font-size="8.5" font-family="system-ui" font-weight="600">GENERATION CONFIG</text>
+
+                                <text x="32" y="274" fill="#666" font-size="8" font-family="system-ui">Records to generate</text>
+                                <text x="228" y="274" text-anchor="end" fill="#fff" font-size="9" font-family="system-ui" font-weight="600">5,000</text>
+
+                                <text x="32" y="292" fill="#666" font-size="8" font-family="system-ui">Schema source</text>
+                                <text x="228" y="292" text-anchor="end" fill="#7ab0d1" font-size="9" font-family="system-ui" font-weight="600">intake_form.pdf</text>
+
+                                <text x="32" y="310" fill="#666" font-size="8" font-family="system-ui">Distribution</text>
+                                <text x="228" y="310" text-anchor="end" fill="#fff" font-size="9" font-family="system-ui" font-weight="600">Realistic (from sample)</text>
+
+                                <text x="32" y="328" fill="#666" font-size="8" font-family="system-ui">Edge cases</text>
+                                <text x="228" y="328" text-anchor="end" fill="#FF6B35" font-size="9" font-family="system-ui" font-weight="600">15% injected</text>
+
+                                <!-- Quality panel -->
+                                <rect x="268" y="236" width="236" height="110" rx="8" fill="#1a1a1a" stroke="#2a2a2a" stroke-width="1"/>
+                                <text x="284" y="256" fill="#888" font-size="8.5" font-family="system-ui" font-weight="600">DATA QUALITY</text>
+
+                                <text x="284" y="276" fill="#666" font-size="8" font-family="system-ui">Uniqueness</text>
+                                <rect x="364" y="268" width="124" height="7" rx="3" fill="#252525"/>
+                                <rect x="364" y="268" width="122" height="7" rx="3" fill="#4ade80"/>
+                                <text x="480" y="264" fill="#4ade80" font-size="7.5" font-family="system-ui" font-weight="700">99.8%</text>
+
+                                <text x="284" y="296" fill="#666" font-size="8" font-family="system-ui">Schema validity</text>
+                                <rect x="364" y="288" width="124" height="7" rx="3" fill="#252525"/>
+                                <rect x="364" y="288" width="124" height="7" rx="3" fill="#4ade80"/>
+                                <text x="480" y="284" fill="#4ade80" font-size="7.5" font-family="system-ui" font-weight="700">100%</text>
+
+                                <text x="284" y="316" fill="#666" font-size="8" font-family="system-ui">Realistic distribution</text>
+                                <rect x="364" y="308" width="124" height="7" rx="3" fill="#252525"/>
+                                <rect x="364" y="308" width="115" height="7" rx="3" fill="#4ade80"/>
+                                <text x="480" y="304" fill="#4ade80" font-size="7.5" font-family="system-ui" font-weight="700">96.1%</text>
+
+                                <rect x="284" y="326" width="100" height="24" rx="6" fill="#FF6B35"/>
+                                <text x="334" y="342" text-anchor="middle" fill="#fff" font-size="9" font-family="system-ui" font-weight="700">Export CSV</text>
+                                <rect x="392" y="326" width="100" height="24" rx="6" fill="transparent" stroke="#444" stroke-width="1"/>
+                                <text x="442" y="342" text-anchor="middle" fill="#aaa" font-size="9" font-family="system-ui" font-weight="600">Export JSON</text>
+                            </svg>
+                        </div>
+                        <div class="showcase-info">
+                            <span class="showcase-industry">Healthcare · Research · QA</span>
+                            <h3>Synthetic Data Generation</h3>
+                            <p>Need 10,000 realistic patient intake forms to test a new system? Training data for a text classifier? Simulated sensor readings to stress-test a product? We generate it — structured, realistic, and edge-case-rich — without touching real data.</p>
+                            <div class="showcase-tags">
+                                <span>Test Data</span>
+                                <span>Form Data</span>
+                                <span>Text &amp; NLP</span>
+                                <span>Privacy-Safe</span>
+                            </div>
+                            <p class="showcase-note">No real PII. Statistically realistic. Ready for testing, training, or compliance.</p>
+                        </div>
+                    </div>
+                    <div class="showcase-metrics">
+                        <div class="showcase-metric">
+                            <div class="val">5,000+</div>
+                            <div class="label">Records Per Run</div>
+                        </div>
+                        <div class="showcase-metric">
+                            <div class="val">0</div>
+                            <div class="label">Real PII Exposed</div>
+                        </div>
+                        <div class="showcase-metric">
+                            <div class="val">40%</div>
+                            <div class="label">Testing Cost Reduction</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ========== 5. SYSTEM INTEGRATION ========== -->
+                <div class="showcase-card">
+                    <div class="showcase-top">
+                        <div class="showcase-mockup">
+                            <svg viewBox="0 0 520 360" xmlns="http://www.w3.org/2000/svg" fill="none">
+                                <rect width="520" height="360" rx="10" fill="#141414"/>
+                                <rect width="520" height="36" rx="10" fill="#1e1e1e"/>
+                                <rect y="26" width="520" height="10" fill="#1e1e1e"/>
+                                <circle cx="18" cy="18" r="5" fill="#ff5f57"/>
+                                <circle cx="36" cy="18" r="5" fill="#febc2e"/>
+                                <circle cx="54" cy="18" r="5" fill="#28c840"/>
+                                <text x="260" y="22" text-anchor="middle" fill="#666" font-size="11" font-family="system-ui">BaltimoreAI — System Integration</text>
+
+                                <!-- Center hub -->
+                                <circle cx="260" cy="170" r="44" fill="#1e1e1e" stroke="#FF6B35" stroke-width="2"/>
+                                <text x="260" y="164" text-anchor="middle" fill="#FF6B35" font-size="20">🤖</text>
+                                <text x="260" y="182" text-anchor="middle" fill="#fff" font-size="8" font-family="system-ui" font-weight="700">AI LAYER</text>
+
+                                <!-- Left nodes -->
+                                <rect x="30" y="60" width="110" height="50" rx="8" fill="#1a1a1a" stroke="#2C5F7C" stroke-width="1.2"/>
+                                <text x="85" y="82" text-anchor="middle" fill="#7ab0d1" font-size="9" font-family="system-ui" font-weight="700">ERP System</text>
+                                <text x="85" y="98" text-anchor="middle" fill="#555" font-size="7.5" font-family="system-ui">SAP / NetSuite</text>
+                                <line x1="140" y1="85" x2="218" y2="155" stroke="#2C5F7C" stroke-width="1" stroke-dasharray="3 3"/>
+                                <circle cx="179" cy="120" r="3" fill="#2C5F7C" opacity="0.5"><animate attributeName="opacity" values="0.2;0.8;0.2" dur="2s" repeatCount="indefinite"/></circle>
+
+                                <rect x="30" y="150" width="110" height="50" rx="8" fill="#1a1a1a" stroke="#2C5F7C" stroke-width="1.2"/>
+                                <text x="85" y="172" text-anchor="middle" fill="#7ab0d1" font-size="9" font-family="system-ui" font-weight="700">Database</text>
+                                <text x="85" y="188" text-anchor="middle" fill="#555" font-size="7.5" font-family="system-ui">PostgreSQL</text>
+                                <line x1="140" y1="175" x2="216" y2="170" stroke="#2C5F7C" stroke-width="1" stroke-dasharray="3 3"/>
+
+                                <rect x="30" y="240" width="110" height="50" rx="8" fill="#1a1a1a" stroke="#2C5F7C" stroke-width="1.2"/>
+                                <text x="85" y="262" text-anchor="middle" fill="#7ab0d1" font-size="9" font-family="system-ui" font-weight="700">Legacy CRM</text>
+                                <text x="85" y="278" text-anchor="middle" fill="#555" font-size="7.5" font-family="system-ui">Custom / On-Prem</text>
+                                <line x1="140" y1="265" x2="218" y2="190" stroke="#2C5F7C" stroke-width="1" stroke-dasharray="3 3"/>
+
+                                <!-- Right nodes -->
+                                <rect x="380" y="60" width="110" height="50" rx="8" fill="#1a1a1a" stroke="#4ade80" stroke-width="1.2"/>
+                                <text x="435" y="82" text-anchor="middle" fill="#4ade80" font-size="9" font-family="system-ui" font-weight="700">Slack / Teams</text>
+                                <text x="435" y="98" text-anchor="middle" fill="#555" font-size="7.5" font-family="system-ui">Notifications</text>
+                                <line x1="380" y1="85" x2="302" y2="155" stroke="#4ade80" stroke-width="1" stroke-dasharray="3 3"/>
+                                <circle cx="341" cy="120" r="3" fill="#4ade80" opacity="0.5"><animate attributeName="opacity" values="0.2;0.8;0.2" dur="2s" begin="0.5s" repeatCount="indefinite"/></circle>
+
+                                <rect x="380" y="150" width="110" height="50" rx="8" fill="#1a1a1a" stroke="#4ade80" stroke-width="1.2"/>
+                                <text x="435" y="172" text-anchor="middle" fill="#4ade80" font-size="9" font-family="system-ui" font-weight="700">Dashboard</text>
+                                <text x="435" y="188" text-anchor="middle" fill="#555" font-size="7.5" font-family="system-ui">Live Reporting</text>
+                                <line x1="380" y1="175" x2="304" y2="170" stroke="#4ade80" stroke-width="1" stroke-dasharray="3 3"/>
+
+                                <rect x="380" y="240" width="110" height="50" rx="8" fill="#1a1a1a" stroke="#4ade80" stroke-width="1.2"/>
+                                <text x="435" y="262" text-anchor="middle" fill="#4ade80" font-size="9" font-family="system-ui" font-weight="700">Email / SMTP</text>
+                                <text x="435" y="278" text-anchor="middle" fill="#555" font-size="7.5" font-family="system-ui">Auto-Responses</text>
+                                <line x1="380" y1="265" x2="302" y2="190" stroke="#4ade80" stroke-width="1" stroke-dasharray="3 3"/>
+
+                                <!-- Bottom status bar -->
+                                <rect x="16" y="316" width="488" height="30" rx="6" fill="#0d0d0d" stroke="#1e1e1e" stroke-width="1"/>
+                                <circle cx="32" cy="331" r="4" fill="#4ade80"/>
+                                <text x="44" y="335" fill="#999" font-size="9" font-family="system-ui">6 systems connected</text>
+                                <text x="260" y="335" fill="#555" font-size="9" font-family="system-ui">Last sync: 2 min ago</text>
+                                <text x="430" y="335" fill="#4ade80" font-size="9" font-family="system-ui" font-weight="600">All healthy ●</text>
+                            </svg>
+                        </div>
+                        <div class="showcase-info">
+                            <span class="showcase-industry">Any Existing Stack</span>
+                            <h3>System Integration</h3>
+                            <p>We connect AI to the tools you already use — ERPs, databases, CRMs, email, and legacy systems. No rip-and-replace. The AI layer sits on top and makes everything work together.</p>
+                            <div class="showcase-tags">
+                                <span>Connectors</span>
+                                <span>Data Sync</span>
+                                <span>Legacy Systems</span>
+                            </div>
+                            <p class="showcase-note">Works with what you have. No vendor lock-in.</p>
+                        </div>
+                    </div>
+                    <div class="showcase-metrics">
+                        <div class="showcase-metric">
+                            <div class="val">6+</div>
+                            <div class="label">Systems Connected</div>
+                        </div>
+                        <div class="showcase-metric">
+                            <div class="val">0</div>
+                            <div class="label">Systems Replaced</div>
+                        </div>
+                        <div class="showcase-metric">
+                            <div class="val">2–4 wk</div>
+                            <div class="label">Typical Deploy Time</div>
                         </div>
                     </div>
                 </div>
@@ -848,32 +921,16 @@
     <section style="padding: 0 2rem 120px;">
         <div class="container" style="padding-bottom: 0;">
             <div class="cta-banner">
-                <h2>Want to see what this looks like for your business?</h2>
-                <p>Book a free 30-minute call. We'll map your workflows and show you where AI fits.</p>
+                <h2>Let's talk about your workflow</h2>
+                <p>Free 30-minute call. We'll map your processes and show you where AI fits.</p>
                 <a href="index.html#contact" class="cta-button">Get Started</a>
             </div>
         </div>
     </section>
 
     <footer>
-        <p>&copy; 2024 Kimura Consulting LLC | <a href="https://baltimoreai.org">BaltimoreAI.org</a><br>Serving Baltimore, Maryland</p>
+        <p>&copy; 2025 Kimura Consulting LLC | <a href="https://baltimoreai.org">BaltimoreAI.org</a><br>Serving Baltimore, Maryland</p>
     </footer>
-
-    <script>
-        // Lazy-load YouTube videos on click
-        document.querySelectorAll('.video-placeholder').forEach(placeholder => {
-            placeholder.addEventListener('click', function() {
-                const videoId = this.dataset.videoId;
-                if (videoId && videoId !== 'YOUR_VIDEO_ID_1' && videoId !== 'YOUR_VIDEO_ID_2' && videoId !== 'YOUR_VIDEO_ID_3') {
-                    const iframe = document.createElement('iframe');
-                    iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
-                    iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
-                    iframe.allowFullscreen = true;
-                    this.parentElement.replaceChild(iframe, this);
-                }
-            });
-        });
-    </script>
 
 </body>
 </html>
