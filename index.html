@@ -3,6 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Meta Pixel -->
+    <script>
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+    n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+    document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '971455075567545');
+    fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=971455075567545&ev=PageView&noscript=1"/></noscript>
+    <!-- End Meta Pixel -->
     <title>BaltimoreAI — Practical AI for Baltimore Businesses</title>
     <meta name="description" content="AI consultancy comprised of former NIH Data Scientists and National Security Cloud Engineers serving Baltimore businesses.">
     <style>
@@ -645,7 +658,7 @@
             <div class="contact-grid">
                 <div class="form-box">
                     <h3>Send Us a Message</h3>
-                    <form id="contactForm">
+                    <form id="contactForm" action="https://formspree.io/f/meepdgkj" method="POST">
                         <div class="form-group">
                             <label for="name">Your Name *</label>
                             <input type="text" id="name" name="name" required placeholder="John Doe">
@@ -743,18 +756,30 @@
             });
         });
 
-        document.getElementById('contactForm').addEventListener('submit', function(e) {
+        document.getElementById('contactForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            const formData = new FormData(this);
-            const data = Object.fromEntries(formData);
-            const subject = encodeURIComponent(`BaltimoreAI Inquiry: ${data.service || 'General'}`);
-            const body = encodeURIComponent(
-                `Name: ${data.name}\nEmail: ${data.email}\nCompany: ${data.business || 'Not provided'}\nNeed: ${data.service || 'Not specified'}\n\nMessage:\n${data.message}`
-            );
-            window.location.href = `mailto:info@baltimoreai.org?subject=${subject}&body=${body}`;
-            setTimeout(() => {
-                alert('Opening your email client...\n\nIf nothing happens, please email us directly at info@baltimoreai.org');
-            }, 500);
+            const form = this;
+            const button = form.querySelector('button[type="submit"]');
+            const originalText = button.textContent;
+            button.textContent = 'Sending...';
+            button.disabled = true;
+            try {
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: new FormData(form),
+                    headers: { 'Accept': 'application/json' }
+                });
+                if (response.ok) {
+                    if (typeof fbq === 'function') { fbq('track', 'Lead'); }
+                    form.innerHTML = '<div style="text-align:center;padding:40px 20px;"><h3 style="color:var(--baltimore-orange);margin-bottom:12px;">Thanks — message received.</h3><p>We\'ll be in touch within 24 hours. For anything urgent, call or text (410) 929-3588.</p></div>';
+                } else {
+                    throw new Error('Submission failed');
+                }
+            } catch (err) {
+                button.textContent = originalText;
+                button.disabled = false;
+                alert('Something went wrong sending your message. Please email us directly at info@baltimoreai.org or call (410) 929-3588.');
+            }
         });
     </script>
 
