@@ -16,6 +16,15 @@
     <noscript><img height="1" width="1" style="display:none"
     src="https://www.facebook.com/tr?id=971455075567545&ev=PageView&noscript=1"/></noscript>
     <!-- End Meta Pixel -->
+    <!-- Microsoft Clarity -->
+    <script type="text/javascript">
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "w8mauz9oq6");
+    </script>
+    <!-- End Microsoft Clarity -->
     <title>BaltimoreAI — Practical AI for Baltimore Businesses</title>
     <meta name="description" content="AI consultancy comprised of former NIH Data Scientists and National Security Cloud Engineers serving Baltimore businesses.">
     <style>
@@ -755,6 +764,36 @@
                 }
             });
         });
+
+        // --- Engagement tracking for Meta Pixel ---
+        (function() {
+            if (typeof fbq !== 'function') return;
+            // 10-second engaged view
+            setTimeout(function() {
+                fbq('trackCustom', 'Engaged10s');
+            }, 10000);
+            // Scroll depth (50% and 90%)
+            var hit50 = false, hit90 = false;
+            window.addEventListener('scroll', function() {
+                var doc = document.documentElement;
+                var scrolled = (doc.scrollTop + window.innerHeight) / doc.scrollHeight;
+                if (!hit50 && scrolled >= 0.5) {
+                    hit50 = true;
+                    fbq('trackCustom', 'Scroll50');
+                }
+                if (!hit90 && scrolled >= 0.9) {
+                    hit90 = true;
+                    fbq('trackCustom', 'Scroll90');
+                }
+            }, { passive: true });
+            // Contact card clicks (book a call, phone, email)
+            document.querySelectorAll('.contact-card').forEach(function(card) {
+                card.addEventListener('click', function() {
+                    var label = (card.querySelector('.contact-value') || {}).textContent || 'unknown';
+                    fbq('trackCustom', 'ClickedContactCard', { card: label.trim() });
+                });
+            });
+        })();
 
         document.getElementById('contactForm').addEventListener('submit', async function(e) {
             e.preventDefault();
