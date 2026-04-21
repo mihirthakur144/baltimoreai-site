@@ -708,9 +708,9 @@
                         <div class="contact-value">Book a Call</div>
                         <div class="contact-detail">See available times &rarr;</div>
                     </a>
-                    <a href="tel:4109293588" class="contact-card">
+                    <a href="tel:4108261065" class="contact-card">
                         <div class="contact-label">Call or Text</div>
-                        <div class="contact-value">(410) 929-3588</div>
+                        <div class="contact-value">(410) 826-1065</div>
                         <div class="contact-detail">Ask for Will</div>
                     </a>
                     <a href="mailto:info@baltimoreai.org" class="contact-card">
@@ -810,14 +810,14 @@
                 });
                 if (response.ok) {
                     if (typeof fbq === 'function') { fbq('track', 'Lead'); }
-                    form.innerHTML = '<div style="text-align:center;padding:40px 20px;"><h3 style="color:var(--baltimore-orange);margin-bottom:12px;">Thanks — message received.</h3><p>We\'ll be in touch within 24 hours. For anything urgent, call or text (410) 929-3588.</p></div>';
+                    form.innerHTML = '<div style="text-align:center;padding:40px 20px;"><h3 style="color:var(--baltimore-orange);margin-bottom:12px;">Thanks — message received.</h3><p>We\'ll be in touch within 24 hours. For anything urgent, call or text (410) 826-1065.</p></div>';
                 } else {
                     throw new Error('Submission failed');
                 }
             } catch (err) {
                 button.textContent = originalText;
                 button.disabled = false;
-                alert('Something went wrong sending your message. Please email us directly at info@baltimoreai.org or call (410) 929-3588.');
+                alert('Something went wrong sending your message. Please email us directly at info@baltimoreai.org or call (410) 826-1065.');
             }
         });
     </script>
