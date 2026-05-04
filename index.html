@@ -564,17 +564,67 @@
         footer {
             background: var(--page-bg);
             color: var(--ink-faint);
-            text-align: center;
-            padding: 36px 20px;
-            font-size: 0.88rem;
+            padding: 48px 20px 32px;
+            font-size: 0.9rem;
             border-top: 1px solid var(--border);
         }
-        footer a {
+        .footer-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1.4fr 1fr 1fr;
+            gap: 36px;
+            align-items: start;
+        }
+        .footer-brand {
+            display: flex; align-items: center; gap: 12px;
+            margin-bottom: 10px;
+        }
+        .footer-brand img { width: 40px; height: 40px; border-radius: 8px; }
+        .footer-brand .name {
+            font-family: 'Roboto Slab', Georgia, serif;
+            font-size: 1.1rem; font-weight: 800; color: var(--ink);
+            letter-spacing: -0.3px;
+        }
+        .footer-brand .name .accent { color: var(--brand-teal); }
+        .footer-tag {
+            color: var(--ink-muted);
+            font-size: 0.92rem;
+            max-width: 320px;
+            line-height: 1.55;
+        }
+        .footer-col h4 {
+            font-family: 'Roboto Slab', Georgia, serif;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--ink-faint);
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+        .footer-col a {
+            display: block;
             color: var(--ink-muted);
             text-decoration: none;
+            font-size: 0.92rem;
+            margin-bottom: 6px;
             transition: color 0.2s;
         }
-        footer a:hover { color: var(--brand-teal); }
+        .footer-col a:hover { color: var(--brand-teal); }
+        .footer-bottom {
+            max-width: 1100px;
+            margin: 32px auto 0;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            color: var(--ink-faint);
+            font-size: 0.82rem;
+        }
+        @media (max-width: 768px) {
+            .footer-inner { grid-template-columns: 1fr; gap: 24px; }
+            .footer-bottom { flex-direction: column; gap: 6px; }
+        }
 
         /* --- RESPONSIVE --- */
         @media (max-width: 768px) {
@@ -629,7 +679,7 @@
     <section class="hero">
         <div class="hero-inner">
             <h1>Practical AI for Baltimore Businesses</h1>
-            <p>A consultancy comprised of former NIH Data Scientists and National Security Cloud Engineers.</p>
+            <p>Small Baltimore team. Backgrounds in NIH data science and federal cloud. We build it, deploy it, hand it over.</p>
             <div class="hero-explainer">
                 <p>We build systems that answer customer questions, process documents, extract insights, and automate workflows. Most of it runs on large language models. None of it is magic.</p>
             </div>
@@ -658,7 +708,7 @@
     <!-- WHO WE SERVE -->
     <section class="serve-section">
         <div class="container">
-            <h2 class="section-title">Who We <span class="accent">Work With</span></h2>
+            <h2 class="section-title">Where we <span class="accent">work</span></h2>
             <div class="serve-grid">
                 <div class="serve-card">
                     <h3>Universities & Research Labs</h3>
@@ -683,37 +733,32 @@
     <!-- SERVICES -->
     <section class="services-section">
         <div class="container">
-            <h2 class="section-title">What We <span class="accent">Do</span></h2>
+            <h2 class="section-title">What we <span class="accent">build</span></h2>
             <div class="services-grid">
                 <div class="service-card">
-                    <span class="service-tag">Strategy</span>
+                    <span class="service-tag">Free 90-min audit</span>
                     <h3>AI Readiness Assessment</h3>
-                    <p>We evaluate your workflows and data to identify where AI will actually save you time and money. No guesswork.</p>
+                    <p>We sit down with your team, walk your workflows, and tell you where AI will actually save time and money. If it won't, we'll say that too.</p>
                 </div>
                 <div class="service-card">
-                    <span class="service-tag">Documents</span>
+                    <span class="service-tag">PDF · scan · form</span>
                     <h3>Document Processing</h3>
                     <p>Turn PDFs, contracts, and records into searchable databases. Find information in seconds instead of hours.</p>
                 </div>
                 <div class="service-card">
-                    <span class="service-tag">Knowledge</span>
+                    <span class="service-tag">On-prem deployable</span>
                     <h3>AI Assistant (RAG)</h3>
-                    <p>A secure internal chatbot that knows your manuals, procedures, and files. Answers questions instantly.</p>
+                    <p>A secure internal chatbot that knows your manuals, procedures, and files. Answers questions instantly. Stays inside your network.</p>
                 </div>
                 <div class="service-card">
-                    <span class="service-tag">Integration</span>
+                    <span class="service-tag">No rip-and-replace</span>
                     <h3>System Integration</h3>
-                    <p>Connect modern AI to your existing software: ERPs, databases, and legacy systems.</p>
+                    <p>Connect modern AI to your existing software: ERPs, databases, and legacy systems. We work with what you have.</p>
                 </div>
                 <div class="service-card">
-                    <span class="service-tag">Automation</span>
+                    <span class="service-tag">Always-on</span>
                     <h3>Task Automation</h3>
                     <p>Automate scheduling, follow-ups, data entry, and other repetitive tasks that slow your team down.</p>
-                </div>
-                <div class="service-card">
-                    <span class="service-tag">Data</span>
-                    <h3>Synthetic Data</h3>
-                    <p>Test physical products, manufacturing processes, and systems under thousands of scenarios. Understand when your product works and when it doesn't, before you build it.</p>
                 </div>
             </div>
         </div>
@@ -722,7 +767,7 @@
     <!-- CIVIC -->
     <section class="civic-section">
         <div class="container">
-            <h2 class="section-title">Beyond <span class="accent">Client Work</span></h2>
+            <h2 class="section-title">Civic <span class="accent">work</span></h2>
             <div class="civic-content">
                 <p>We think advanced technology should be accessible to Baltimore, not just exported from Silicon Valley. We're available to city leadership, academic institutions, and community organizations for conversations on <span class="highlight">responsible AI policy, workforce development, and practical implementation strategies</span>.</p>
             </div>
@@ -732,10 +777,9 @@
     <!-- CONTACT -->
     <section id="contact" class="contact-section">
         <div class="container">
-            <h2 class="section-title">Get <span class="accent">Started</span></h2>
             <div class="contact-grid">
                 <div class="form-box">
-                    <h3>Send Us a Message</h3>
+                    <h3>Send us a message</h3>
                     <form id="contactForm" action="https://formspree.io/f/meepdgkj" method="POST">
                         <div class="form-group">
                             <label for="name">Your Name *</label>
@@ -746,10 +790,6 @@
                             <input type="email" id="email" name="email" required placeholder="john@company.com">
                         </div>
                         <div class="form-group">
-                            <label for="business">Company/Organization</label>
-                            <input type="text" id="business" name="business" placeholder="Your Company">
-                        </div>
-                        <div class="form-group">
                             <label for="service">What do you need help with?</label>
                             <select id="service" name="service">
                                 <option value="">Choose one...</option>
@@ -758,7 +798,6 @@
                                 <option value="assistant">AI Assistant / Chatbot</option>
                                 <option value="integration">System Integration</option>
                                 <option value="automation">Task Automation</option>
-                                <option value="data">Synthetic Data</option>
                                 <option value="careers">Careers & Opportunities</option>
                                 <option value="other">Not Sure / Other</option>
                             </select>
@@ -793,7 +832,31 @@
     </section>
 
     <footer>
-        <p>&copy; 2025 Kimura Consulting LLC | <a href="https://baltimoreai.org">BaltimoreAI.org</a><br>Serving Baltimore, Maryland</p>
+        <div class="footer-inner">
+            <div>
+                <div class="footer-brand">
+                    <img src="assets/brand/logo-mark.png" alt="">
+                    <div class="name">Baltimore<span class="accent">AI</span></div>
+                </div>
+                <p class="footer-tag">Practical AI for Baltimore businesses. Small team, real production work, no buzzword bingo.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Get in touch</h4>
+                <a href="tel:4108261065">(410) 826-1065</a>
+                <a href="mailto:info@baltimoreai.org">info@baltimoreai.org</a>
+                <a href="https://calendar.app.google/wSuGQT5yDA2UqEXb6" target="_blank" rel="noopener">Book a call</a>
+            </div>
+            <div class="footer-col">
+                <h4>The site</h4>
+                <a href="index.html">Home</a>
+                <a href="demos.html">Demos</a>
+                <a href="#contact">Contact</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>&copy; 2025 Kimura Consulting LLC</span>
+            <span>Serving Baltimore, Maryland</span>
+        </div>
     </footer>
 
     <script>
@@ -807,7 +870,6 @@
             'assistant': "What questions should your AI assistant answer?",
             'integration': "What systems need to work together?",
             'automation': "What repetitive tasks slow your team down?",
-            'data': "What scenarios do you need to test?",
             'careers': "Tell us about your background and what you're looking for",
             'other': "Where's the friction in your business?",
             'default': "Where's the friction in your business?"
