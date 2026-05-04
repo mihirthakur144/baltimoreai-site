@@ -228,6 +228,48 @@
             font-weight: 700;
         }
 
+        /* --- OPINIONS BAND --- */
+        .opinions {
+            background: var(--page-bg);
+            padding: 70px 2rem 30px;
+        }
+        .opinions-inner {
+            max-width: 820px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+        .opinion {
+            display: flex;
+            align-items: flex-start;
+            gap: 18px;
+            padding: 18px 22px;
+            border-left: 3px solid var(--brand-teal);
+            background: var(--section-alt);
+            border-radius: 0 10px 10px 0;
+        }
+        .opinion .num {
+            font-family: 'Roboto Slab', Georgia, serif;
+            font-weight: 800;
+            font-size: 1.1rem;
+            color: var(--brand-teal);
+            line-height: 1.45;
+            flex-shrink: 0;
+        }
+        .opinion p {
+            font-family: 'Roboto Slab', Georgia, serif;
+            font-size: 1.18rem;
+            line-height: 1.45;
+            color: var(--ink);
+            font-weight: 500;
+            margin: 0;
+        }
+        @media (max-width: 768px) {
+            .opinion p { font-size: 1.05rem; }
+            .opinions { padding: 50px 1rem 20px; }
+        }
+
         .cta-button {
             display: inline-block;
             background: var(--white);
@@ -589,9 +631,27 @@
             <h1>Practical AI for Baltimore Businesses</h1>
             <p>A consultancy comprised of former NIH Data Scientists and National Security Cloud Engineers.</p>
             <div class="hero-explainer">
-                <p>What we really do is AI-powered information engineering — using large language models to organize, structure, and extract value from your data. We build systems that answer customer questions, process documents, extract insights, and automate workflows.</p>
+                <p>We build systems that answer customer questions, process documents, extract insights, and automate workflows. Most of it runs on large language models. None of it is magic.</p>
             </div>
             <a href="#contact" class="cta-button">Let's Talk About Your Needs</a>
+        </div>
+    </section>
+
+    <!-- OPINIONS -->
+    <section class="opinions">
+        <div class="opinions-inner">
+            <div class="opinion">
+                <span class="num">01</span>
+                <p>We don't build generic chatbots.</p>
+            </div>
+            <div class="opinion">
+                <span class="num">02</span>
+                <p>Your data never leaves your stack without your written OK.</p>
+            </div>
+            <div class="opinion">
+                <span class="num">03</span>
+                <p>Half our intake calls end with "you don't need this." We say it free.</p>
+            </div>
         </div>
     </section>
 
@@ -628,7 +688,7 @@
                 <div class="service-card">
                     <span class="service-tag">Strategy</span>
                     <h3>AI Readiness Assessment</h3>
-                    <p>We evaluate your workflows and data to identify where AI will actually save you time and money — no guesswork.</p>
+                    <p>We evaluate your workflows and data to identify where AI will actually save you time and money. No guesswork.</p>
                 </div>
                 <div class="service-card">
                     <span class="service-tag">Documents</span>
@@ -643,7 +703,7 @@
                 <div class="service-card">
                     <span class="service-tag">Integration</span>
                     <h3>System Integration</h3>
-                    <p>Connect modern AI to your existing software — ERPs, databases, and legacy systems.</p>
+                    <p>Connect modern AI to your existing software: ERPs, databases, and legacy systems.</p>
                 </div>
                 <div class="service-card">
                     <span class="service-tag">Automation</span>
@@ -653,7 +713,7 @@
                 <div class="service-card">
                     <span class="service-tag">Data</span>
                     <h3>Synthetic Data</h3>
-                    <p>Test physical products, manufacturing processes, and systems under thousands of scenarios. Understand when your product works and when it doesn't — before you build it.</p>
+                    <p>Test physical products, manufacturing processes, and systems under thousands of scenarios. Understand when your product works and when it doesn't, before you build it.</p>
                 </div>
             </div>
         </div>
@@ -664,7 +724,7 @@
         <div class="container">
             <h2 class="section-title">Beyond <span class="accent">Client Work</span></h2>
             <div class="civic-content">
-                <p>We believe advanced technology should be accessible to Baltimore — not just exported from Silicon Valley. As practitioners, we're available to city leadership, academic institutions, and community organizations for conversations on <span class="highlight">responsible AI policy, workforce development, and practical implementation strategies</span>.</p>
+                <p>We think advanced technology should be accessible to Baltimore, not just exported from Silicon Valley. We're available to city leadership, academic institutions, and community organizations for conversations on <span class="highlight">responsible AI policy, workforce development, and practical implementation strategies</span>.</p>
             </div>
         </div>
     </section>
@@ -816,7 +876,7 @@
                 });
                 if (response.ok) {
                     if (typeof fbq === 'function') { fbq('track', 'Lead'); }
-                    form.innerHTML = '<div style="text-align:center;padding:40px 20px;"><h3 style="color:var(--brand-teal);margin-bottom:12px;">Thanks — message received.</h3><p style="color:var(--ink-muted);">We\'ll be in touch within 24 hours. For anything urgent, call or text (410) 826-1065.</p></div>';
+                    form.innerHTML = '<div style="text-align:center;padding:40px 20px;"><h3 style="color:var(--brand-teal);margin-bottom:12px;">Thanks. Message received.</h3><p style="color:var(--ink-muted);">We\'ll be in touch within 24 hours. For anything urgent, call or text (410) 826-1065.</p></div>';
                 } else {
                     throw new Error('Submission failed');
                 }
