@@ -163,7 +163,7 @@
         /* --- HERO --- */
         .hero {
             position: relative;
-            background: linear-gradient(135deg, var(--brand-teal) 0%, var(--brand-teal-dark) 100%);
+            background: var(--brand-teal);
             color: var(--white);
             padding: 170px 2rem 90px;
             text-align: center;
@@ -172,12 +172,23 @@
         .hero::before {
             content: '';
             position: absolute; inset: 0;
-            background:
-                radial-gradient(circle at 20% 80%, rgba(255,255,255,0.06) 0%, transparent 40%),
-                radial-gradient(circle at 80% 20%, rgba(255,255,255,0.05) 0%, transparent 40%);
+            background-image: url('assets/brand/logo-mark.png');
+            background-repeat: no-repeat;
+            background-position: 78% center;
+            background-size: auto 115%;
+            opacity: 0.16;
+            pointer-events: none;
+        }
+        .hero::after {
+            content: '';
+            position: absolute; inset: 0;
+            background: linear-gradient(90deg, var(--brand-teal) 0%, transparent 35%, transparent 65%, var(--brand-teal) 100%);
             pointer-events: none;
         }
         .hero-inner { position: relative; z-index: 1; }
+        @media (max-width: 768px) {
+            .hero::before { background-position: center; background-size: 140% auto; opacity: 0.10; }
+        }
 
         .hero h1 {
             color: var(--white);
