@@ -28,33 +28,40 @@
     <title>Demos — BaltimoreAI</title>
     <meta name="description" content="AI tools that run in production — knowledge assistants, document processors, and automation pipelines built for Baltimore businesses.">
     <style>
-        /* --- VARIABLES --- */
+        /* --- BRAND PALETTE (teal + white) --- */
         :root {
-            --baltimore-orange: #FF6B35;
-            --baltimore-orange-hover: #ff8c61;
-            --baltimore-black: #0F0F0F;
-            --card-bg: #1A1A1A;
-            --steel-blue: #2C5F7C;
-            --steel-glow: rgba(44, 95, 124, 0.4);
+            --brand-teal: #0E6E8C;
+            --brand-teal-dark: #0A5470;
+            --brand-teal-deeper: #073e54;
+            --brand-teal-light: #d4e6ec;
+            --brand-teal-bg: #f1f6f8;
+
+            --page-bg: #ffffff;
+            --section-alt: #f7f9fa;
+            --card-bg: #ffffff;
+            --border: #e3eaee;
+            --border-strong: #c9d6dd;
+
+            --ink: #0F1A20;
+            --ink-muted: #4f6772;
+            --ink-faint: #8a99a4;
             --white: #ffffff;
-            --text-gray: #cccccc;
         }
 
-        /* --- GLOBAL RESET --- */
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             line-height: 1.6;
-            color: var(--text-gray);
-            background-color: var(--baltimore-black);
+            color: var(--ink-muted);
+            background-color: var(--page-bg);
             overflow-x: hidden;
         }
 
         h1, h2, h3 {
             font-weight: 800;
             letter-spacing: -0.5px;
-            color: var(--white);
+            color: var(--ink);
         }
 
         a { color: inherit; }
@@ -64,52 +71,41 @@
             position: fixed;
             top: 0; left: 0; right: 0;
             z-index: 1000;
-            background: rgba(15, 15, 15, 0.85);
+            background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            border-bottom: 1px solid var(--border);
             padding: 0 2rem;
         }
-
         .navbar-inner {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            height: 64px;
+            max-width: 1200px; margin: 0 auto;
+            display: flex; align-items: center; justify-content: space-between;
+            height: 68px;
         }
-
         .navbar-brand {
-            font-size: 1.25rem;
-            font-weight: 800;
-            color: var(--white);
+            display: flex; align-items: center; gap: 10px;
+            font-size: 1.2rem; font-weight: 800;
+            color: var(--ink);
             text-decoration: none;
             letter-spacing: -0.5px;
         }
-
-        .navbar-brand span { color: var(--baltimore-orange); }
+        .navbar-brand img { width: 36px; height: 36px; border-radius: 8px; display: block; }
+        .navbar-brand .accent { color: var(--brand-teal); }
 
         .navbar-links {
-            display: flex;
-            gap: 2rem;
-            list-style: none;
-            align-items: center;
+            display: flex; gap: 2rem;
+            list-style: none; align-items: center;
         }
-
         .navbar-links a {
-            color: #aaa;
+            color: var(--ink-muted);
             text-decoration: none;
-            font-size: 0.95rem;
-            font-weight: 600;
+            font-size: 0.95rem; font-weight: 600;
             transition: color 0.2s;
         }
-
         .navbar-links a:hover,
-        .navbar-links a.active { color: var(--white); }
-
+        .navbar-links a.active { color: var(--brand-teal); }
         .navbar-links a.nav-cta {
-            background: var(--baltimore-orange);
+            background: var(--brand-teal);
             color: var(--white);
             padding: 8px 20px;
             border-radius: 6px;
@@ -118,48 +114,55 @@
             letter-spacing: 0.5px;
             transition: background 0.2s, transform 0.2s;
         }
-
         .navbar-links a.nav-cta:hover {
-            background: var(--baltimore-orange-hover);
+            background: var(--brand-teal-dark);
+            color: var(--white);
             transform: translateY(-1px);
         }
 
         .menu-toggle {
             display: none;
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 8px;
+            background: none; border: none;
+            cursor: pointer; padding: 8px;
         }
-
         .menu-toggle span {
             display: block;
-            width: 24px;
-            height: 2px;
-            background: var(--white);
+            width: 24px; height: 2px;
+            background: var(--ink);
             margin: 5px 0;
             transition: all 0.3s;
         }
 
         /* --- PAGE HERO --- */
         .page-hero {
-            background: radial-gradient(circle at 50% 0%, var(--steel-blue), var(--baltimore-black) 70%);
+            position: relative;
+            background: linear-gradient(135deg, var(--brand-teal) 0%, var(--brand-teal-dark) 100%);
             color: var(--white);
-            padding: 150px 2rem 70px;
+            padding: 160px 2rem 80px;
             text-align: center;
+            overflow: hidden;
         }
+        .page-hero::before {
+            content: '';
+            position: absolute; inset: 0;
+            background:
+                radial-gradient(circle at 20% 80%, rgba(255,255,255,0.06) 0%, transparent 40%),
+                radial-gradient(circle at 80% 20%, rgba(255,255,255,0.05) 0%, transparent 40%);
+            pointer-events: none;
+        }
+        .page-hero > * { position: relative; z-index: 1; }
 
         .page-hero h1 {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            color: var(--white);
+            font-size: 2.8rem;
+            margin-bottom: 0.8rem;
+            letter-spacing: -1px;
         }
-
         .page-hero p {
-            font-size: 1.15rem;
-            max-width: 600px;
+            font-size: 1.1rem;
+            max-width: 620px;
             margin: 0 auto;
-            color: #bbb;
+            color: rgba(255,255,255,0.92);
         }
 
         /* --- LAYOUT --- */
@@ -172,26 +175,27 @@
         /* =============================================
            UNIFIED SHOWCASE CARDS
            ============================================= */
-        .showcase-section { padding: 0 2rem; }
+        .showcase-section { padding: 0 2rem; background: var(--section-alt); }
 
         .showcase-stack {
             max-width: 1200px;
             margin: 0 auto;
             display: flex;
             flex-direction: column;
-            gap: 72px;
+            gap: 56px;
         }
 
         .showcase-card {
             background: var(--card-bg);
-            border: 1px solid #222;
+            border: 1px solid var(--border);
             border-radius: 16px;
             overflow: hidden;
-            transition: border-color 0.3s;
+            transition: all 0.25s;
+            box-shadow: 0 4px 14px rgba(15,26,32,0.04);
         }
-
         .showcase-card:hover {
-            border-color: #3a3a3a;
+            border-color: var(--brand-teal-light);
+            box-shadow: 0 12px 32px rgba(14,110,140,0.10);
         }
 
         /* Top: mockup + info side by side */
@@ -211,8 +215,8 @@
 
         .showcase-mockup {
             position: relative;
-            background: #111;
-            padding: 24px;
+            background: linear-gradient(135deg, var(--brand-teal-bg) 0%, #e6eef2 100%);
+            padding: 28px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -224,15 +228,15 @@
             width: 100%;
             height: auto;
             display: block;
-            border-radius: 8px;
-            filter: drop-shadow(0 8px 32px rgba(0,0,0,0.5));
+            border-radius: 10px;
+            filter: drop-shadow(0 12px 32px rgba(14,110,140,0.18));
         }
 
         .showcase-mockup::after {
             content: '';
             position: absolute;
             inset: 0;
-            background: linear-gradient(135deg, rgba(44,95,124,0.06) 0%, transparent 60%);
+            background: linear-gradient(135deg, rgba(14,110,140,0.04) 0%, transparent 60%);
             pointer-events: none;
         }
 
@@ -249,9 +253,9 @@
 
         .showcase-industry {
             display: inline-block;
-            background: rgba(255, 107, 53, 0.08);
-            color: var(--baltimore-orange);
-            border: 1px solid rgba(255, 107, 53, 0.2);
+            background: var(--brand-teal-bg);
+            color: var(--brand-teal-dark);
+            border: 1px solid var(--brand-teal-light);
             padding: 4px 14px;
             border-radius: 20px;
             font-size: 0.72rem;
@@ -266,12 +270,13 @@
             font-size: 1.6rem;
             margin-bottom: 12px;
             line-height: 1.25;
+            color: var(--ink);
         }
 
         .showcase-info > p {
             font-size: 1rem;
             line-height: 1.7;
-            color: #999;
+            color: var(--ink-muted);
             margin-bottom: 18px;
         }
 
@@ -283,49 +288,99 @@
         }
 
         .showcase-tags span {
-            background: rgba(255, 255, 255, 0.04);
-            color: #777;
+            background: var(--section-alt);
+            color: var(--ink-muted);
             padding: 5px 12px;
             border-radius: 6px;
             font-size: 0.75rem;
             font-weight: 600;
-            border: 1px solid #252525;
+            border: 1px solid var(--border);
         }
 
         .showcase-note {
             font-size: 0.85rem;
-            color: #555;
+            color: var(--ink-faint);
             font-style: italic;
+        }
+
+        .try-it-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 18px;
+            align-self: flex-start;
+            padding: 10px 22px;
+            background: var(--brand-teal);
+            color: var(--white);
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            transition: all 0.2s;
+            box-shadow: 0 4px 14px rgba(14,110,140,0.25);
+        }
+
+        .try-it-btn:hover {
+            background: var(--brand-teal-dark);
+            color: var(--white);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(14,110,140,0.4);
+        }
+
+        .try-it-btn .arrow { transition: transform 0.2s; }
+        .try-it-btn:hover .arrow { transform: translateX(3px); }
+
+        .try-it-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-left: 8px;
+            padding: 3px 9px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.18);
+            border: 1px solid rgba(255,255,255,0.35);
+            font-size: 0.62rem;
+            font-weight: 700;
+            color: var(--white);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .try-it-pill::before {
+            content: '';
+            width: 5px; height: 5px; border-radius: 50%;
+            background: #4ade80;
+            box-shadow: 0 0 6px #4ade80;
         }
 
         /* Bottom: metrics strip */
         .showcase-metrics {
             display: flex;
-            border-top: 1px solid #222;
+            border-top: 1px solid var(--border);
+            background: var(--section-alt);
         }
 
         .showcase-metric {
             flex: 1;
-            padding: 24px 20px;
+            padding: 22px 18px;
             text-align: center;
-            border-right: 1px solid #222;
+            border-right: 1px solid var(--border);
         }
 
-        .showcase-metric:last-child {
-            border-right: none;
-        }
+        .showcase-metric:last-child { border-right: none; }
 
         .showcase-metric .val {
-            font-size: 1.8rem;
+            font-size: 1.7rem;
             font-weight: 800;
-            color: var(--baltimore-orange);
+            color: var(--brand-teal);
             line-height: 1;
             margin-bottom: 4px;
         }
 
         .showcase-metric .label {
-            font-size: 0.72rem;
-            color: #666;
+            font-size: 0.7rem;
+            color: var(--ink-faint);
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -337,20 +392,21 @@
             margin: 0 auto;
             text-align: center;
             padding: 60px 40px;
-            background: linear-gradient(135deg, var(--steel-blue) 0%, #1a3c52 100%);
+            background: linear-gradient(135deg, var(--brand-teal) 0%, var(--brand-teal-dark) 100%);
             border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            border: 1px solid transparent;
+            box-shadow: 0 14px 38px rgba(14,110,140,0.22);
         }
 
         .cta-banner h2 {
             font-size: 2rem;
             margin-bottom: 12px;
-            -webkit-text-fill-color: var(--white);
+            color: var(--white);
         }
 
         .cta-banner p {
             font-size: 1.05rem;
-            color: rgba(255,255,255,0.75);
+            color: rgba(255,255,255,0.85);
             margin-bottom: 28px;
             max-width: 520px;
             margin-left: auto;
@@ -359,8 +415,8 @@
 
         .cta-button {
             display: inline-block;
-            background: linear-gradient(135deg, var(--baltimore-orange) 0%, #ff4500 100%);
-            color: var(--white);
+            background: var(--white);
+            color: var(--brand-teal-dark);
             padding: 1rem 2.5rem;
             text-decoration: none;
             border-radius: 50px;
@@ -368,33 +424,32 @@
             font-size: 1rem;
             text-transform: uppercase;
             letter-spacing: 1px;
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
             border: none;
-            box-shadow: 0 10px 25px rgba(255, 107, 53, 0.3), inset 0 1px 0 rgba(255,255,255,0.2);
+            box-shadow: 0 10px 25px rgba(7,62,84,0.25);
         }
 
         .cta-button:hover {
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 20px 40px rgba(255, 107, 53, 0.5);
-            color: white;
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 18px 36px rgba(7,62,84,0.35);
+            color: var(--brand-teal-dark);
         }
 
         /* --- FOOTER --- */
         footer {
-            background: transparent;
-            color: #555;
+            background: var(--page-bg);
+            color: var(--ink-faint);
             text-align: center;
-            padding: 40px 20px;
+            padding: 36px 20px;
             font-size: 0.88rem;
+            border-top: 1px solid var(--border);
         }
-
         footer a {
-            color: #777;
+            color: var(--ink-muted);
             text-decoration: none;
             transition: color 0.2s;
         }
-
-        footer a:hover { color: var(--baltimore-orange); }
+        footer a:hover { color: var(--brand-teal); }
 
         /* --- RESPONSIVE --- */
         @media (max-width: 900px) {
@@ -427,8 +482,8 @@
         }
 
         @media (max-width: 768px) {
-            .page-hero h1 { font-size: 2.2rem; }
-            .page-hero { padding-top: 120px; }
+            .page-hero h1 { font-size: 2rem; }
+            .page-hero { padding-top: 130px; }
             .container { padding: 60px 20px 50px; }
 
             .menu-toggle { display: block; }
@@ -436,14 +491,14 @@
             .navbar-links {
                 display: none;
                 position: absolute;
-                top: 64px;
+                top: 68px;
                 left: 0; right: 0;
-                background: rgba(15, 15, 15, 0.95);
+                background: rgba(255,255,255,0.97);
                 backdrop-filter: blur(12px);
                 flex-direction: column;
                 padding: 1.5rem 2rem;
                 gap: 1.2rem;
-                border-bottom: 1px solid rgba(255,255,255,0.06);
+                border-bottom: 1px solid var(--border);
             }
 
             .navbar-links.open { display: flex; }
@@ -458,7 +513,10 @@
     <!-- NAVBAR -->
     <nav class="navbar">
         <div class="navbar-inner">
-            <a href="index.html" class="navbar-brand">Baltimore<span>AI</span></a>
+            <a href="index.html" class="navbar-brand">
+                <img src="assets/brand/logo-mark.png" alt="BaltimoreAI logo">
+                <span>Baltimore<span class="accent">AI</span></span>
+            </a>
             <button class="menu-toggle" aria-label="Toggle menu" onclick="document.querySelector('.navbar-links').classList.toggle('open')">
                 <span></span><span></span><span></span>
             </button>
@@ -497,7 +555,7 @@
                                 <text x="196" y="73" fill="#fff" font-size="11" font-family="system-ui" font-weight="600">What is the city's policy on vacant</text>
                                 <text x="196" y="88" fill="#fff" font-size="11" font-family="system-ui" font-weight="600">building demolition?</text>
                                 <rect x="16" y="114" width="380" height="112" rx="10" fill="#1e1e1e"/>
-                                <circle cx="32" cy="130" r="10" fill="#FF6B35" opacity="0.9"/>
+                                <circle cx="32" cy="130" r="10" fill="#0E6E8C" opacity="0.9"/>
                                 <text x="32" y="134" text-anchor="middle" fill="#fff" font-size="9" font-family="system-ui" font-weight="700">AI</text>
                                 <text x="50" y="134" fill="#ccc" font-size="10.5" font-family="system-ui">Based on the city's housing code (Ch. 116),</text>
                                 <text x="50" y="149" fill="#ccc" font-size="10.5" font-family="system-ui">vacant buildings must be registered within</text>
@@ -515,7 +573,7 @@
                                 <circle cx="64" cy="301" r="3.5" fill="#555"><animate attributeName="opacity" values="0.3;1;0.3" dur="1.2s" begin="0.4s" repeatCount="indefinite"/></circle>
                                 <rect x="16" y="328" width="440" height="20" rx="6" fill="#1a1a1a" stroke="#333" stroke-width="0.5"/>
                                 <text x="28" y="342" fill="#444" font-size="10" font-family="system-ui">Ask a question about city policies...</text>
-                                <rect x="466" y="328" width="38" height="20" rx="6" fill="#FF6B35"/>
+                                <rect x="466" y="328" width="38" height="20" rx="6" fill="#0E6E8C"/>
                                 <text x="485" y="342" text-anchor="middle" fill="#fff" font-size="9" font-family="system-ui" font-weight="700">Send</text>
                             </svg>
                         </div>
@@ -529,6 +587,7 @@
                                 <span>Citations</span>
                             </div>
                             <p class="showcase-note">Deployed on-premise. Your data never leaves your network.</p>
+                            <a href="demos/knowledge-assistant.html" class="try-it-btn">Try it <span class="arrow">→</span><span class="try-it-pill">Live AI</span></a>
                         </div>
                     </div>
                     <div class="showcase-metrics">
@@ -575,8 +634,8 @@
                                 <rect x="32" y="216" width="130" height="6" rx="2" fill="#252525"/>
                                 <rect x="32" y="228" width="155" height="6" rx="2" fill="#252525"/>
                                 <rect x="32" y="240" width="90" height="6" rx="2" fill="#252525"/>
-                                <rect x="28" y="132" width="176" height="63" rx="4" fill="none" stroke="#FF6B35" stroke-width="1.5" stroke-dasharray="4 2" opacity="0.7"/>
-                                <text x="36" y="270" fill="#FF6B35" font-size="8" font-family="system-ui" font-weight="600">⬆ TABLE DETECTED</text>
+                                <rect x="28" y="132" width="176" height="63" rx="4" fill="none" stroke="#0E6E8C" stroke-width="1.5" stroke-dasharray="4 2" opacity="0.7"/>
+                                <text x="36" y="270" fill="#0E6E8C" font-size="8" font-family="system-ui" font-weight="600">⬆ TABLE DETECTED</text>
                                 <rect x="32" y="290" width="168" height="40" rx="6" fill="#191919" stroke="#2a2a2a" stroke-width="0.5"/>
                                 <text x="46" y="308" fill="#777" font-size="9" font-family="system-ui">📎 intake_form_0472.pdf</text>
                                 <text x="46" y="322" fill="#555" font-size="8.5" font-family="system-ui">2 pages · 340 KB · Processed</text>
@@ -598,7 +657,7 @@
                                 <rect x="248" y="264" width="240" height="8" rx="4" fill="#252525"/>
                                 <rect x="248" y="264" width="224" height="8" rx="4" fill="#4ade80"/>
                                 <text x="478" y="268" fill="#4ade80" font-size="8" font-family="system-ui" font-weight="700" dominant-baseline="central">96%</text>
-                                <rect x="248" y="296" width="112" height="30" rx="6" fill="#FF6B35"/>
+                                <rect x="248" y="296" width="112" height="30" rx="6" fill="#0E6E8C"/>
                                 <text x="304" y="315" text-anchor="middle" fill="#fff" font-size="10" font-family="system-ui" font-weight="700">Export to EHR</text>
                                 <rect x="370" y="296" width="112" height="30" rx="6" fill="transparent" stroke="#444" stroke-width="1"/>
                                 <text x="426" y="315" text-anchor="middle" fill="#aaa" font-size="10" font-family="system-ui" font-weight="600">Download JSON</text>
@@ -614,6 +673,7 @@
                                 <span>PDF</span>
                             </div>
                             <p class="showcase-note">HIPAA-compliant. Built for medical intake, invoices, and government forms.</p>
+                            <a href="demos/document-processor.html" class="try-it-btn">Try it <span class="arrow">→</span></a>
                         </div>
                     </div>
                     <div class="showcase-metrics">
@@ -652,9 +712,9 @@
                                 <text x="80" y="118" text-anchor="middle" fill="#888" font-size="8" font-family="system-ui">Email / Form</text>
                                 <line x1="130" y1="95" x2="155" y2="95" stroke="#333" stroke-width="1.5"/>
                                 <polygon points="155,90 165,95 155,100" fill="#444"/>
-                                <rect x="165" y="60" width="100" height="70" rx="8" fill="#1a1a1a" stroke="#FF6B35" stroke-width="1.5"/>
-                                <rect x="165" y="60" width="100" height="20" rx="8" fill="#FF6B35"/>
-                                <rect x="165" y="72" width="100" height="8" fill="#FF6B35"/>
+                                <rect x="165" y="60" width="100" height="70" rx="8" fill="#1a1a1a" stroke="#0E6E8C" stroke-width="1.5"/>
+                                <rect x="165" y="60" width="100" height="20" rx="8" fill="#0E6E8C"/>
+                                <rect x="165" y="72" width="100" height="8" fill="#0E6E8C"/>
                                 <text x="215" y="74" text-anchor="middle" fill="#fff" font-size="8" font-family="system-ui" font-weight="700">CLASSIFY</text>
                                 <text x="215" y="98" text-anchor="middle" fill="#aaa" font-size="16">🤖</text>
                                 <text x="215" y="118" text-anchor="middle" fill="#888" font-size="8" font-family="system-ui">AI Categorize</text>
@@ -701,6 +761,7 @@
                                 <span>Automation</span>
                             </div>
                             <p class="showcase-note">Every pipeline is custom-built around your existing tools and processes.</p>
+                            <a href="demos/pipeline-runner.html" class="try-it-btn">Try it <span class="arrow">→</span></a>
                         </div>
                     </div>
                     <div class="showcase-metrics">
@@ -733,7 +794,7 @@
                                 <text x="260" y="22" text-anchor="middle" fill="#666" font-size="11" font-family="system-ui">BaltimoreAI — Synthetic Data Generator</text>
 
                                 <!-- Tabs -->
-                                <rect x="16" y="44" width="100" height="28" rx="6" fill="#FF6B35"/>
+                                <rect x="16" y="44" width="100" height="28" rx="6" fill="#0E6E8C"/>
                                 <text x="66" y="62" text-anchor="middle" fill="#fff" font-size="9" font-family="system-ui" font-weight="700">Form Data</text>
                                 <rect x="120" y="44" width="100" height="28" rx="6" fill="#252525"/>
                                 <text x="170" y="62" text-anchor="middle" fill="#777" font-size="9" font-family="system-ui" font-weight="600">NLP / Text</text>
@@ -791,7 +852,7 @@
                                 <text x="228" y="310" text-anchor="end" fill="#fff" font-size="9" font-family="system-ui" font-weight="600">Realistic (from sample)</text>
 
                                 <text x="32" y="328" fill="#666" font-size="8" font-family="system-ui">Edge cases</text>
-                                <text x="228" y="328" text-anchor="end" fill="#FF6B35" font-size="9" font-family="system-ui" font-weight="600">15% injected</text>
+                                <text x="228" y="328" text-anchor="end" fill="#0E6E8C" font-size="9" font-family="system-ui" font-weight="600">15% injected</text>
 
                                 <!-- Quality panel -->
                                 <rect x="268" y="236" width="236" height="110" rx="8" fill="#1a1a1a" stroke="#2a2a2a" stroke-width="1"/>
@@ -812,7 +873,7 @@
                                 <rect x="364" y="308" width="115" height="7" rx="3" fill="#4ade80"/>
                                 <text x="480" y="304" fill="#4ade80" font-size="7.5" font-family="system-ui" font-weight="700">96.1%</text>
 
-                                <rect x="284" y="326" width="100" height="24" rx="6" fill="#FF6B35"/>
+                                <rect x="284" y="326" width="100" height="24" rx="6" fill="#0E6E8C"/>
                                 <text x="334" y="342" text-anchor="middle" fill="#fff" font-size="9" font-family="system-ui" font-weight="700">Export CSV</text>
                                 <rect x="392" y="326" width="100" height="24" rx="6" fill="transparent" stroke="#444" stroke-width="1"/>
                                 <text x="442" y="342" text-anchor="middle" fill="#aaa" font-size="9" font-family="system-ui" font-weight="600">Export JSON</text>
@@ -847,7 +908,346 @@
                     </div>
                 </div>
 
-                <!-- ========== 5. SYSTEM INTEGRATION ========== -->
+                <!-- ========== 5. MEETING INTELLIGENCE ========== -->
+                <div class="showcase-card">
+                    <div class="showcase-top">
+                        <div class="showcase-mockup">
+                            <svg viewBox="0 0 520 360" xmlns="http://www.w3.org/2000/svg" fill="none">
+                                <rect width="520" height="360" rx="10" fill="#141414"/>
+                                <rect width="520" height="36" rx="10" fill="#1e1e1e"/>
+                                <rect y="26" width="520" height="10" fill="#1e1e1e"/>
+                                <circle cx="18" cy="18" r="5" fill="#ff5f57"/>
+                                <circle cx="36" cy="18" r="5" fill="#febc2e"/>
+                                <circle cx="54" cy="18" r="5" fill="#28c840"/>
+                                <text x="260" y="22" text-anchor="middle" fill="#666" font-size="11" font-family="system-ui">BaltimoreAI — Meeting Intelligence</text>
+
+                                <!-- Recording bar -->
+                                <rect x="16" y="50" width="488" height="40" rx="8" fill="#1a1a1a" stroke="#2a2a2a" stroke-width="1"/>
+                                <circle cx="34" cy="70" r="6" fill="#ef4444"><animate attributeName="opacity" values="0.4;1;0.4" dur="1.4s" repeatCount="indefinite"/></circle>
+                                <text x="48" y="74" fill="#fff" font-size="10" font-family="system-ui" font-weight="700">RECORDING</text>
+                                <text x="120" y="74" fill="#777" font-size="10" font-family="ui-monospace, monospace">00:24:18</text>
+                                <text x="200" y="74" fill="#666" font-size="9.5" font-family="system-ui">Wed Mar 12 · Smith v. Reyes deposition prep</text>
+
+                                <!-- Waveform -->
+                                <g transform="translate(420, 60)">
+                                    <rect x="0" y="6" width="2" height="8" fill="#0E6E8C"/>
+                                    <rect x="5" y="2" width="2" height="16" fill="#0E6E8C"/>
+                                    <rect x="10" y="4" width="2" height="12" fill="#0E6E8C"/>
+                                    <rect x="15" y="0" width="2" height="20" fill="#0E6E8C"/>
+                                    <rect x="20" y="3" width="2" height="14" fill="#0E6E8C"/>
+                                    <rect x="25" y="6" width="2" height="8" fill="#0E6E8C"/>
+                                    <rect x="30" y="1" width="2" height="18" fill="#0E6E8C"/>
+                                    <rect x="35" y="4" width="2" height="12" fill="#0E6E8C"/>
+                                    <rect x="40" y="2" width="2" height="16" fill="#0E6E8C"/>
+                                    <rect x="45" y="5" width="2" height="10" fill="#0E6E8C"/>
+                                    <rect x="50" y="0" width="2" height="20" fill="#0E6E8C"/>
+                                    <rect x="55" y="3" width="2" height="14" fill="#0E6E8C"/>
+                                    <rect x="60" y="6" width="2" height="8" fill="#0E6E8C"/>
+                                </g>
+
+                                <!-- Transcript -->
+                                <text x="16" y="112" fill="#888" font-size="9" font-family="system-ui" font-weight="700">LIVE TRANSCRIPT</text>
+                                <text x="16" y="132" fill="#7ab0d1" font-size="9.5" font-family="system-ui" font-weight="600">Counsel Reyes (00:23:42)</text>
+                                <text x="16" y="146" fill="#bbb" font-size="10" font-family="system-ui">…we'll need the chain-of-custody documents from</text>
+                                <text x="16" y="160" fill="#bbb" font-size="10" font-family="system-ui">the lab by Friday, otherwise the timeline slips into</text>
+                                <text x="16" y="174" fill="#bbb" font-size="10" font-family="system-ui">April. Karen, can you reach out to Dr. Holcomb?</text>
+                                <text x="16" y="194" fill="#7ab0d1" font-size="9.5" font-family="system-ui" font-weight="600">Karen Park (00:24:01)</text>
+                                <text x="16" y="208" fill="#bbb" font-size="10" font-family="system-ui">Yes — I'll send a request today and CC Marcus.</text>
+
+                                <!-- Action items panel -->
+                                <rect x="280" y="100" width="224" height="240" rx="8" fill="#1a1a1a" stroke="#2a2a2a" stroke-width="1"/>
+                                <text x="296" y="120" fill="#0E6E8C" font-size="9" font-family="system-ui" font-weight="700">⚡ ACTION ITEMS · 4 detected</text>
+
+                                <rect x="296" y="132" width="192" height="44" rx="6" fill="#0f0f0f" stroke="#222" stroke-width="0.5"/>
+                                <rect x="296" y="132" width="3" height="44" fill="#0E6E8C"/>
+                                <text x="306" y="146" fill="#ddd" font-size="9" font-family="system-ui" font-weight="600">Email Dr. Holcomb re: chain-of-</text>
+                                <text x="306" y="158" fill="#ddd" font-size="9" font-family="system-ui" font-weight="600">custody documents</text>
+                                <text x="306" y="170" fill="#777" font-size="8" font-family="system-ui">Karen Park · due Fri Mar 14</text>
+
+                                <rect x="296" y="182" width="192" height="44" rx="6" fill="#0f0f0f" stroke="#222" stroke-width="0.5"/>
+                                <rect x="296" y="182" width="3" height="44" fill="#0E6E8C"/>
+                                <text x="306" y="196" fill="#ddd" font-size="9" font-family="system-ui" font-weight="600">CC Marcus on the lab request</text>
+                                <text x="306" y="208" fill="#ddd" font-size="9" font-family="system-ui" font-weight="600">thread</text>
+                                <text x="306" y="220" fill="#777" font-size="8" font-family="system-ui">Karen Park · today</text>
+
+                                <rect x="296" y="232" width="192" height="44" rx="6" fill="#0f0f0f" stroke="#222" stroke-width="0.5"/>
+                                <rect x="296" y="232" width="3" height="44" fill="#0E6E8C"/>
+                                <text x="306" y="246" fill="#ddd" font-size="9" font-family="system-ui" font-weight="600">Reschedule depo if docs slip</text>
+                                <text x="306" y="258" fill="#ddd" font-size="9" font-family="system-ui" font-weight="600">past Friday</text>
+                                <text x="306" y="270" fill="#777" font-size="8" font-family="system-ui">Counsel Reyes · contingent</text>
+
+                                <rect x="296" y="282" width="192" height="44" rx="6" fill="#0f0f0f" stroke="#222" stroke-width="0.5"/>
+                                <rect x="296" y="282" width="3" height="44" fill="#0E6E8C"/>
+                                <text x="306" y="296" fill="#ddd" font-size="9" font-family="system-ui" font-weight="600">Update case file with new</text>
+                                <text x="306" y="308" fill="#ddd" font-size="9" font-family="system-ui" font-weight="600">timeline before Wed prep</text>
+                                <text x="306" y="320" fill="#777" font-size="8" font-family="system-ui">Marcus Lee · Tue Mar 11</text>
+
+                                <!-- Footer -->
+                                <rect x="16" y="320" width="250" height="22" rx="6" fill="rgba(14,110,140,0.12)" stroke="rgba(14,110,140,0.4)" stroke-width="0.5"/>
+                                <text x="28" y="335" fill="#0E6E8C" font-size="9" font-family="system-ui" font-weight="700">📨 Auto-send summary to attendees</text>
+                            </svg>
+                        </div>
+                        <div class="showcase-info">
+                            <span class="showcase-industry">Legal · Professional Services</span>
+                            <h3>Meeting Intelligence</h3>
+                            <p>Record a meeting, deposition, or client call. Get back a clean transcript, a one-paragraph summary, and a list of action items with assignees and due dates — automatically distributed to attendees.</p>
+                            <div class="showcase-tags">
+                                <span>Transcription</span>
+                                <span>Summarization</span>
+                                <span>Action Items</span>
+                            </div>
+                            <p class="showcase-note">Speaker-attributed. PII redaction available. Stays inside your firm's network.</p>
+                        </div>
+                    </div>
+                    <div class="showcase-metrics">
+                        <div class="showcase-metric">
+                            <div class="val">2 min</div>
+                            <div class="label">Summary Ready</div>
+                        </div>
+                        <div class="showcase-metric">
+                            <div class="val">95%</div>
+                            <div class="label">Speaker Accuracy</div>
+                        </div>
+                        <div class="showcase-metric">
+                            <div class="val">~6 hr/wk</div>
+                            <div class="label">Saved Per Attorney</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ========== 6. DEMAND FORECASTING ========== -->
+                <div class="showcase-card">
+                    <div class="showcase-top">
+                        <div class="showcase-mockup">
+                            <svg viewBox="0 0 520 360" xmlns="http://www.w3.org/2000/svg" fill="none">
+                                <rect width="520" height="360" rx="10" fill="#141414"/>
+                                <rect width="520" height="36" rx="10" fill="#1e1e1e"/>
+                                <rect y="26" width="520" height="10" fill="#1e1e1e"/>
+                                <circle cx="18" cy="18" r="5" fill="#ff5f57"/>
+                                <circle cx="36" cy="18" r="5" fill="#febc2e"/>
+                                <circle cx="54" cy="18" r="5" fill="#28c840"/>
+                                <text x="260" y="22" text-anchor="middle" fill="#666" font-size="11" font-family="system-ui">BaltimoreAI — Demand Forecasting</text>
+
+                                <!-- Top stat strip -->
+                                <rect x="16" y="50" width="155" height="58" rx="8" fill="#1a1a1a" stroke="#222" stroke-width="1"/>
+                                <text x="28" y="68" fill="#777" font-size="8" font-family="system-ui" font-weight="700">14-DAY FORECAST</text>
+                                <text x="28" y="92" fill="#fff" font-size="20" font-family="system-ui" font-weight="800">2,847</text>
+                                <text x="98" y="92" fill="#0E6E8C" font-size="10" font-family="system-ui" font-weight="700">▲ 12.4%</text>
+                                <text x="28" y="103" fill="#666" font-size="8" font-family="system-ui">vs. prior period</text>
+
+                                <rect x="183" y="50" width="155" height="58" rx="8" fill="#1a1a1a" stroke="#222" stroke-width="1"/>
+                                <text x="195" y="68" fill="#777" font-size="8" font-family="system-ui" font-weight="700">REORDER ALERTS</text>
+                                <text x="195" y="92" fill="#fff" font-size="20" font-family="system-ui" font-weight="800">7</text>
+                                <text x="225" y="92" fill="#facc15" font-size="10" font-family="system-ui" font-weight="700">⚠ within 5 days</text>
+                                <text x="195" y="103" fill="#666" font-size="8" font-family="system-ui">across 3 warehouses</text>
+
+                                <rect x="350" y="50" width="154" height="58" rx="8" fill="#1a1a1a" stroke="#222" stroke-width="1"/>
+                                <text x="362" y="68" fill="#777" font-size="8" font-family="system-ui" font-weight="700">FORECAST ACCURACY</text>
+                                <text x="362" y="92" fill="#fff" font-size="20" font-family="system-ui" font-weight="800">92.6%</text>
+                                <text x="424" y="92" fill="#0E6E8C" font-size="10" font-family="system-ui" font-weight="700">▲ 4 pts</text>
+                                <text x="362" y="103" fill="#666" font-size="8" font-family="system-ui">trailing 30 days</text>
+
+                                <!-- Chart -->
+                                <rect x="16" y="120" width="332" height="220" rx="8" fill="#1a1a1a" stroke="#222" stroke-width="1"/>
+                                <text x="32" y="140" fill="#888" font-size="9" font-family="system-ui" font-weight="700">SKU-4471 — UNIT VELOCITY</text>
+                                <text x="32" y="154" fill="#666" font-size="8" font-family="system-ui">historical · forecast (shaded) · reorder threshold</text>
+
+                                <!-- Y axis labels -->
+                                <text x="30" y="180" fill="#555" font-size="7.5" font-family="ui-monospace, monospace">300</text>
+                                <text x="30" y="220" fill="#555" font-size="7.5" font-family="ui-monospace, monospace">200</text>
+                                <text x="30" y="260" fill="#555" font-size="7.5" font-family="ui-monospace, monospace">100</text>
+                                <text x="30" y="300" fill="#555" font-size="7.5" font-family="ui-monospace, monospace">  0</text>
+
+                                <!-- Grid -->
+                                <line x1="56" y1="178" x2="338" y2="178" stroke="#222" stroke-width="0.5"/>
+                                <line x1="56" y1="218" x2="338" y2="218" stroke="#222" stroke-width="0.5"/>
+                                <line x1="56" y1="258" x2="338" y2="258" stroke="#222" stroke-width="0.5"/>
+                                <line x1="56" y1="298" x2="338" y2="298" stroke="#333" stroke-width="0.5"/>
+
+                                <!-- Reorder threshold -->
+                                <line x1="56" y1="270" x2="338" y2="270" stroke="#facc15" stroke-width="0.8" stroke-dasharray="3 3" opacity="0.7"/>
+                                <text x="320" y="266" fill="#facc15" font-size="7" font-family="system-ui" font-weight="600">reorder</text>
+
+                                <!-- Historical line -->
+                                <polyline points="60,250 80,240 100,235 120,230 140,225 160,210 180,215 200,200" fill="none" stroke="#7ab0d1" stroke-width="1.8"/>
+                                <!-- Vertical "now" marker -->
+                                <line x1="200" y1="170" x2="200" y2="298" stroke="#444" stroke-width="0.6" stroke-dasharray="2 2"/>
+                                <text x="202" y="176" fill="#888" font-size="7.5" font-family="system-ui">today</text>
+                                <!-- Forecast line -->
+                                <polyline points="200,200 220,190 240,180 260,175 280,178 300,175 320,170 338,165" fill="none" stroke="#0E6E8C" stroke-width="2"/>
+                                <!-- Forecast confidence band -->
+                                <path d="M 200,210 L 220,200 L 240,188 L 260,182 L 280,184 L 300,180 L 320,172 L 338,168 L 338,162 L 320,168 L 300,170 L 280,172 L 260,168 L 240,172 L 220,180 L 200,190 Z" fill="#0E6E8C" opacity="0.18"/>
+
+                                <!-- X axis labels -->
+                                <text x="60" y="312" fill="#555" font-size="7" font-family="system-ui">Feb 14</text>
+                                <text x="120" y="312" fill="#555" font-size="7" font-family="system-ui">Feb 28</text>
+                                <text x="195" y="312" fill="#0E6E8C" font-size="7" font-family="system-ui" font-weight="700">Mar 12</text>
+                                <text x="260" y="312" fill="#555" font-size="7" font-family="system-ui">Mar 19</text>
+                                <text x="305" y="312" fill="#555" font-size="7" font-family="system-ui">Mar 26</text>
+
+                                <!-- SKU list -->
+                                <rect x="358" y="120" width="146" height="220" rx="8" fill="#1a1a1a" stroke="#222" stroke-width="1"/>
+                                <text x="370" y="140" fill="#888" font-size="9" font-family="system-ui" font-weight="700">REORDER QUEUE</text>
+
+                                <rect x="370" y="148" width="122" height="34" rx="5" fill="#0f0f0f" stroke="#facc15" stroke-width="0.6"/>
+                                <text x="378" y="161" fill="#fff" font-size="9" font-family="system-ui" font-weight="700">SKU-4471</text>
+                                <text x="378" y="173" fill="#facc15" font-size="8" font-family="system-ui">2 days · 480 units</text>
+
+                                <rect x="370" y="188" width="122" height="34" rx="5" fill="#0f0f0f" stroke="#facc15" stroke-width="0.6"/>
+                                <text x="378" y="201" fill="#fff" font-size="9" font-family="system-ui" font-weight="700">SKU-1132</text>
+                                <text x="378" y="213" fill="#facc15" font-size="8" font-family="system-ui">3 days · 220 units</text>
+
+                                <rect x="370" y="228" width="122" height="34" rx="5" fill="#0f0f0f" stroke="#222" stroke-width="0.5"/>
+                                <text x="378" y="241" fill="#ccc" font-size="9" font-family="system-ui" font-weight="700">SKU-9087</text>
+                                <text x="378" y="253" fill="#888" font-size="8" font-family="system-ui">5 days · 150 units</text>
+
+                                <rect x="370" y="268" width="122" height="34" rx="5" fill="#0f0f0f" stroke="#222" stroke-width="0.5"/>
+                                <text x="378" y="281" fill="#ccc" font-size="9" font-family="system-ui" font-weight="700">SKU-2204</text>
+                                <text x="378" y="293" fill="#888" font-size="8" font-family="system-ui">8 days · 90 units</text>
+
+                                <rect x="370" y="310" width="122" height="22" rx="5" fill="#0E6E8C"/>
+                                <text x="431" y="324" text-anchor="middle" fill="#fff" font-size="9" font-family="system-ui" font-weight="700">Auto-create POs</text>
+                            </svg>
+                        </div>
+                        <div class="showcase-info">
+                            <span class="showcase-industry">Retail · Distribution</span>
+                            <h3>Demand Forecasting</h3>
+                            <p>Predict what's going to sell, when, and where. Combines your sales history with seasonality, holidays, and external signals to keep stock right and trigger reorders before you run out.</p>
+                            <div class="showcase-tags">
+                                <span>Forecasting</span>
+                                <span>Inventory</span>
+                                <span>Auto-Reorder</span>
+                            </div>
+                            <p class="showcase-note">Connects to Shopify, NetSuite, QuickBooks, and most warehouse systems.</p>
+                        </div>
+                    </div>
+                    <div class="showcase-metrics">
+                        <div class="showcase-metric">
+                            <div class="val">92%+</div>
+                            <div class="label">Forecast Accuracy</div>
+                        </div>
+                        <div class="showcase-metric">
+                            <div class="val">−18%</div>
+                            <div class="label">Stockouts</div>
+                        </div>
+                        <div class="showcase-metric">
+                            <div class="val">−22%</div>
+                            <div class="label">Excess Inventory</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ========== 7. VISUAL QA ========== -->
+                <div class="showcase-card">
+                    <div class="showcase-top">
+                        <div class="showcase-mockup">
+                            <svg viewBox="0 0 520 360" xmlns="http://www.w3.org/2000/svg" fill="none">
+                                <rect width="520" height="360" rx="10" fill="#141414"/>
+                                <rect width="520" height="36" rx="10" fill="#1e1e1e"/>
+                                <rect y="26" width="520" height="10" fill="#1e1e1e"/>
+                                <circle cx="18" cy="18" r="5" fill="#ff5f57"/>
+                                <circle cx="36" cy="18" r="5" fill="#febc2e"/>
+                                <circle cx="54" cy="18" r="5" fill="#28c840"/>
+                                <text x="260" y="22" text-anchor="middle" fill="#666" font-size="11" font-family="system-ui">BaltimoreAI — Visual QA Inspector</text>
+
+                                <!-- Live camera feed -->
+                                <rect x="16" y="50" width="320" height="240" rx="8" fill="#0a0a0a" stroke="#222" stroke-width="1"/>
+                                <text x="28" y="68" fill="#888" font-size="9" font-family="system-ui" font-weight="700">LINE 3 — CAMERA A</text>
+                                <circle cx="320" cy="64" r="3.5" fill="#ef4444"><animate attributeName="opacity" values="0.4;1;0.4" dur="1.4s" repeatCount="indefinite"/></circle>
+                                <text x="316" y="68" text-anchor="end" fill="#777" font-size="8" font-family="system-ui">LIVE</text>
+
+                                <!-- Mock part image (gear-like circle) -->
+                                <circle cx="176" cy="180" r="78" fill="#2a2a2a" stroke="#3a3a3a" stroke-width="1"/>
+                                <circle cx="176" cy="180" r="58" fill="#1f1f1f" stroke="#3a3a3a" stroke-width="0.5"/>
+                                <circle cx="176" cy="180" r="20" fill="#141414" stroke="#444" stroke-width="0.5"/>
+                                <g stroke="#3a3a3a" stroke-width="1" fill="#2a2a2a">
+                                    <rect x="172" y="94" width="8" height="14"/>
+                                    <rect x="172" y="252" width="8" height="14"/>
+                                    <rect x="86" y="176" width="14" height="8"/>
+                                    <rect x="252" y="176" width="14" height="8"/>
+                                    <rect x="116" y="120" width="11" height="11" transform="rotate(-45 121 125)"/>
+                                    <rect x="225" y="120" width="11" height="11" transform="rotate(-45 230 125)"/>
+                                    <rect x="116" y="234" width="11" height="11" transform="rotate(-45 121 239)"/>
+                                    <rect x="225" y="234" width="11" height="11" transform="rotate(-45 230 239)"/>
+                                </g>
+
+                                <!-- Defect bounding boxes -->
+                                <rect x="146" y="130" width="32" height="22" fill="none" stroke="#ef4444" stroke-width="2" rx="2"/>
+                                <text x="146" y="124" fill="#ef4444" font-size="8" font-family="system-ui" font-weight="700">CRACK · 0.94</text>
+                                <rect x="200" y="200" width="26" height="20" fill="none" stroke="#facc15" stroke-width="2" rx="2"/>
+                                <text x="200" y="234" fill="#facc15" font-size="8" font-family="system-ui" font-weight="700">SCRATCH · 0.71</text>
+
+                                <!-- Bottom bar inside feed -->
+                                <rect x="28" y="270" width="296" height="12" rx="3" fill="#1f1f1f"/>
+                                <rect x="28" y="270" width="220" height="12" rx="3" fill="#0E6E8C"/>
+                                <text x="32" y="279" fill="#fff" font-size="8" font-family="system-ui" font-weight="700">Part #218 of 312 today</text>
+                                <text x="320" y="279" text-anchor="end" fill="#fff" font-size="8" font-family="system-ui" font-weight="700">68%</text>
+
+                                <!-- Right panel: results -->
+                                <rect x="348" y="50" width="156" height="240" rx="8" fill="#1a1a1a" stroke="#222" stroke-width="1"/>
+                                <text x="360" y="68" fill="#888" font-size="9" font-family="system-ui" font-weight="700">VERDICT</text>
+
+                                <rect x="360" y="78" width="132" height="36" rx="6" fill="rgba(239,68,68,0.12)" stroke="rgba(239,68,68,0.4)" stroke-width="0.8"/>
+                                <text x="370" y="93" fill="#ef4444" font-size="11" font-family="system-ui" font-weight="800">✗ FAIL</text>
+                                <text x="370" y="106" fill="#fca5a5" font-size="8" font-family="system-ui">2 defects · auto-rejected</text>
+
+                                <text x="360" y="134" fill="#888" font-size="9" font-family="system-ui" font-weight="700">DEFECTS DETECTED</text>
+                                <rect x="360" y="142" width="132" height="30" rx="5" fill="#0f0f0f" stroke="#222" stroke-width="0.5"/>
+                                <circle cx="370" cy="157" r="3" fill="#ef4444"/>
+                                <text x="378" y="155" fill="#fff" font-size="8.5" font-family="system-ui" font-weight="700">Surface crack</text>
+                                <text x="378" y="166" fill="#fca5a5" font-size="7.5" font-family="system-ui">conf 0.94 · critical</text>
+                                <rect x="360" y="178" width="132" height="30" rx="5" fill="#0f0f0f" stroke="#222" stroke-width="0.5"/>
+                                <circle cx="370" cy="193" r="3" fill="#facc15"/>
+                                <text x="378" y="191" fill="#fff" font-size="8.5" font-family="system-ui" font-weight="700">Hairline scratch</text>
+                                <text x="378" y="202" fill="#facc15" font-size="7.5" font-family="system-ui">conf 0.71 · review</text>
+
+                                <text x="360" y="226" fill="#888" font-size="9" font-family="system-ui" font-weight="700">SHIFT TOTALS</text>
+                                <text x="360" y="244" fill="#bbb" font-size="9" font-family="system-ui">Inspected</text>
+                                <text x="492" y="244" text-anchor="end" fill="#fff" font-size="9" font-family="system-ui" font-weight="700">312</text>
+                                <text x="360" y="258" fill="#bbb" font-size="9" font-family="system-ui">Pass</text>
+                                <text x="492" y="258" text-anchor="end" fill="#0E6E8C" font-size="9" font-family="system-ui" font-weight="700">298 (95.5%)</text>
+                                <text x="360" y="272" fill="#bbb" font-size="9" font-family="system-ui">Fail</text>
+                                <text x="492" y="272" text-anchor="end" fill="#ef4444" font-size="9" font-family="system-ui" font-weight="700">14 (4.5%)</text>
+
+                                <!-- Bottom bar -->
+                                <rect x="16" y="304" width="488" height="38" rx="8" fill="#0d0d0d" stroke="#1e1e1e" stroke-width="1"/>
+                                <text x="28" y="320" fill="#888" font-size="9" font-family="system-ui" font-weight="700">PROCESSING</text>
+                                <text x="28" y="332" fill="#0E6E8C" font-size="9" font-family="ui-monospace, monospace">42 ms / part</text>
+                                <text x="180" y="320" fill="#888" font-size="9" font-family="system-ui" font-weight="700">UPSTREAM ALERT</text>
+                                <text x="180" y="332" fill="#facc15" font-size="9" font-family="system-ui">3 cracks in last hour → flag forge temp drift</text>
+                                <rect x="396" y="316" width="100" height="18" rx="4" fill="#0E6E8C"/>
+                                <text x="446" y="328" text-anchor="middle" fill="#fff" font-size="9" font-family="system-ui" font-weight="700">View dashboard</text>
+                            </svg>
+                        </div>
+                        <div class="showcase-info">
+                            <span class="showcase-industry">Manufacturing · QA</span>
+                            <h3>Visual Quality Inspection</h3>
+                            <p>A camera over your line plus our model = 100% inspection at 40 ms per part. Catches surface defects, missing components, and assembly errors. Flags upstream drift before it ruins a batch.</p>
+                            <div class="showcase-tags">
+                                <span>Computer Vision</span>
+                                <span>Defect Detection</span>
+                                <span>Edge Inference</span>
+                            </div>
+                            <p class="showcase-note">Trains on your parts. Runs on a small edge box on the floor — no cloud round trip.</p>
+                        </div>
+                    </div>
+                    <div class="showcase-metrics">
+                        <div class="showcase-metric">
+                            <div class="val">42 ms</div>
+                            <div class="label">Per-Part Inference</div>
+                        </div>
+                        <div class="showcase-metric">
+                            <div class="val">100%</div>
+                            <div class="label">Coverage</div>
+                        </div>
+                        <div class="showcase-metric">
+                            <div class="val">−63%</div>
+                            <div class="label">Escape Defects</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ========== 8. SYSTEM INTEGRATION ========== -->
                 <div class="showcase-card">
                     <div class="showcase-top">
                         <div class="showcase-mockup">
@@ -861,8 +1261,8 @@
                                 <text x="260" y="22" text-anchor="middle" fill="#666" font-size="11" font-family="system-ui">BaltimoreAI — System Integration</text>
 
                                 <!-- Center hub -->
-                                <circle cx="260" cy="170" r="44" fill="#1e1e1e" stroke="#FF6B35" stroke-width="2"/>
-                                <text x="260" y="164" text-anchor="middle" fill="#FF6B35" font-size="20">🤖</text>
+                                <circle cx="260" cy="170" r="44" fill="#1e1e1e" stroke="#0E6E8C" stroke-width="2"/>
+                                <text x="260" y="164" text-anchor="middle" fill="#0E6E8C" font-size="20">🤖</text>
                                 <text x="260" y="182" text-anchor="middle" fill="#fff" font-size="8" font-family="system-ui" font-weight="700">AI LAYER</text>
 
                                 <!-- Left nodes -->

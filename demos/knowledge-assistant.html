@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knowledge Assistant Demo — BaltimoreAI</title>
+    <meta name="description" content="Try a live retrieval-augmented Q&A assistant grounded in sample Baltimore policy documents.">
+    <style>
+        :root {
+            --brand-teal: #0E6E8C;
+            --brand-teal-dark: #0A5470;
+            --brand-teal-deeper: #073e54;
+            --brand-teal-light: #d4e6ec;
+            --brand-teal-bg: #f1f6f8;
+            --page-bg: #ffffff;
+            --section-alt: #f7f9fa;
+            --card-bg: #ffffff;
+            --border: #e3eaee;
+            --border-strong: #c9d6dd;
+            --ink: #0F1A20;
+            --ink-muted: #4f6772;
+            --ink-faint: #8a99a4;
+            --white: #ffffff;
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--ink-muted);
+            background-color: var(--page-bg);
+            overflow-x: hidden;
+        }
+        h1, h2, h3 { font-weight: 800; letter-spacing: -0.5px; color: var(--ink); }
+        a { color: inherit; }
+
+        .navbar {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 2rem;
+        }
+        .navbar-inner {
+            max-width: 1200px; margin: 0 auto;
+            display: flex; align-items: center; justify-content: space-between; height: 68px;
+        }
+        .navbar-brand {
+            display: flex; align-items: center; gap: 10px;
+            font-size: 1.2rem; font-weight: 800; color: var(--ink);
+            text-decoration: none; letter-spacing: -0.5px;
+        }
+        .navbar-brand img { width: 36px; height: 36px; border-radius: 8px; display: block; }
+        .navbar-brand .accent { color: var(--brand-teal); }
+        .navbar-links { display: flex; gap: 2rem; list-style: none; align-items: center; }
+        .navbar-links a { color: var(--ink-muted); text-decoration: none; font-size: 0.95rem; font-weight: 600; transition: color 0.2s; }
+        .navbar-links a:hover, .navbar-links a.active { color: var(--brand-teal); }
+        .navbar-links a.nav-cta {
+            background: var(--brand-teal); color: var(--white);
+            padding: 8px 20px; border-radius: 6px;
+            font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .navbar-links a.nav-cta:hover { background: var(--brand-teal-dark); color: var(--white); }
+
+        .page-hero {
+            position: relative;
+            background: linear-gradient(135deg, var(--brand-teal) 0%, var(--brand-teal-dark) 100%);
+            color: var(--white);
+            padding: 140px 2rem 56px; text-align: center;
+            overflow: hidden;
+        }
+        .page-hero::before {
+            content: ''; position: absolute; inset: 0;
+            background:
+                radial-gradient(circle at 20% 80%, rgba(255,255,255,0.06) 0%, transparent 40%),
+                radial-gradient(circle at 80% 20%, rgba(255,255,255,0.05) 0%, transparent 40%);
+            pointer-events: none;
+        }
+        .page-hero > * { position: relative; z-index: 1; }
+        .page-hero .crumb {
+            display: inline-block; font-size: 0.75rem; font-weight: 700;
+            color: rgba(255,255,255,0.85); text-transform: uppercase; letter-spacing: 1px;
+            margin-bottom: 14px;
+        }
+        .page-hero .crumb a { color: rgba(255,255,255,0.85); text-decoration: none; }
+        .page-hero .crumb a:hover { color: var(--white); }
+        .page-hero h1 { color: var(--white); font-size: 2.4rem; margin-bottom: 0.7rem; }
+        .page-hero p { font-size: 1.05rem; max-width: 640px; margin: 0 auto; color: rgba(255,255,255,0.92); }
+        .live-pill {
+            display: inline-flex; align-items: center; gap: 6px;
+            margin-top: 14px;
+            padding: 5px 12px; border-radius: 20px;
+            background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.35);
+            font-size: 0.75rem; font-weight: 700; color: var(--white);
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .live-pill .dot {
+            width: 7px; height: 7px; border-radius: 50%; background: #4ade80;
+            box-shadow: 0 0 6px #4ade80;
+            animation: pulse 1.6s ease-in-out infinite;
+        }
+        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+        .demo-wrap {
+            max-width: 1100px; margin: 0 auto; padding: 50px 20px 80px;
+            display: grid; grid-template-columns: 1.4fr 1fr; gap: 28px;
+        }
+
+        .chat-panel {
+            background: var(--card-bg);
+            border: 1px solid var(--border); border-radius: 14px;
+            display: flex; flex-direction: column; height: 620px; overflow: hidden;
+            box-shadow: 0 6px 24px rgba(15,26,32,0.06);
+        }
+        .chat-header {
+            padding: 14px 20px; border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between;
+            background: var(--section-alt);
+        }
+        .chat-header .title { font-size: 0.85rem; font-weight: 700; color: var(--ink); letter-spacing: 0.3px; }
+        .chat-header .model { font-size: 0.7rem; color: var(--ink-faint); font-family: ui-monospace, monospace; }
+
+        .chat-messages {
+            flex: 1; padding: 20px; overflow-y: auto;
+            display: flex; flex-direction: column; gap: 16px;
+            scrollbar-width: thin; scrollbar-color: var(--border-strong) transparent;
+            background: var(--page-bg);
+        }
+        .chat-messages::-webkit-scrollbar { width: 6px; }
+        .chat-messages::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 3px; }
+
+        .msg { display: flex; gap: 10px; max-width: 90%; }
+        .msg.user { align-self: flex-end; flex-direction: row-reverse; }
+        .msg .avatar {
+            width: 28px; height: 28px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.7rem; font-weight: 800; flex-shrink: 0; color: #fff;
+        }
+        .msg.user .avatar { background: var(--ink); }
+        .msg.assistant .avatar { background: var(--brand-teal); }
+
+        .msg .bubble {
+            padding: 12px 16px; border-radius: 12px;
+            font-size: 0.94rem; line-height: 1.55;
+            background: var(--section-alt); color: var(--ink);
+            border: 1px solid var(--border);
+            word-wrap: break-word; white-space: pre-wrap;
+        }
+        .msg.user .bubble { background: var(--brand-teal); color: var(--white); border-color: transparent; }
+        .msg.assistant .bubble .cite {
+            display: inline-block; padding: 1px 8px; border-radius: 4px;
+            background: var(--brand-teal-bg); color: var(--brand-teal-dark);
+            border: 1px solid var(--brand-teal-light);
+            font-size: 0.78rem; font-weight: 600;
+            margin: 0 2px;
+        }
+
+        .typing { display: inline-flex; gap: 4px; padding: 4px 0; }
+        .typing span {
+            width: 6px; height: 6px; border-radius: 50%; background: var(--ink-faint);
+            animation: blink 1.2s infinite;
+        }
+        .typing span:nth-child(2) { animation-delay: 0.2s; }
+        .typing span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes blink { 0%,100% { opacity: 0.3; } 50% { opacity: 1; } }
+
+        .chat-input-row {
+            display: flex; gap: 10px; padding: 14px;
+            border-top: 1px solid var(--border); background: var(--section-alt);
+        }
+        .chat-input {
+            flex: 1; padding: 11px 14px; border-radius: 8px;
+            background: var(--white); border: 1px solid var(--border-strong);
+            color: var(--ink); font-size: 0.95rem; font-family: inherit;
+            outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .chat-input:focus { border-color: var(--brand-teal); box-shadow: 0 0 0 3px rgba(14,110,140,0.12); }
+        .chat-input:disabled { opacity: 0.5; }
+        .send-btn {
+            padding: 0 22px; border-radius: 8px;
+            background: var(--brand-teal); color: #fff; border: none;
+            font-weight: 700; font-size: 0.85rem;
+            text-transform: uppercase; letter-spacing: 0.5px;
+            cursor: pointer; transition: background 0.2s, transform 0.1s;
+        }
+        .send-btn:hover:not(:disabled) { background: var(--brand-teal-dark); }
+        .send-btn:active:not(:disabled) { transform: scale(0.97); }
+        .send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+        .side-panel { display: flex; flex-direction: column; gap: 18px; }
+
+        .side-card {
+            background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px;
+            padding: 20px;
+            box-shadow: 0 4px 14px rgba(15,26,32,0.04);
+        }
+        .side-card h3 {
+            font-size: 0.78rem; color: var(--ink-faint); text-transform: uppercase;
+            letter-spacing: 1px; margin-bottom: 14px; font-weight: 700;
+        }
+
+        .suggested { display: flex; flex-direction: column; gap: 8px; }
+        .suggested button {
+            text-align: left; padding: 10px 14px; border-radius: 8px;
+            background: var(--section-alt); border: 1px solid var(--border);
+            color: var(--ink); font-size: 0.86rem; font-family: inherit;
+            cursor: pointer; transition: all 0.18s;
+            line-height: 1.4;
+        }
+        .suggested button:hover {
+            border-color: var(--brand-teal);
+            background: var(--brand-teal-bg); color: var(--brand-teal-dark);
+        }
+
+        .corpus { display: flex; flex-direction: column; gap: 6px; }
+        .corpus-doc {
+            display: flex; align-items: center; gap: 8px;
+            padding: 8px 10px; border-radius: 6px;
+            background: var(--brand-teal-bg); border: 1px solid var(--brand-teal-light);
+            font-size: 0.8rem; color: var(--brand-teal-dark);
+        }
+        .corpus-doc .icon { font-size: 0.9rem; }
+
+        .error-banner {
+            margin: 10px 14px; padding: 10px 14px;
+            background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.25);
+            border-radius: 8px; color: #b91c1c; font-size: 0.82rem;
+        }
+
+        footer { text-align: center; padding: 40px 20px; color: var(--ink-faint); font-size: 0.88rem; border-top: 1px solid var(--border); }
+        footer a { color: var(--ink-muted); text-decoration: none; }
+        footer a:hover { color: var(--brand-teal); }
+
+        @media (max-width: 900px) {
+            .demo-wrap { grid-template-columns: 1fr; }
+            .chat-panel { height: 540px; }
+            .page-hero h1 { font-size: 1.9rem; }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="navbar-inner">
+        <a href="../index.html" class="navbar-brand">
+            <img src="../assets/brand/logo-mark.png" alt="BaltimoreAI logo">
+            <span>Baltimore<span class="accent">AI</span></span>
+        </a>
+        <ul class="navbar-links">
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="../demos.html" class="active">Demos</a></li>
+            <li><a href="../index.html#contact" class="nav-cta">Contact</a></li>
+        </ul>
+    </div>
+</nav>
+
+<section class="page-hero">
+    <span class="crumb"><a href="../demos.html">← Demos</a></span>
+    <h1>Knowledge Assistant — Live Demo</h1>
+    <p>Ask questions about a sample set of Baltimore city policy documents. Answers cite their sources. This demo runs on a real model — your questions are sent through our proxy to Anthropic.</p>
+    <span class="live-pill"><span class="dot"></span> Live AI</span>
+</section>
+
+<section class="demo-wrap">
+
+    <!-- CHAT -->
+    <div class="chat-panel">
+        <div class="chat-header">
+            <span class="title">Baltimore Policy Assistant</span>
+            <span class="model">claude-haiku-4-5</span>
+        </div>
+        <div class="chat-messages" id="messages">
+            <div class="msg assistant">
+                <div class="avatar">AI</div>
+                <div class="bubble">Hi — I can answer questions about the sample Baltimore policy documents listed on the right. Try a suggested question, or ask your own.</div>
+            </div>
+        </div>
+        <div class="chat-input-row">
+            <input class="chat-input" id="input" type="text" placeholder="Ask about housing, permits, parking, sanitation…" maxlength="2000" autocomplete="off">
+            <button class="send-btn" id="send">Send</button>
+        </div>
+    </div>
+
+    <!-- SIDE -->
+    <div class="side-panel">
+        <div class="side-card">
+            <h3>Try a question</h3>
+            <div class="suggested" id="suggested">
+                <button data-q="What's the policy on vacant building demolition?">What's the policy on vacant building demolition?</button>
+                <button data-q="How much does a small construction permit cost?">How much does a small construction permit cost?</button>
+                <button data-q="Can I appeal a street-sweeping ticket?">Can I appeal a street-sweeping ticket?</button>
+                <button data-q="What's the timeline to open a small restaurant?">What's the timeline to open a small restaurant?</button>
+                <button data-q="What can I put out for bulk trash?">What can I put out for bulk trash?</button>
+            </div>
+        </div>
+
+        <div class="side-card">
+            <h3>Source corpus (5 docs)</h3>
+            <div class="corpus">
+                <div class="corpus-doc"><span class="icon">📄</span> Housing Code Ch. 116 — Vacant Buildings</div>
+                <div class="corpus-doc"><span class="icon">📄</span> Sanitation Code §3-201 — Bulk Trash</div>
+                <div class="corpus-doc"><span class="icon">📄</span> Council Minutes 2023 — Demo Funding</div>
+                <div class="corpus-doc"><span class="icon">📄</span> Permit Office Guide — Construction</div>
+                <div class="corpus-doc"><span class="icon">📄</span> Parking Enforcement Policy 2024</div>
+                <div class="corpus-doc"><span class="icon">📄</span> Small Business Permit Quickstart</div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+<footer>
+    <p>&copy; 2025 Kimura Consulting LLC | <a href="https://baltimoreai.org">BaltimoreAI.org</a></p>
+</footer>
+
+<script>
+    // Replace with your deployed Worker URL after running `wrangler deploy`
+    const WORKER_URL = 'https://baltimoreai-demos.YOUR-SUBDOMAIN.workers.dev';
+
+    const messagesEl = document.getElementById('messages');
+    const inputEl = document.getElementById('input');
+    const sendBtn = document.getElementById('send');
+    const suggestedEl = document.getElementById('suggested');
+
+    const history = [];
+    let busy = false;
+
+    function renderCitations(text) {
+        const escaped = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        return escaped.replace(/\[([^\]]+)\]/g, '<span class="cite">$1</span>');
+    }
+
+    function addMessage(role, text) {
+        const wrap = document.createElement('div');
+        wrap.className = 'msg ' + role;
+        const avatar = document.createElement('div');
+        avatar.className = 'avatar';
+        avatar.textContent = role === 'user' ? 'YOU' : 'AI';
+        const bubble = document.createElement('div');
+        bubble.className = 'bubble';
+        if (role === 'assistant') bubble.innerHTML = renderCitations(text);
+        else bubble.textContent = text;
+        wrap.appendChild(avatar);
+        wrap.appendChild(bubble);
+        messagesEl.appendChild(wrap);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+        return bubble;
+    }
+
+    function addTyping() {
+        const wrap = document.createElement('div');
+        wrap.className = 'msg assistant';
+        wrap.innerHTML = '<div class="avatar">AI</div><div class="bubble"><span class="typing"><span></span><span></span><span></span></span></div>';
+        messagesEl.appendChild(wrap);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+        return wrap;
+    }
+
+    function showError(text) {
+        const banner = document.createElement('div');
+        banner.className = 'error-banner';
+        banner.textContent = text;
+        messagesEl.appendChild(banner);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+
+    async function send(question) {
+        if (busy) return;
+        const q = (question || '').trim();
+        if (!q) return;
+
+        busy = true;
+        sendBtn.disabled = true;
+        inputEl.disabled = true;
+        inputEl.value = '';
+
+        addMessage('user', q);
+        history.push({ role: 'user', content: q });
+
+        const typingNode = addTyping();
+        let bubble = null;
+        let accumulated = '';
+
+        try {
+            const res = await fetch(WORKER_URL, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ messages: history.slice(-12) }),
+            });
+
+            if (!res.ok || !res.body) {
+                typingNode.remove();
+                let detail = '';
+                try { detail = (await res.json()).error || ''; } catch {}
+                showError('Request failed (' + res.status + ')' + (detail ? ' — ' + detail : ''));
+                history.pop();
+                return;
+            }
+
+            typingNode.remove();
+            bubble = addMessage('assistant', '');
+
+            const reader = res.body.getReader();
+            const decoder = new TextDecoder();
+            let buf = '';
+
+            while (true) {
+                const { value, done } = await reader.read();
+                if (done) break;
+                buf += decoder.decode(value, { stream: true });
+
+                let idx;
+                while ((idx = buf.indexOf('\n')) >= 0) {
+                    const line = buf.slice(0, idx).trim();
+                    buf = buf.slice(idx + 1);
+                    if (!line.startsWith('data:')) continue;
+                    const payload = line.slice(5).trim();
+                    if (!payload) continue;
+                    try {
+                        const evt = JSON.parse(payload);
+                        if (evt.type === 'content_block_delta' && evt.delta && evt.delta.type === 'text_delta') {
+                            accumulated += evt.delta.text;
+                            bubble.innerHTML = renderCitations(accumulated);
+                            messagesEl.scrollTop = messagesEl.scrollHeight;
+                        }
+                    } catch {}
+                }
+            }
+
+            if (accumulated) {
+                history.push({ role: 'assistant', content: accumulated });
+            } else {
+                bubble.textContent = '(no response)';
+            }
+        } catch (err) {
+            typingNode.remove();
+            if (bubble) bubble.remove();
+            showError('Network error — ' + (err.message || 'unable to reach the assistant.'));
+            history.pop();
+        } finally {
+            busy = false;
+            sendBtn.disabled = false;
+            inputEl.disabled = false;
+            inputEl.focus();
+        }
+    }
+
+    sendBtn.addEventListener('click', () => send(inputEl.value));
+    inputEl.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            send(inputEl.value);
+        }
+    });
+    suggestedEl.addEventListener('click', (e) => {
+        const btn = e.target.closest('button[data-q]');
+        if (btn) send(btn.dataset.q);
+    });
+</script>
+
+</body>
+</html>

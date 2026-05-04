@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automation Pipeline Demo — BaltimoreAI</title>
+    <meta name="description" content="See an end-to-end automation pipeline classify, extract, and route an inbound request in seconds.">
+    <style>
+        :root {
+            --brand-teal: #0E6E8C;
+            --brand-teal-dark: #0A5470;
+            --brand-teal-light: #d4e6ec;
+            --brand-teal-bg: #f1f6f8;
+            --page-bg: #ffffff;
+            --section-alt: #f7f9fa;
+            --card-bg: #ffffff;
+            --border: #e3eaee;
+            --border-strong: #c9d6dd;
+            --ink: #0F1A20;
+            --ink-muted: #4f6772;
+            --ink-faint: #8a99a4;
+            --white: #ffffff;
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6; color: var(--ink-muted);
+            background-color: var(--page-bg); overflow-x: hidden;
+        }
+        h1, h2, h3 { font-weight: 800; letter-spacing: -0.5px; color: var(--ink); }
+        a { color: inherit; }
+
+        .navbar {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border); padding: 0 2rem;
+        }
+        .navbar-inner {
+            max-width: 1200px; margin: 0 auto;
+            display: flex; align-items: center; justify-content: space-between; height: 68px;
+        }
+        .navbar-brand {
+            display: flex; align-items: center; gap: 10px;
+            font-size: 1.2rem; font-weight: 800; color: var(--ink);
+            text-decoration: none; letter-spacing: -0.5px;
+        }
+        .navbar-brand img { width: 36px; height: 36px; border-radius: 8px; display: block; }
+        .navbar-brand .accent { color: var(--brand-teal); }
+        .navbar-links { display: flex; gap: 2rem; list-style: none; align-items: center; }
+        .navbar-links a { color: var(--ink-muted); text-decoration: none; font-size: 0.95rem; font-weight: 600; }
+        .navbar-links a:hover, .navbar-links a.active { color: var(--brand-teal); }
+        .navbar-links a.nav-cta {
+            background: var(--brand-teal); color: var(--white);
+            padding: 8px 20px; border-radius: 6px;
+            font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .navbar-links a.nav-cta:hover { background: var(--brand-teal-dark); color: var(--white); }
+
+        .page-hero {
+            position: relative;
+            background: linear-gradient(135deg, var(--brand-teal) 0%, var(--brand-teal-dark) 100%);
+            color: var(--white);
+            padding: 140px 2rem 56px; text-align: center;
+            overflow: hidden;
+        }
+        .page-hero::before {
+            content: ''; position: absolute; inset: 0;
+            background:
+                radial-gradient(circle at 20% 80%, rgba(255,255,255,0.06) 0%, transparent 40%),
+                radial-gradient(circle at 80% 20%, rgba(255,255,255,0.05) 0%, transparent 40%);
+            pointer-events: none;
+        }
+        .page-hero > * { position: relative; z-index: 1; }
+        .page-hero .crumb {
+            display: inline-block; font-size: 0.75rem; font-weight: 700;
+            color: rgba(255,255,255,0.85); text-transform: uppercase; letter-spacing: 1px;
+            margin-bottom: 14px;
+        }
+        .page-hero .crumb a { color: rgba(255,255,255,0.85); text-decoration: none; }
+        .page-hero .crumb a:hover { color: var(--white); }
+        .page-hero h1 { color: var(--white); font-size: 2.4rem; margin-bottom: 0.7rem; }
+        .page-hero p { font-size: 1.05rem; max-width: 640px; margin: 0 auto; color: rgba(255,255,255,0.92); }
+
+        .demo-wrap { max-width: 1100px; margin: 0 auto; padding: 50px 20px 80px; }
+
+        .scenario-tabs {
+            display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap;
+        }
+        .scenario-tab {
+            padding: 10px 18px; border-radius: 8px;
+            background: var(--white); border: 1px solid var(--border);
+            color: var(--ink-muted); font-size: 0.85rem; font-family: inherit; font-weight: 600;
+            cursor: pointer; transition: all 0.2s;
+        }
+        .scenario-tab:hover { color: var(--brand-teal); border-color: var(--brand-teal-light); }
+        .scenario-tab.active {
+            background: var(--brand-teal); border-color: var(--brand-teal); color: var(--white);
+        }
+
+        .panel {
+            background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 14px rgba(15,26,32,0.04);
+        }
+        .panel-header {
+            padding: 14px 20px; border-bottom: 1px solid var(--border); background: var(--section-alt);
+            border-radius: 14px 14px 0 0;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .panel-header .title {
+            font-size: 0.78rem; font-weight: 700; color: var(--ink-faint);
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+        .panel-body { padding: 20px; }
+
+        .trigger-box {
+            display: grid; grid-template-columns: 1fr auto; gap: 16px;
+            align-items: center;
+        }
+        .trigger-content {
+            background: var(--section-alt); border: 1px solid var(--border);
+            border-radius: 8px; padding: 14px 16px;
+            font-family: ui-monospace, 'SF Mono', monospace;
+            font-size: 0.85rem; color: var(--ink); line-height: 1.55;
+        }
+        .trigger-content .from { color: var(--ink-faint); font-size: 0.78rem; margin-bottom: 4px; }
+        .trigger-content .subj { color: var(--ink); font-weight: 700; margin-bottom: 8px; font-family: -apple-system, sans-serif; }
+        .trigger-content .body { color: var(--ink-muted); font-family: -apple-system, sans-serif; font-size: 0.86rem; line-height: 1.6; }
+
+        .run-btn {
+            padding: 14px 28px; border-radius: 10px;
+            background: var(--brand-teal); color: #fff; border: none;
+            font-weight: 800; font-size: 0.9rem; font-family: inherit;
+            text-transform: uppercase; letter-spacing: 0.8px;
+            cursor: pointer; transition: all 0.2s;
+            white-space: nowrap;
+            box-shadow: 0 6px 18px rgba(14,110,140,0.25);
+        }
+        .run-btn:hover:not(:disabled) {
+            background: var(--brand-teal-dark);
+            transform: translateY(-1px);
+        }
+        .run-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* Pipeline visualization */
+        .stages {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+            margin-top: 8px;
+        }
+        .stage {
+            position: relative;
+            background: var(--section-alt); border: 1px solid var(--border);
+            border-radius: 10px; padding: 18px 14px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        .stage:not(:last-child)::after {
+            content: ''; position: absolute;
+            right: -10px; top: 50%; transform: translateY(-50%);
+            width: 14px; height: 2px; background: var(--border);
+            z-index: 1;
+        }
+        .stage.active {
+            border-color: var(--brand-teal); background: var(--brand-teal-bg);
+            box-shadow: 0 0 0 1px var(--brand-teal), 0 0 20px rgba(14,110,140,0.18);
+        }
+        .stage.done {
+            border-color: rgba(34,197,94,0.4);
+            background: rgba(34,197,94,0.06);
+        }
+        .stage.done:not(:last-child)::after { background: #16a34a; }
+        .stage .stage-icon {
+            font-size: 1.6rem; margin-bottom: 6px;
+            transition: transform 0.3s;
+        }
+        .stage.active .stage-icon { animation: spin 1.2s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0); } 100% { transform: rotate(360deg); } }
+        .stage .stage-name {
+            font-size: 0.75rem; font-weight: 800; color: var(--ink);
+            text-transform: uppercase; letter-spacing: 0.5px;
+            margin-bottom: 3px;
+        }
+        .stage .stage-sub { font-size: 0.7rem; color: var(--ink-faint); }
+        .stage .stage-status {
+            margin-top: 8px; height: 16px;
+            font-size: 0.68rem; color: var(--ink-faint); font-family: ui-monospace, monospace;
+        }
+        .stage.done .stage-status { color: #16a34a; }
+        .stage.active .stage-status { color: var(--brand-teal); }
+
+        /* Log */
+        .log {
+            background: #0F1A20; border: 1px solid var(--ink);
+            border-radius: 10px;
+            font-family: ui-monospace, 'SF Mono', monospace; font-size: 0.82rem;
+            max-height: 280px; overflow-y: auto;
+            padding: 14px;
+        }
+        .log-line {
+            display: grid; grid-template-columns: 90px 22px 1fr;
+            gap: 8px; padding: 3px 0;
+            opacity: 0; animation: lineIn 0.25s forwards;
+        }
+        @keyframes lineIn { to { opacity: 1; } }
+        .log-line .ts { color: #4ade80; }
+        .log-line .tag { color: #4ade80; font-weight: 700; }
+        .log-line .msg { color: #c5cdd4; }
+        .log-line.warn .ts, .log-line.warn .tag { color: #facc15; }
+        .log-line.warn .msg { color: #f5e7a0; }
+
+        /* Result */
+        .result {
+            display: none;
+            background: rgba(34,197,94,0.06);
+            border: 1px solid rgba(34,197,94,0.25);
+            border-radius: 10px; padding: 16px 18px; margin-top: 14px;
+        }
+        .result.show { display: block; }
+        .result h4 {
+            font-size: 0.78rem; color: #16a34a; text-transform: uppercase;
+            letter-spacing: 1px; margin-bottom: 10px;
+        }
+        .result-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px;
+        }
+        .result-row {
+            display: flex; justify-content: space-between; gap: 12px;
+            padding: 4px 0; border-bottom: 1px dashed var(--border);
+            font-size: 0.85rem;
+        }
+        .result-row .k { color: var(--ink-muted); }
+        .result-row .v { color: var(--ink); font-weight: 700; }
+        .result-totals {
+            margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(34,197,94,0.2);
+            display: flex; justify-content: space-between; font-size: 0.82rem;
+        }
+        .result-totals .label { color: var(--ink-muted); }
+        .result-totals .val { color: #16a34a; font-weight: 700; }
+
+        footer { text-align: center; padding: 40px 20px; color: var(--ink-faint); font-size: 0.88rem; border-top: 1px solid var(--border); }
+        footer a { color: var(--ink-muted); text-decoration: none; }
+        footer a:hover { color: var(--brand-teal); }
+
+        @media (max-width: 800px) {
+            .stages { grid-template-columns: repeat(2, 1fr); }
+            .stage:nth-child(2)::after { display: none; }
+            .trigger-box { grid-template-columns: 1fr; }
+            .result-grid { grid-template-columns: 1fr; }
+            .page-hero h1 { font-size: 1.9rem; }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="navbar-inner">
+        <a href="../index.html" class="navbar-brand">
+            <img src="../assets/brand/logo-mark.png" alt="BaltimoreAI logo">
+            <span>Baltimore<span class="accent">AI</span></span>
+        </a>
+        <ul class="navbar-links">
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="../demos.html" class="active">Demos</a></li>
+            <li><a href="../index.html#contact" class="nav-cta">Contact</a></li>
+        </ul>
+    </div>
+</nav>
+
+<section class="page-hero">
+    <span class="crumb"><a href="../demos.html">← Demos</a></span>
+    <h1>Automation Pipeline — Live Demo</h1>
+    <p>An inbound request comes in. Watch the pipeline classify it, pull the data, and route it — all in seconds, end to end.</p>
+</section>
+
+<section class="demo-wrap">
+
+    <div class="scenario-tabs" id="scenarios">
+        <button class="scenario-tab active" data-scenario="onboarding">Employee Onboarding</button>
+        <button class="scenario-tab" data-scenario="vendor">Vendor Invoice</button>
+        <button class="scenario-tab" data-scenario="permit">Permit Inquiry</button>
+    </div>
+
+    <!-- TRIGGER -->
+    <div class="panel">
+        <div class="panel-header">
+            <span class="title">Inbound Trigger</span>
+            <span class="title" style="color:#555">Source: Email Webhook</span>
+        </div>
+        <div class="panel-body">
+            <div class="trigger-box">
+                <div class="trigger-content" id="trigger"></div>
+                <button class="run-btn" id="runBtn">▶ Run Pipeline</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- STAGES -->
+    <div class="panel">
+        <div class="panel-header">
+            <span class="title">Pipeline Stages</span>
+            <span class="title" id="elapsed" style="color:#555; font-family: ui-monospace, monospace;">0.00s</span>
+        </div>
+        <div class="panel-body">
+            <div class="stages" id="stages">
+                <div class="stage" data-stage="0">
+                    <div class="stage-icon">📥</div>
+                    <div class="stage-name">Intake</div>
+                    <div class="stage-sub">Parse inbound</div>
+                    <div class="stage-status">— pending —</div>
+                </div>
+                <div class="stage" data-stage="1">
+                    <div class="stage-icon">🤖</div>
+                    <div class="stage-name">Classify</div>
+                    <div class="stage-sub">AI categorize</div>
+                    <div class="stage-status">— pending —</div>
+                </div>
+                <div class="stage" data-stage="2">
+                    <div class="stage-icon">📋</div>
+                    <div class="stage-name">Extract</div>
+                    <div class="stage-sub">Pull fields</div>
+                    <div class="stage-status">— pending —</div>
+                </div>
+                <div class="stage" data-stage="3">
+                    <div class="stage-icon">📬</div>
+                    <div class="stage-name">Route</div>
+                    <div class="stage-sub">Notify teams</div>
+                    <div class="stage-status">— pending —</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- LOG + RESULT -->
+    <div class="panel">
+        <div class="panel-header">
+            <span class="title">Live Log</span>
+            <span class="title" id="runId" style="color:#555; font-family: ui-monospace, monospace;">RUN —</span>
+        </div>
+        <div class="panel-body">
+            <div class="log" id="log">
+                <div class="log-line"><span class="ts">--:--:--</span><span class="tag">·</span><span class="msg" style="color:#555">Click "Run Pipeline" to start.</span></div>
+            </div>
+            <div class="result" id="result">
+                <h4>✓ Pipeline complete — output</h4>
+                <div class="result-grid" id="resultGrid"></div>
+                <div class="result-totals">
+                    <span><span class="label">Total runtime:</span> <span class="val" id="totalTime">—</span></span>
+                    <span><span class="label">Manual steps:</span> <span class="val">0</span></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+<footer>
+    <p>&copy; 2025 Kimura Consulting LLC | <a href="https://baltimoreai.org">BaltimoreAI.org</a></p>
+</footer>
+
+<script>
+    const SCENARIOS = {
+        onboarding: {
+            trigger: {
+                from: 'hr@meridian-realty.com',
+                subj: 'New hire — IT setup needed by Mon',
+                body: 'Hey team — onboarding Marcus Chen as a Senior Listing Agent in our Federal Hill office, starting Monday Nov 18. Please get the usual: laptop, phone, badge, MLS access. Reports to Dana Reyes. Thx!',
+            },
+            steps: [
+                { stage: 0, dur: 320, log: 'Received email from hr@meridian-realty.com' },
+                { stage: 0, dur: 220, log: 'Parsed headers, body (212 words), 0 attachments' },
+                { stage: 1, dur: 540, log: 'Classifying intent...' },
+                { stage: 1, dur: 380, log: 'Classified: Employee Onboarding (conf 0.94)' },
+                { stage: 2, dur: 460, log: 'Extracting structured fields from natural-language body' },
+                { stage: 2, dur: 320, log: 'Extracted: name=Marcus Chen, role=Senior Listing Agent' },
+                { stage: 2, dur: 220, log: 'Extracted: start_date=2024-11-18, office=Federal Hill' },
+                { stage: 2, dur: 220, log: 'Extracted: manager=Dana Reyes, requested=[laptop, phone, badge, MLS]' },
+                { stage: 3, dur: 380, log: 'Routing → IT Setup queue (laptop + phone)' },
+                { stage: 3, dur: 220, log: 'Routing → Badge Office (start date: 2024-11-18)' },
+                { stage: 3, dur: 220, log: 'Routing → MLS Admin (provision new agent)' },
+                { stage: 3, dur: 280, log: 'Notified manager Dana Reyes via Slack #onboarding' },
+            ],
+            result: [
+                ['Hire Name', 'Marcus Chen'],
+                ['Role', 'Senior Listing Agent'],
+                ['Start Date', '2024-11-18'],
+                ['Office', 'Federal Hill'],
+                ['Manager', 'Dana Reyes'],
+                ['Requested Items', 'Laptop, Phone, Badge, MLS'],
+                ['Routed To', 'IT, Badge, MLS Admin'],
+                ['Manager Notified', 'Slack #onboarding'],
+            ],
+        },
+        vendor: {
+            trigger: {
+                from: 'billing@harborsupply.com',
+                subj: 'Invoice INV-44219 — Federal Hill Construction',
+                body: 'Attached invoice for 11/01 lumber + drywall delivery. Total $1,242.32, Net 30. Please remit by 12/01. — Harbor Supply Co.',
+            },
+            steps: [
+                { stage: 0, dur: 280, log: 'Received email from billing@harborsupply.com' },
+                { stage: 0, dur: 220, log: 'Detected attachment: invoice_INV-44219.pdf (184 KB)' },
+                { stage: 1, dur: 520, log: 'Classifying...' },
+                { stage: 1, dur: 360, log: 'Classified: Vendor Invoice (conf 0.97)' },
+                { stage: 2, dur: 520, log: 'Running OCR + table extraction on PDF' },
+                { stage: 2, dur: 320, log: 'Extracted: vendor=Harbor Supply Co., invoice=INV-44219' },
+                { stage: 2, dur: 220, log: 'Extracted: total=$1,242.32, due=2024-12-01, terms=Net 30' },
+                { stage: 2, dur: 280, log: 'Validated against PO #PO-7741 — match' },
+                { stage: 2, warn: true, dur: 220, log: 'Flagged: tax line 6% MD (verified)' },
+                { stage: 3, dur: 380, log: 'Created AP entry in QuickBooks (draft)' },
+                { stage: 3, dur: 280, log: 'Routing → AP team for approval (under $5K threshold)' },
+                { stage: 3, dur: 220, log: 'Reminder scheduled: 2024-11-27 (4 days before due)' },
+            ],
+            result: [
+                ['Vendor', 'Harbor Supply Co.'],
+                ['Invoice #', 'INV-44219'],
+                ['Total Due', '$1,242.32'],
+                ['Due Date', '2024-12-01'],
+                ['Matched PO', 'PO-7741'],
+                ['Tax Verified', '6% MD'],
+                ['Routed To', 'AP Team (approval)'],
+                ['Reminder Set', '2024-11-27'],
+            ],
+        },
+        permit: {
+            trigger: {
+                from: 'jreyes@reyesreno.com',
+                subj: 'Question about my permit BLD-2024-8841',
+                body: 'Hi — I submitted application BLD-2024-8841 about 2 weeks ago for a kitchen reno at 1834 E Pratt St. Just checking on status, and whether I need anything additional given there\'s a load-bearing wall. Thanks. — Julian',
+            },
+            steps: [
+                { stage: 0, dur: 280, log: 'Received email from jreyes@reyesreno.com' },
+                { stage: 0, dur: 200, log: 'Parsed headers and body (62 words)' },
+                { stage: 1, dur: 460, log: 'Classifying...' },
+                { stage: 1, dur: 320, log: 'Classified: Permit Status Inquiry (conf 0.91)' },
+                { stage: 2, dur: 420, log: 'Extracting reference: app # BLD-2024-8841' },
+                { stage: 2, dur: 280, log: 'Lookup in Permit DB → Status: In Plan Review (day 11/15)' },
+                { stage: 2, dur: 220, log: 'Detected flag: structural change → load-bearing review queue' },
+                { stage: 2, dur: 220, log: 'Drafting response with status + structural reviewer note' },
+                { stage: 3, dur: 380, log: 'Generated reply email (drafted, not sent)' },
+                { stage: 3, dur: 280, log: 'Routing → Permit Officer for review/send approval' },
+                { stage: 3, dur: 220, log: 'CC\'d structural reviewer Karen O. on internal thread' },
+            ],
+            result: [
+                ['Application #', 'BLD-2024-8841'],
+                ['Inquiry Type', 'Status check'],
+                ['Permit Status', 'In Plan Review'],
+                ['Days In Queue', '11 of 15'],
+                ['Special Flag', 'Load-bearing wall'],
+                ['Reply Drafted', 'Yes (awaiting approval)'],
+                ['Routed To', 'Permit Officer'],
+                ['Reviewer CC', 'Karen O. (Structural)'],
+            ],
+        },
+    };
+
+    let current = 'onboarding';
+    let running = false;
+
+    const triggerEl = document.getElementById('trigger');
+    const runBtn = document.getElementById('runBtn');
+    const logEl = document.getElementById('log');
+    const elapsedEl = document.getElementById('elapsed');
+    const runIdEl = document.getElementById('runId');
+    const resultEl = document.getElementById('result');
+    const resultGrid = document.getElementById('resultGrid');
+    const totalTimeEl = document.getElementById('totalTime');
+    const stagesEl = document.getElementById('stages');
+    const tabsEl = document.getElementById('scenarios');
+
+    function loadScenario(key) {
+        current = key;
+        const t = SCENARIOS[key].trigger;
+        triggerEl.innerHTML = `
+            <div class="from">From: ${t.from}</div>
+            <div class="subj">${t.subj}</div>
+            <div class="body">${t.body}</div>
+        `;
+        resetStages();
+    }
+
+    function resetStages() {
+        document.querySelectorAll('.stage').forEach(s => {
+            s.classList.remove('active', 'done');
+            s.querySelector('.stage-status').textContent = '— pending —';
+        });
+        logEl.innerHTML = `<div class="log-line"><span class="ts">--:--:--</span><span class="tag">·</span><span class="msg" style="color:#555">Click "Run Pipeline" to start.</span></div>`;
+        elapsedEl.textContent = '0.00s';
+        resultEl.classList.remove('show');
+        runIdEl.textContent = 'RUN —';
+    }
+
+    tabsEl.addEventListener('click', (e) => {
+        const btn = e.target.closest('.scenario-tab');
+        if (!btn || running) return;
+        document.querySelectorAll('.scenario-tab').forEach(t => t.classList.remove('active'));
+        btn.classList.add('active');
+        loadScenario(btn.dataset.scenario);
+    });
+
+    function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+    function fmtTime(d) {
+        return d.toTimeString().slice(0, 8);
+    }
+
+    function appendLog(msg, warn) {
+        const line = document.createElement('div');
+        line.className = 'log-line' + (warn ? ' warn' : '');
+        line.innerHTML = `
+            <span class="ts">${fmtTime(new Date())}</span>
+            <span class="tag">${warn ? '⚠' : '✓'}</span>
+            <span class="msg">${msg}</span>
+        `;
+        logEl.appendChild(line);
+        logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    async function run() {
+        if (running) return;
+        running = true;
+        runBtn.disabled = true;
+        runBtn.textContent = '⏳ Running…';
+        resetStages();
+        logEl.innerHTML = '';
+
+        const cfg = SCENARIOS[current];
+        const runId = '#' + (1800 + Math.floor(Math.random() * 200));
+        runIdEl.textContent = 'RUN ' + runId;
+        const t0 = performance.now();
+
+        let lastStage = -1;
+        for (const step of cfg.steps) {
+            if (step.stage !== lastStage) {
+                if (lastStage >= 0) {
+                    const prev = stagesEl.querySelector(`[data-stage="${lastStage}"]`);
+                    prev.classList.remove('active');
+                    prev.classList.add('done');
+                    prev.querySelector('.stage-status').textContent = 'done';
+                }
+                const cur = stagesEl.querySelector(`[data-stage="${step.stage}"]`);
+                cur.classList.add('active');
+                cur.querySelector('.stage-status').textContent = 'running…';
+                lastStage = step.stage;
+            }
+            await sleep(step.dur);
+            appendLog(step.log, step.warn);
+            elapsedEl.textContent = ((performance.now() - t0) / 1000).toFixed(2) + 's';
+        }
+
+        const last = stagesEl.querySelector(`[data-stage="${lastStage}"]`);
+        last.classList.remove('active');
+        last.classList.add('done');
+        last.querySelector('.stage-status').textContent = 'done';
+
+        const elapsed = ((performance.now() - t0) / 1000).toFixed(2);
+        elapsedEl.textContent = elapsed + 's';
+        totalTimeEl.textContent = elapsed + 's';
+
+        resultGrid.innerHTML = cfg.result.map(([k, v]) =>
+            `<div class="result-row"><span class="k">${k}</span><span class="v">${v}</span></div>`
+        ).join('');
+        resultEl.classList.add('show');
+
+        appendLog('All stages passed. Pipeline complete.');
+
+        running = false;
+        runBtn.disabled = false;
+        runBtn.textContent = '▶ Run Again';
+    }
+
+    runBtn.addEventListener('click', run);
+    loadScenario('onboarding');
+</script>
+
+</body>
+</html>

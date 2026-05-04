@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Processor Demo — BaltimoreAI</title>
+    <meta name="description" content="Watch our document processor pull structured fields out of scanned forms in seconds.">
+    <style>
+        :root {
+            --brand-teal: #0E6E8C;
+            --brand-teal-dark: #0A5470;
+            --brand-teal-light: #d4e6ec;
+            --brand-teal-bg: #f1f6f8;
+            --page-bg: #ffffff;
+            --section-alt: #f7f9fa;
+            --card-bg: #ffffff;
+            --border: #e3eaee;
+            --border-strong: #c9d6dd;
+            --ink: #0F1A20;
+            --ink-muted: #4f6772;
+            --ink-faint: #8a99a4;
+            --white: #ffffff;
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6; color: var(--ink-muted);
+            background-color: var(--page-bg); overflow-x: hidden;
+        }
+        h1, h2, h3 { font-weight: 800; letter-spacing: -0.5px; color: var(--ink); }
+        a { color: inherit; }
+
+        .navbar {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border); padding: 0 2rem;
+        }
+        .navbar-inner {
+            max-width: 1200px; margin: 0 auto;
+            display: flex; align-items: center; justify-content: space-between; height: 68px;
+        }
+        .navbar-brand {
+            display: flex; align-items: center; gap: 10px;
+            font-size: 1.2rem; font-weight: 800; color: var(--ink);
+            text-decoration: none; letter-spacing: -0.5px;
+        }
+        .navbar-brand img { width: 36px; height: 36px; border-radius: 8px; display: block; }
+        .navbar-brand .accent { color: var(--brand-teal); }
+        .navbar-links { display: flex; gap: 2rem; list-style: none; align-items: center; }
+        .navbar-links a { color: var(--ink-muted); text-decoration: none; font-size: 0.95rem; font-weight: 600; transition: color 0.2s; }
+        .navbar-links a:hover, .navbar-links a.active { color: var(--brand-teal); }
+        .navbar-links a.nav-cta {
+            background: var(--brand-teal); color: var(--white);
+            padding: 8px 20px; border-radius: 6px;
+            font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .navbar-links a.nav-cta:hover { background: var(--brand-teal-dark); color: var(--white); }
+
+        .page-hero {
+            position: relative;
+            background: linear-gradient(135deg, var(--brand-teal) 0%, var(--brand-teal-dark) 100%);
+            color: var(--white);
+            padding: 140px 2rem 56px; text-align: center;
+            overflow: hidden;
+        }
+        .page-hero::before {
+            content: ''; position: absolute; inset: 0;
+            background:
+                radial-gradient(circle at 20% 80%, rgba(255,255,255,0.06) 0%, transparent 40%),
+                radial-gradient(circle at 80% 20%, rgba(255,255,255,0.05) 0%, transparent 40%);
+            pointer-events: none;
+        }
+        .page-hero > * { position: relative; z-index: 1; }
+        .page-hero .crumb {
+            display: inline-block; font-size: 0.75rem; font-weight: 700;
+            color: rgba(255,255,255,0.85); text-transform: uppercase; letter-spacing: 1px;
+            margin-bottom: 14px;
+        }
+        .page-hero .crumb a { color: rgba(255,255,255,0.85); text-decoration: none; }
+        .page-hero .crumb a:hover { color: var(--white); }
+        .page-hero h1 { color: var(--white); font-size: 2.4rem; margin-bottom: 0.7rem; }
+        .page-hero p { font-size: 1.05rem; max-width: 640px; margin: 0 auto; color: rgba(255,255,255,0.92); }
+
+        .demo-wrap {
+            max-width: 1100px; margin: 0 auto; padding: 50px 20px 80px;
+        }
+
+        .doc-tabs { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+        .doc-tab {
+            padding: 10px 18px; border-radius: 8px;
+            background: var(--white); border: 1px solid var(--border);
+            color: var(--ink-muted); font-size: 0.85rem; font-family: inherit; font-weight: 600;
+            cursor: pointer; transition: all 0.2s;
+        }
+        .doc-tab:hover { color: var(--brand-teal); border-color: var(--brand-teal-light); }
+        .doc-tab.active {
+            background: var(--brand-teal); border-color: var(--brand-teal);
+            color: var(--white);
+        }
+        .doc-tab .icon { margin-right: 6px; }
+
+        .processor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+        .panel {
+            background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px;
+            overflow: hidden; min-height: 540px;
+            display: flex; flex-direction: column;
+            box-shadow: 0 4px 18px rgba(15,26,32,0.05);
+        }
+        .panel-header {
+            padding: 14px 20px; border-bottom: 1px solid var(--border); background: var(--section-alt);
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .panel-header .title {
+            font-size: 0.78rem; font-weight: 700; color: var(--ink-faint);
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+        .panel-header .stat {
+            font-size: 0.75rem; color: var(--ink-faint); font-family: ui-monospace, monospace;
+        }
+        .panel-body { padding: 20px; flex: 1; overflow: auto; background: var(--page-bg); }
+
+        /* Document mock */
+        .doc-mock {
+            background: #fafaf6; color: #222;
+            padding: 26px 24px; border-radius: 6px;
+            font-family: 'Georgia', serif; font-size: 0.82rem;
+            box-shadow: 0 4px 18px rgba(15,26,32,0.10), 0 0 0 1px rgba(15,26,32,0.04);
+            position: relative; min-height: 460px;
+        }
+        .doc-mock h4 {
+            color: #111; font-family: inherit; font-size: 0.95rem;
+            border-bottom: 2px solid #222; padding-bottom: 6px; margin-bottom: 14px;
+            letter-spacing: 0.3px;
+        }
+        .doc-mock .doc-row {
+            margin-bottom: 9px; line-height: 1.5; position: relative;
+            transition: background 0.3s;
+            padding: 2px 4px; border-radius: 3px;
+        }
+        .doc-mock .doc-row.scanning {
+            background: rgba(14,110,140,0.18);
+        }
+        .doc-mock .doc-row.found {
+            background: rgba(34,197,94,0.18);
+        }
+        .doc-mock .label { color: #555; font-weight: bold; display: inline-block; min-width: 130px; }
+        .doc-mock .scan-line {
+            position: absolute; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--brand-teal), transparent);
+            box-shadow: 0 0 8px rgba(14,110,140,0.7);
+            opacity: 0; pointer-events: none;
+            transition: top 0.4s linear, opacity 0.2s;
+        }
+        .doc-mock.scanning .scan-line { opacity: 1; }
+
+        .doc-mock table {
+            width: 100%; border-collapse: collapse; margin: 10px 0;
+            font-size: 0.78rem;
+        }
+        .doc-mock table th, .doc-mock table td {
+            border: 1px solid #aaa; padding: 5px 8px; text-align: left;
+        }
+        .doc-mock table th { background: #e6e3da; }
+
+        /* Right panel */
+        .empty-state {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            height: 100%; min-height: 400px; color: var(--ink-faint);
+            text-align: center; padding: 30px;
+        }
+        .empty-state .icon { font-size: 2.5rem; margin-bottom: 14px; opacity: 0.5; }
+        .empty-state p { font-size: 0.9rem; max-width: 240px; }
+
+        .field {
+            background: var(--section-alt); border: 1px solid var(--border);
+            border-radius: 8px; padding: 10px 14px; margin-bottom: 10px;
+            opacity: 0; transform: translateY(8px);
+            transition: opacity 0.3s, transform 0.3s, border-color 0.3s;
+        }
+        .field.visible { opacity: 1; transform: translateY(0); }
+        .field-label {
+            font-size: 0.7rem; color: var(--ink-faint); font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;
+        }
+        .field-value {
+            font-size: 0.95rem; color: var(--ink); font-weight: 500;
+            font-family: ui-monospace, 'SF Mono', monospace;
+        }
+        .field-confidence {
+            display: flex; align-items: center; gap: 8px; margin-top: 6px;
+        }
+        .field-confidence .bar {
+            flex: 1; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden;
+        }
+        .field-confidence .fill {
+            height: 100%; background: #16a34a; width: 0%;
+            transition: width 0.6s ease-out;
+        }
+        .field-confidence .pct {
+            font-size: 0.7rem; color: #16a34a; font-weight: 700; min-width: 36px; text-align: right;
+        }
+        .field.low-conf .fill { background: #ca8a04; }
+        .field.low-conf .pct { color: #ca8a04; }
+
+        .summary-bar {
+            margin-top: 14px; padding: 14px 16px;
+            background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.25);
+            border-radius: 10px; display: none; align-items: center; justify-content: space-between;
+        }
+        .summary-bar.show { display: flex; }
+        .summary-bar .text { font-size: 0.82rem; color: #16a34a; font-weight: 700; }
+        .summary-bar .actions { display: flex; gap: 8px; }
+        .summary-bar button {
+            padding: 6px 14px; border-radius: 6px; border: none;
+            font-size: 0.75rem; font-weight: 700; cursor: pointer;
+            text-transform: uppercase; letter-spacing: 0.5px; font-family: inherit;
+        }
+        .btn-primary { background: var(--brand-teal); color: #fff; }
+        .btn-primary:hover { background: var(--brand-teal-dark); }
+        .btn-secondary { background: transparent; color: var(--ink-muted); border: 1px solid var(--border-strong) !important; }
+
+        .run-btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            margin-top: 14px;
+            padding: 10px 24px; border-radius: 8px;
+            background: var(--brand-teal); color: #fff; border: none;
+            font-weight: 700; font-size: 0.85rem; font-family: inherit;
+            text-transform: uppercase; letter-spacing: 0.5px;
+            cursor: pointer; transition: all 0.2s;
+            box-shadow: 0 4px 14px rgba(14,110,140,0.25);
+        }
+        .run-btn:hover:not(:disabled) { background: var(--brand-teal-dark); }
+        .run-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        footer { text-align: center; padding: 40px 20px; color: var(--ink-faint); font-size: 0.88rem; border-top: 1px solid var(--border); }
+        footer a { color: var(--ink-muted); text-decoration: none; }
+        footer a:hover { color: var(--brand-teal); }
+
+        @media (max-width: 900px) {
+            .processor-grid { grid-template-columns: 1fr; }
+            .page-hero h1 { font-size: 1.9rem; }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="navbar-inner">
+        <a href="../index.html" class="navbar-brand">
+            <img src="../assets/brand/logo-mark.png" alt="BaltimoreAI logo">
+            <span>Baltimore<span class="accent">AI</span></span>
+        </a>
+        <ul class="navbar-links">
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="../demos.html" class="active">Demos</a></li>
+            <li><a href="../index.html#contact" class="nav-cta">Contact</a></li>
+        </ul>
+    </div>
+</nav>
+
+<section class="page-hero">
+    <span class="crumb"><a href="../demos.html">← Demos</a></span>
+    <h1>Document Processor — Live Demo</h1>
+    <p>Pick a sample document below and watch our extractor pull structured fields out of it in real time.</p>
+</section>
+
+<section class="demo-wrap">
+
+    <div class="doc-tabs" id="docTabs">
+        <button class="doc-tab active" data-doc="intake"><span class="icon">🏥</span>Patient Intake Form</button>
+        <button class="doc-tab" data-doc="invoice"><span class="icon">📄</span>Vendor Invoice</button>
+        <button class="doc-tab" data-doc="permit"><span class="icon">🏛️</span>Construction Permit</button>
+    </div>
+
+    <div class="processor-grid">
+
+        <!-- LEFT: source doc -->
+        <div class="panel">
+            <div class="panel-header">
+                <span class="title">Source Document</span>
+                <span class="stat" id="docStat">2 pages · 340 KB</span>
+            </div>
+            <div class="panel-body">
+                <div class="doc-mock" id="docMock">
+                    <!-- doc content injected here -->
+                </div>
+                <button class="run-btn" id="runBtn">▶ Process Document</button>
+            </div>
+        </div>
+
+        <!-- RIGHT: extracted fields -->
+        <div class="panel">
+            <div class="panel-header">
+                <span class="title">Extracted Fields</span>
+                <span class="stat" id="fieldStat">— waiting —</span>
+            </div>
+            <div class="panel-body">
+                <div id="fieldsContainer">
+                    <div class="empty-state" id="emptyState">
+                        <div class="icon">⌛</div>
+                        <p>Click "Process Document" to extract structured data from the form on the left.</p>
+                    </div>
+                </div>
+                <div class="summary-bar" id="summaryBar">
+                    <span class="text" id="summaryText">✓ Extracted 0 fields in 0.0s</span>
+                    <div class="actions">
+                        <button class="btn-primary">Export</button>
+                        <button class="btn-secondary">JSON</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+<footer>
+    <p>&copy; 2025 Kimura Consulting LLC | <a href="https://baltimoreai.org">BaltimoreAI.org</a></p>
+</footer>
+
+<script>
+    const DOCS = {
+        intake: {
+            stat: '2 pages · 340 KB · intake_form_0472.pdf',
+            html: `
+                <h4>METROPOLITAN HEALTH — PATIENT INTAKE FORM</h4>
+                <div class="doc-row" data-field="patient_name"><span class="label">Patient Name:</span> Sarah M. Johnson</div>
+                <div class="doc-row" data-field="dob"><span class="label">Date of Birth:</span> 03/15/1988</div>
+                <div class="doc-row" data-field="insurance_id"><span class="label">Insurance ID:</span> BC-7294810-A</div>
+                <div class="doc-row" data-field="phone"><span class="label">Phone:</span> (410) 555-0148</div>
+                <div class="doc-row" data-field="address"><span class="label">Address:</span> 2417 N. Charles St, Baltimore, MD 21218</div>
+                <div class="doc-row" data-field="complaint"><span class="label">Primary Complaint:</span> Recurring lower back pain, onset ~6 weeks ago</div>
+                <div class="doc-row" data-field="allergies"><span class="label">Allergies:</span> Penicillin, shellfish</div>
+                <div class="doc-row" data-field="meds"><span class="label">Current Medications:</span> Lisinopril 10mg, Metformin 500mg</div>
+                <div class="doc-row"><span class="label">Signature:</span> <i>(signed)</i> &nbsp; <span class="label">Date:</span> 11/14/2024</div>
+                <div class="scan-line" id="scanLine"></div>
+            `,
+            fields: [
+                { key: 'patient_name', label: 'Patient Name', value: 'Sarah M. Johnson', conf: 99 },
+                { key: 'dob', label: 'Date of Birth', value: '1988-03-15', conf: 100 },
+                { key: 'insurance_id', label: 'Insurance ID', value: 'BC-7294810-A', conf: 97 },
+                { key: 'phone', label: 'Phone', value: '+1 (410) 555-0148', conf: 96 },
+                { key: 'address', label: 'Address', value: '2417 N. Charles St, Baltimore, MD 21218', conf: 94 },
+                { key: 'complaint', label: 'Primary Complaint', value: 'Recurring lower back pain (onset ~6 weeks)', conf: 88 },
+                { key: 'allergies', label: 'Known Allergies', value: 'Penicillin; Shellfish', conf: 95 },
+                { key: 'meds', label: 'Current Medications', value: 'Lisinopril 10mg; Metformin 500mg', conf: 92 },
+            ],
+        },
+        invoice: {
+            stat: '1 page · 184 KB · invoice_INV-44219.pdf',
+            html: `
+                <h4>HARBOR SUPPLY CO. — INVOICE</h4>
+                <div class="doc-row" data-field="vendor"><span class="label">Vendor:</span> Harbor Supply Co.</div>
+                <div class="doc-row" data-field="invoice_number"><span class="label">Invoice #:</span> INV-44219</div>
+                <div class="doc-row" data-field="invoice_date"><span class="label">Invoice Date:</span> 11/01/2024</div>
+                <div class="doc-row" data-field="due_date"><span class="label">Due Date:</span> 12/01/2024 (Net 30)</div>
+                <div class="doc-row" data-field="bill_to"><span class="label">Bill To:</span> Federal Hill Construction LLC</div>
+                <div class="doc-row" data-field="line_items">
+                    <table>
+                        <tr><th>Item</th><th>Qty</th><th>Unit</th><th>Total</th></tr>
+                        <tr><td>2x4 Lumber, 8ft</td><td>120</td><td>$4.20</td><td>$504.00</td></tr>
+                        <tr><td>Drywall sheets</td><td>40</td><td>$12.50</td><td>$500.00</td></tr>
+                        <tr><td>Galv. screws (5lb box)</td><td>6</td><td>$28.00</td><td>$168.00</td></tr>
+                    </table>
+                </div>
+                <div class="doc-row" data-field="subtotal"><span class="label">Subtotal:</span> $1,172.00</div>
+                <div class="doc-row" data-field="tax"><span class="label">MD Sales Tax (6%):</span> $70.32</div>
+                <div class="doc-row" data-field="total"><span class="label">Total Due:</span> <b>$1,242.32</b></div>
+                <div class="scan-line" id="scanLine"></div>
+            `,
+            fields: [
+                { key: 'vendor', label: 'Vendor', value: 'Harbor Supply Co.', conf: 99 },
+                { key: 'invoice_number', label: 'Invoice Number', value: 'INV-44219', conf: 100 },
+                { key: 'invoice_date', label: 'Invoice Date', value: '2024-11-01', conf: 99 },
+                { key: 'due_date', label: 'Due Date', value: '2024-12-01', conf: 98 },
+                { key: 'bill_to', label: 'Bill To', value: 'Federal Hill Construction LLC', conf: 95 },
+                { key: 'line_items', label: 'Line Items (3)', value: '3 items extracted (table)', conf: 91 },
+                { key: 'subtotal', label: 'Subtotal', value: '$1,172.00', conf: 99 },
+                { key: 'tax', label: 'Tax', value: '$70.32 (6% MD)', conf: 98 },
+                { key: 'total', label: 'Total Due', value: '$1,242.32', conf: 100 },
+            ],
+        },
+        permit: {
+            stat: '3 pages · 512 KB · permit_app_BLD-2024-8841.pdf',
+            html: `
+                <h4>BALTIMORE CITY — CONSTRUCTION PERMIT APPLICATION</h4>
+                <div class="doc-row" data-field="app_number"><span class="label">Application #:</span> BLD-2024-8841</div>
+                <div class="doc-row" data-field="applicant"><span class="label">Applicant:</span> Reyes Renovations LLC</div>
+                <div class="doc-row" data-field="property"><span class="label">Property Address:</span> 1834 E. Pratt St, Baltimore, MD 21231</div>
+                <div class="doc-row" data-field="parcel"><span class="label">Parcel ID:</span> 03-1224-0017</div>
+                <div class="doc-row" data-field="work_type"><span class="label">Work Type:</span> Interior renovation, kitchen + 1 bath</div>
+                <div class="doc-row" data-field="declared_cost"><span class="label">Declared Cost:</span> $42,800</div>
+                <div class="doc-row" data-field="contractor"><span class="label">Contractor License:</span> MHIC-104722 (active)</div>
+                <div class="doc-row" data-field="zoning"><span class="label">Zoning Class:</span> R-8 (Residential, mid-density)</div>
+                <div class="doc-row" data-field="structural"><span class="label">Structural changes?:</span> Yes — partial wall removal (load-bearing)</div>
+                <div class="doc-row" data-field="signature"><span class="label">Owner Signature:</span> <i>(signed)</i> &nbsp; <span class="label">Date:</span> 10/22/2024</div>
+                <div class="scan-line" id="scanLine"></div>
+            `,
+            fields: [
+                { key: 'app_number', label: 'Application Number', value: 'BLD-2024-8841', conf: 100 },
+                { key: 'applicant', label: 'Applicant', value: 'Reyes Renovations LLC', conf: 98 },
+                { key: 'property', label: 'Property Address', value: '1834 E. Pratt St, Baltimore, MD 21231', conf: 96 },
+                { key: 'parcel', label: 'Parcel ID', value: '03-1224-0017', conf: 99 },
+                { key: 'work_type', label: 'Work Type', value: 'Interior renovation — kitchen + bath', conf: 89 },
+                { key: 'declared_cost', label: 'Declared Cost', value: '$42,800.00', conf: 100 },
+                { key: 'contractor', label: 'Contractor License', value: 'MHIC-104722', conf: 99 },
+                { key: 'zoning', label: 'Zoning Class', value: 'R-8', conf: 97 },
+                { key: 'structural', label: 'Structural Change', value: 'Yes (load-bearing wall)', conf: 86 },
+            ],
+        },
+    };
+
+    let currentDoc = 'intake';
+    let processing = false;
+
+    const docMock = document.getElementById('docMock');
+    const docStat = document.getElementById('docStat');
+    const fieldsContainer = document.getElementById('fieldsContainer');
+    const fieldStat = document.getElementById('fieldStat');
+    const summaryBar = document.getElementById('summaryBar');
+    const summaryText = document.getElementById('summaryText');
+    const runBtn = document.getElementById('runBtn');
+    const tabsEl = document.getElementById('docTabs');
+
+    function loadDoc(key) {
+        currentDoc = key;
+        docMock.innerHTML = DOCS[key].html;
+        docMock.classList.remove('scanning');
+        docStat.textContent = DOCS[key].stat;
+        fieldsContainer.innerHTML = `
+            <div class="empty-state">
+                <div class="icon">⌛</div>
+                <p>Click "Process Document" to extract structured data from the form on the left.</p>
+            </div>
+        `;
+        fieldStat.textContent = '— waiting —';
+        summaryBar.classList.remove('show');
+        runBtn.disabled = false;
+        runBtn.textContent = '▶ Process Document';
+    }
+
+    tabsEl.addEventListener('click', (e) => {
+        const btn = e.target.closest('.doc-tab');
+        if (!btn || processing) return;
+        document.querySelectorAll('.doc-tab').forEach(t => t.classList.remove('active'));
+        btn.classList.add('active');
+        loadDoc(btn.dataset.doc);
+    });
+
+    function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+    async function process() {
+        if (processing) return;
+        processing = true;
+        runBtn.disabled = true;
+        runBtn.textContent = '⏳ Processing…';
+
+        const cfg = DOCS[currentDoc];
+        const t0 = performance.now();
+
+        fieldsContainer.innerHTML = '';
+        summaryBar.classList.remove('show');
+        fieldStat.textContent = 'Scanning…';
+        docMock.classList.add('scanning');
+
+        const rows = [...docMock.querySelectorAll('.doc-row[data-field]')];
+        const fieldByKey = Object.fromEntries(cfg.fields.map(f => [f.key, f]));
+        let extracted = 0;
+
+        for (const row of rows) {
+            row.classList.add('scanning');
+            await sleep(180 + Math.random() * 120);
+
+            const key = row.dataset.field;
+            const f = fieldByKey[key];
+            if (f) {
+                row.classList.remove('scanning');
+                row.classList.add('found');
+
+                const fieldEl = document.createElement('div');
+                fieldEl.className = 'field' + (f.conf < 90 ? ' low-conf' : '');
+                fieldEl.innerHTML = `
+                    <div class="field-label">${f.label}</div>
+                    <div class="field-value">${f.value}</div>
+                    <div class="field-confidence">
+                        <div class="bar"><div class="fill"></div></div>
+                        <div class="pct">${f.conf}%</div>
+                    </div>
+                `;
+                fieldsContainer.appendChild(fieldEl);
+                requestAnimationFrame(() => {
+                    fieldEl.classList.add('visible');
+                    fieldEl.querySelector('.fill').style.width = f.conf + '%';
+                });
+                extracted++;
+                fieldStat.textContent = `${extracted} of ${cfg.fields.length} fields`;
+                fieldsContainer.scrollTop = fieldsContainer.scrollHeight;
+            } else {
+                row.classList.remove('scanning');
+            }
+            await sleep(60);
+        }
+
+        docMock.classList.remove('scanning');
+        const elapsed = ((performance.now() - t0) / 1000).toFixed(1);
+        summaryText.textContent = `✓ Extracted ${extracted} fields in ${elapsed}s`;
+        summaryBar.classList.add('show');
+        fieldStat.textContent = `${extracted} fields · ${elapsed}s`;
+
+        processing = false;
+        runBtn.disabled = false;
+        runBtn.textContent = '▶ Process Again';
+    }
+
+    runBtn.addEventListener('click', process);
+
+    loadDoc('intake');
+</script>
+
+</body>
+</html>

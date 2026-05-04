@@ -1,0 +1,7 @@
+name = "baltimoreai-demos"
+main = "src/worker.js"
+compatibility_date = "2025-01-15"
+
+# After deploy, your worker URL will be:
+#   https://baltimoreai-demos.<your-subdomain>.workers.dev
+# Paste that URL into demos/knowledge-assistant.html (WORKER_URL constant).
