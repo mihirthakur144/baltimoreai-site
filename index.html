@@ -28,6 +28,9 @@
     <title>BaltimoreAI — Practical AI for Baltimore Businesses</title>
     <meta name="description" content="AI consultancy comprised of former NIH Data Scientists and National Security Cloud Engineers serving Baltimore businesses.">
     <link rel="icon" type="image/png" href="assets/brand/logo-mark.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@500;700;800;900&display=swap" rel="stylesheet">
     <style>
         /* --- BRAND PALETTE (teal + white) --- */
         :root {
@@ -60,10 +63,13 @@
         }
 
         h1, h2, h3 {
+            font-family: 'Roboto Slab', 'Rockwell', Georgia, serif;
             font-weight: 800;
-            letter-spacing: -0.5px;
+            letter-spacing: -0.3px;
             color: var(--ink);
         }
+
+        .navbar-brand { font-family: 'Roboto Slab', 'Rockwell', Georgia, serif; }
 
         a { color: inherit; }
 
@@ -179,19 +185,6 @@
             margin-bottom: 0.6rem;
             line-height: 1.1;
             letter-spacing: -1px;
-        }
-
-        .hero .subtitle {
-            display: inline-block;
-            font-size: 0.85rem;
-            color: rgba(255,255,255,0.9);
-            margin-bottom: 1.4rem;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            font-weight: 700;
-            padding: 4px 14px;
-            border: 1px solid rgba(255,255,255,0.3);
-            border-radius: 20px;
         }
 
         .hero p {
@@ -582,7 +575,6 @@
     <!-- HERO -->
     <section class="hero">
         <div class="hero-inner">
-            <p class="subtitle">Real Solutions, Real Results</p>
             <h1>Practical AI for Baltimore Businesses</h1>
             <p>A consultancy comprised of former NIH Data Scientists and National Security Cloud Engineers.</p>
             <div class="hero-explainer">

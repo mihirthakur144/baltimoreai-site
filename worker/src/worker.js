@@ -10,6 +10,7 @@ const MODEL = 'claude-haiku-4-5-20251001';
 const MAX_OUTPUT_TOKENS = 500;
 const MAX_USER_MESSAGE_CHARS = 2000;
 const MAX_HISTORY = 12;
+const DAILY_CAP = 300;
 
 const SYSTEM_PROMPT = `You are the BaltimoreAI Knowledge Assistant — a public demonstration of retrieval-augmented Q&A for the City of Baltimore.
 
@@ -44,7 +45,7 @@ New brick-and-mortar small businesses (under 25 employees) can apply for a combi
 === END SOURCES ===`;
 
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const origin = request.headers.get('Origin') || '';
     const corsHeaders = corsFor(origin);
 
@@ -64,6 +65,41 @@ export default {
       return json({ error: 'Server misconfigured' }, 500, corsHeaders);
     }
 
+    // ─── Layer 1: per-IP rate limit ───
+    const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
+    if (env.RATE_LIMITER) {
+      const { success } = await env.RATE_LIMITER.limit({ key: ip });
+      if (!success) {
+        return json(
+          { error: 'Rate limit exceeded. Please wait a moment and try again.' },
+          429,
+          corsHeaders,
+        );
+      }
+    }
+
+    // ─── Layer 2: daily global cap ───
+    if (env.DEMO_LIMITS) {
+      const dayKey = `daily:${new Date().toISOString().slice(0, 10)}`;
+      const raw = await env.DEMO_LIMITS.get(dayKey);
+      const count = parseInt(raw || '0', 10);
+      if (count >= DAILY_CAP) {
+        return json(
+          {
+            error:
+              'Daily demo limit reached. The live AI demo will reset tomorrow — please come back, or contact us to discuss your use case.',
+          },
+          503,
+          corsHeaders,
+        );
+      }
+      // Fire-and-forget increment; KV is eventually consistent so small
+      // overshoot is acceptable. 48h TTL covers timezone drift.
+      ctx.waitUntil(
+        env.DEMO_LIMITS.put(dayKey, String(count + 1), { expirationTtl: 172800 }),
+      );
+    }
+
     let body;
     try {
       body = await request.json();
@@ -80,7 +116,11 @@ export default {
       if (!m || (m.role !== 'user' && m.role !== 'assistant')) {
         return json({ error: 'Invalid message role' }, 400, corsHeaders);
       }
-      if (typeof m.content !== 'string' || m.content.length === 0 || m.content.length > MAX_USER_MESSAGE_CHARS) {
+      if (
+        typeof m.content !== 'string' ||
+        m.content.length === 0 ||
+        m.content.length > MAX_USER_MESSAGE_CHARS
+      ) {
         return json({ error: 'Invalid message content' }, 400, corsHeaders);
       }
     }
@@ -103,7 +143,11 @@ export default {
 
     if (!upstream.ok || !upstream.body) {
       const detail = await upstream.text();
-      return json({ error: 'Upstream error', detail: detail.slice(0, 300) }, 502, corsHeaders);
+      return json(
+        { error: 'Upstream error', detail: detail.slice(0, 300) },
+        502,
+        corsHeaders,
+      );
     }
 
     return new Response(upstream.body, {

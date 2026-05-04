@@ -2,6 +2,25 @@ name = "baltimoreai-demos"
 main = "src/worker.js"
 compatibility_date = "2025-01-15"
 
-# After deploy, your worker URL will be:
-#   https://baltimoreai-demos.<your-subdomain>.workers.dev
-# Paste that URL into demos/knowledge-assistant.html (WORKER_URL constant).
+# ─── Layer 1: Per-IP rate limit ────────────────────────────────
+# 8 requests per 60 seconds per IP. namespace_id is an arbitrary integer
+# (just keep it stable across deploys).
+[[unsafe.bindings]]
+name = "RATE_LIMITER"
+type = "ratelimit"
+namespace_id = "1001"
+simple = { limit = 8, period = 60 }
+
+# ─── Layer 2: Daily global cap (KV-backed counter) ─────────────
+# Before first deploy you must create the KV namespace and paste its
+# id below. From inside the worker/ directory, run:
+#
+#   wrangler kv namespace create "DEMO_LIMITS"
+#
+# It prints something like:
+#   id = "abc123def456..."
+#
+# Paste that id into the line below, then `wrangler deploy`.
+[[kv_namespaces]]
+binding = "DEMO_LIMITS"
+id = "PASTE_KV_NAMESPACE_ID_HERE"
