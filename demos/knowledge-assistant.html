@@ -318,8 +318,8 @@
 </footer>
 
 <script>
-    // Replace with your deployed Worker URL after running `wrangler deploy`
-    const WORKER_URL = 'https://baltimoreai-demos.YOUR-SUBDOMAIN.workers.dev';
+    // Deployed Cloudflare Worker (proxies to Anthropic, origin-locked + rate-limited)
+    const WORKER_URL = 'https://baltimoreai-demos.rough-mouse-a952.workers.dev';
 
     const messagesEl = document.getElementById('messages');
     const inputEl = document.getElementById('input');

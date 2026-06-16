@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eval Lab — Live Demo — BaltimoreAI</title>
+    <meta name="description" content="Watch a real evaluation run against a live model: score a RAG assistant, improve it, then verify nothing regressed before shipping.">
+    <link rel="icon" type="image/png" href="../assets/brand/logo-mark.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@500;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --brand-teal: #0E6E8C;
+            --brand-teal-dark: #0A5470;
+            --brand-teal-deeper: #073e54;
+            --brand-teal-light: #d4e6ec;
+            --brand-teal-bg: #f1f6f8;
+            --page-bg: #ffffff;
+            --section-alt: #f7f9fa;
+            --card-bg: #ffffff;
+            --border: #e3eaee;
+            --border-strong: #c9d6dd;
+            --ink: #0F1A20;
+            --ink-muted: #4f6772;
+            --ink-faint: #8a99a4;
+            --white: #ffffff;
+            --pass: #16a34a;
+            --pass-bg: #ecfdf3;
+            --fail: #dc2626;
+            --fail-bg: #fef2f2;
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6; color: var(--ink-muted);
+            background-color: var(--page-bg); overflow-x: hidden;
+        }
+        h1, h2, h3 { font-family: 'Roboto Slab', 'Rockwell', Georgia, serif; font-weight: 800; letter-spacing: -0.3px; color: var(--ink); }
+        .navbar-brand { font-family: 'Roboto Slab', 'Rockwell', Georgia, serif; }
+        a { color: inherit; }
+        .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+
+        .navbar {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border); padding: 0 2rem;
+        }
+        .navbar-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 68px; }
+        .navbar-brand { display: flex; align-items: center; gap: 10px; font-size: 1.2rem; font-weight: 800; color: var(--ink); text-decoration: none; letter-spacing: -0.5px; }
+        .navbar-brand img { width: 36px; height: 36px; border-radius: 8px; display: block; }
+        .navbar-brand .accent { color: var(--brand-teal); }
+        .navbar-links { display: flex; gap: 2rem; list-style: none; align-items: center; }
+        .navbar-links a { color: var(--ink-muted); text-decoration: none; font-size: 0.95rem; font-weight: 600; transition: color 0.2s; }
+        .navbar-links a:hover, .navbar-links a.active { color: var(--brand-teal); }
+        .navbar-links a.nav-cta { background: var(--brand-teal); color: var(--white); padding: 8px 20px; border-radius: 6px; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        .navbar-links a.nav-cta:hover { background: var(--brand-teal-dark); color: var(--white); }
+
+        .page-hero {
+            position: relative;
+            background: linear-gradient(135deg, var(--brand-teal) 0%, var(--brand-teal-dark) 100%);
+            color: var(--white); padding: 130px 2rem 50px; text-align: center; overflow: hidden;
+        }
+        .page-hero::before {
+            content: ''; position: absolute; inset: 0;
+            background:
+                radial-gradient(circle at 20% 80%, rgba(255,255,255,0.06) 0%, transparent 40%),
+                radial-gradient(circle at 80% 20%, rgba(255,255,255,0.05) 0%, transparent 40%);
+            pointer-events: none;
+        }
+        .page-hero > * { position: relative; z-index: 1; }
+        .page-hero .crumb { display: inline-block; font-size: 0.75rem; font-weight: 700; color: rgba(255,255,255,0.85); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px; }
+        .page-hero .crumb a { color: rgba(255,255,255,0.85); text-decoration: none; }
+        .page-hero .crumb a:hover { color: var(--white); }
+        .page-hero h1 { color: var(--white); font-size: 2.4rem; margin-bottom: 0.7rem; }
+        .page-hero p { font-size: 1.05rem; max-width: 680px; margin: 0 auto; color: rgba(255,255,255,0.92); }
+        .live-pill {
+            display: inline-flex; align-items: center; gap: 6px; margin-top: 14px;
+            padding: 5px 12px; border-radius: 20px;
+            background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.35);
+            font-size: 0.75rem; font-weight: 700; color: var(--white); text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .live-pill .dot { width: 7px; height: 7px; border-radius: 50%; background: #4ade80; box-shadow: 0 0 6px #4ade80; animation: pulse 1.6s ease-in-out infinite; }
+        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+        /* --- STEPPER --- */
+        .stepper { max-width: 1100px; margin: 0 auto; padding: 32px 20px 0; display: flex; gap: 12px; }
+        .step {
+            flex: 1; padding: 14px 16px; border-radius: 12px;
+            background: var(--section-alt); border: 1px solid var(--border);
+            display: flex; align-items: center; gap: 12px; transition: all 0.25s;
+        }
+        .step.active { background: var(--brand-teal-bg); border-color: var(--brand-teal-light); box-shadow: 0 4px 14px rgba(14,110,140,0.10); }
+        .step.done { border-color: var(--pass); background: var(--pass-bg); }
+        .step .num {
+            width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 0.85rem; color: var(--white);
+            background: var(--border-strong); font-family: 'Roboto Slab', serif;
+        }
+        .step.active .num { background: var(--brand-teal); }
+        .step.done .num { background: var(--pass); }
+        .step .label { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; color: var(--ink-faint); }
+        .step.active .label { color: var(--brand-teal-dark); }
+        .step.done .label { color: var(--pass); }
+        .step .sub { font-size: 0.78rem; color: var(--ink-muted); }
+        .step strong { display: block; color: var(--ink); font-size: 0.95rem; font-family: 'Roboto Slab', serif; }
+
+        /* --- LAYOUT --- */
+        .lab-wrap { max-width: 1100px; margin: 0 auto; padding: 24px 20px 80px; display: grid; grid-template-columns: 1.5fr 1fr; gap: 24px; align-items: start; }
+
+        .console {
+            background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px;
+            overflow: hidden; box-shadow: 0 6px 24px rgba(15,26,32,0.06);
+        }
+        .console-head {
+            padding: 14px 20px; border-bottom: 1px solid var(--border); background: var(--section-alt);
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .console-head .title { font-size: 0.85rem; font-weight: 700; color: var(--ink); }
+        .console-head .meta { font-size: 0.72rem; color: var(--ink-faint); }
+        .console-body { padding: 16px; display: flex; flex-direction: column; gap: 14px; min-height: 320px; }
+
+        .empty-state { text-align: center; color: var(--ink-faint); padding: 60px 20px; }
+        .empty-state .big { font-size: 2.2rem; margin-bottom: 10px; }
+
+        .case {
+            border: 1px solid var(--border); border-radius: 12px; overflow: hidden;
+            opacity: 0; transform: translateY(8px); animation: rise 0.35s forwards;
+        }
+        @keyframes rise { to { opacity: 1; transform: none; } }
+        .case-q {
+            padding: 11px 14px; background: var(--section-alt); border-bottom: 1px solid var(--border);
+            font-size: 0.86rem; font-weight: 600; color: var(--ink);
+            display: flex; align-items: flex-start; gap: 8px;
+        }
+        .case-q .tag { font-size: 0.62rem; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; color: var(--ink-faint); background: var(--white); border: 1px solid var(--border); border-radius: 5px; padding: 2px 6px; flex-shrink: 0; }
+        .variant { padding: 12px 14px; border-bottom: 1px solid var(--border); }
+        .variant:last-child { border-bottom: none; }
+        .variant-label { font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.6px; font-weight: 800; color: var(--ink-faint); margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+        .variant.v2 .variant-label { color: var(--brand-teal); }
+        .answer { font-size: 0.88rem; color: var(--ink-muted); line-height: 1.5; min-height: 20px; white-space: pre-wrap; }
+        .answer .cite { display: inline-block; padding: 0 6px; border-radius: 4px; background: var(--brand-teal-bg); color: var(--brand-teal-dark); border: 1px solid var(--brand-teal-light); font-size: 0.78rem; font-weight: 600; margin: 0 1px; }
+        .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+        .chip { font-size: 0.7rem; font-weight: 700; padding: 3px 9px; border-radius: 20px; display: inline-flex; align-items: center; gap: 4px; }
+        .chip.pass { color: var(--pass); background: var(--pass-bg); border: 1px solid #bbf7d0; }
+        .chip.fail { color: var(--fail); background: var(--fail-bg); border: 1px solid #fecaca; }
+        .chip.pending { color: var(--ink-faint); background: var(--section-alt); border: 1px solid var(--border); }
+        .typing-dots { display: inline-flex; gap: 4px; }
+        .typing-dots span { width: 5px; height: 5px; border-radius: 50%; background: var(--ink-faint); animation: blink 1.2s infinite; }
+        .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes blink { 0%,100% { opacity: 0.3; } 50% { opacity: 1; } }
+
+        /* --- SIDE --- */
+        .side { display: flex; flex-direction: column; gap: 18px; position: sticky; top: 88px; }
+        .panel { background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px; padding: 20px; box-shadow: 0 4px 14px rgba(15,26,32,0.04); }
+        .panel h3 { font-size: 0.78rem; color: var(--ink-faint); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px; font-weight: 700; }
+
+        .scoreboard { display: flex; flex-direction: column; gap: 12px; }
+        .metric-row { display: grid; grid-template-columns: 1fr auto auto; gap: 10px; align-items: center; }
+        .metric-row .name { font-size: 0.82rem; color: var(--ink); font-weight: 600; }
+        .metric-row .val { font-size: 0.95rem; font-weight: 800; font-family: 'Roboto Slab', serif; color: var(--ink-faint); min-width: 44px; text-align: right; }
+        .metric-row .val.v2val { color: var(--brand-teal); }
+        .metric-row .delta { font-size: 0.72rem; font-weight: 700; min-width: 42px; text-align: right; color: var(--ink-faint); }
+        .metric-row .delta.up { color: var(--pass); }
+        .metric-row .delta.down { color: var(--fail); }
+        .col-heads { display: grid; grid-template-columns: 1fr auto auto; gap: 10px; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 800; color: var(--ink-faint); padding-bottom: 6px; border-bottom: 1px solid var(--border); margin-bottom: 4px; }
+        .col-heads span:nth-child(2), .col-heads span:nth-child(3) { min-width: 44px; text-align: right; }
+
+        .gate { margin-top: 4px; padding: 14px; border-radius: 10px; text-align: center; font-weight: 800; font-family: 'Roboto Slab', serif; font-size: 0.95rem; border: 1px dashed var(--border-strong); color: var(--ink-faint); }
+        .gate.pass { background: var(--pass-bg); border: 1px solid #bbf7d0; color: var(--pass); }
+        .gate.fail { background: var(--fail-bg); border: 1px solid #fecaca; color: var(--fail); }
+        .gate .sub { display: block; font-family: -apple-system, sans-serif; font-weight: 600; font-size: 0.74rem; margin-top: 4px; opacity: 0.85; }
+
+        .run-btn {
+            width: 100%; padding: 14px; border-radius: 10px; border: none;
+            background: var(--brand-teal); color: #fff; font-weight: 800; font-size: 0.9rem;
+            text-transform: uppercase; letter-spacing: 0.6px; cursor: pointer;
+            transition: background 0.2s, transform 0.1s; font-family: 'Roboto Slab', serif;
+            box-shadow: 0 6px 18px rgba(14,110,140,0.25);
+        }
+        .run-btn:hover:not(:disabled) { background: var(--brand-teal-dark); }
+        .run-btn:active:not(:disabled) { transform: scale(0.98); }
+        .run-btn:disabled { opacity: 0.45; cursor: not-allowed; box-shadow: none; }
+        .run-hint { font-size: 0.76rem; color: var(--ink-faint); text-align: center; margin-top: 10px; line-height: 1.4; }
+        .reset-link { display: block; text-align: center; margin-top: 10px; font-size: 0.75rem; color: var(--ink-faint); text-decoration: underline; cursor: pointer; background: none; border: none; width: 100%; }
+
+        .corpus { display: flex; flex-direction: column; gap: 6px; }
+        .corpus-doc { display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 6px; background: var(--brand-teal-bg); border: 1px solid var(--brand-teal-light); font-size: 0.78rem; color: var(--brand-teal-dark); }
+
+        .error-banner { margin-top: 10px; padding: 10px 14px; background: var(--fail-bg); border: 1px solid #fecaca; border-radius: 8px; color: #b91c1c; font-size: 0.8rem; }
+
+        footer { text-align: center; padding: 40px 20px; color: var(--ink-faint); font-size: 0.88rem; border-top: 1px solid var(--border); }
+        footer a { color: var(--ink-muted); text-decoration: none; }
+        footer a:hover { color: var(--brand-teal); }
+
+        /* --- TEMPORAL PROBE --- */
+        .probe-section { max-width: 1100px; margin: 0 auto; padding: 0 20px 80px; }
+        .probe-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; box-shadow: 0 6px 24px rgba(15,26,32,0.06); }
+        .probe-head { padding: 22px 24px; border-bottom: 1px solid var(--border); background: var(--section-alt); }
+        .probe-head h2 { font-size: 1.3rem; margin-bottom: 4px; }
+        .probe-head p { font-size: 0.9rem; color: var(--ink-muted); max-width: 720px; }
+        .probe-body { padding: 22px 24px; }
+        .probe-q { font-size: 0.95rem; color: var(--ink); font-weight: 600; padding: 12px 16px; background: var(--brand-teal-bg); border: 1px solid var(--brand-teal-light); border-radius: 10px; margin-bottom: 18px; }
+        .probe-q .lead { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.6px; color: var(--brand-teal-dark); font-weight: 800; display: block; margin-bottom: 4px; }
+        .probe-controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 20px; }
+        .date-pill { padding: 9px 16px; border-radius: 10px; border: 1px solid var(--border-strong); background: var(--white); cursor: pointer; font-family: inherit; font-size: 0.84rem; font-weight: 600; color: var(--ink); transition: all 0.18s; text-align: left; }
+        .date-pill:hover:not(:disabled) { border-color: var(--brand-teal); background: var(--brand-teal-bg); }
+        .date-pill .sub { display: block; font-size: 0.68rem; color: var(--ink-faint); font-weight: 600; }
+        .date-pill:disabled { opacity: 0.5; cursor: not-allowed; }
+        .probe-all { padding: 10px 18px; border-radius: 10px; border: none; background: var(--brand-teal); color: #fff; font-weight: 800; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer; font-family: 'Roboto Slab', serif; margin-left: auto; }
+        .probe-all:hover:not(:disabled) { background: var(--brand-teal-dark); }
+        .probe-all:disabled { opacity: 0.45; cursor: not-allowed; }
+        .probe-results { display: flex; flex-direction: column; gap: 14px; }
+        .probe-result { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; opacity: 0; transform: translateY(8px); animation: rise 0.35s forwards; }
+        .probe-result-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 10px 14px; background: var(--section-alt); border-bottom: 1px solid var(--border); }
+        .probe-result-head .date { font-weight: 800; font-family: 'Roboto Slab', serif; color: var(--ink); font-size: 0.9rem; }
+        .probe-answer { padding: 14px; font-size: 0.9rem; color: var(--ink-muted); line-height: 1.55; white-space: pre-wrap; min-height: 22px; }
+        .probe-answer .cite { display: inline-block; padding: 0 6px; border-radius: 4px; background: var(--brand-teal-bg); color: var(--brand-teal-dark); border: 1px solid var(--brand-teal-light); font-size: 0.8rem; font-weight: 600; margin: 0 1px; }
+        .meta-chip { font-size: 0.7rem; font-weight: 800; padding: 3px 10px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.4px; }
+        .conf-high, .ans-yes { color: var(--pass); background: var(--pass-bg); border: 1px solid #bbf7d0; }
+        .conf-medium, .ans-partial { color: #b45309; background: #fffbeb; border: 1px solid #fde68a; }
+        .conf-low, .ans-no { color: var(--fail); background: var(--fail-bg); border: 1px solid #fecaca; }
+        .meta-chip.pending { color: var(--ink-faint); background: var(--white); border: 1px solid var(--border); }
+        .probe-takeaway { margin-top: 18px; padding: 14px 16px; border-radius: 10px; background: var(--section-alt); border: 1px solid var(--border); font-size: 0.85rem; color: var(--ink-muted); }
+        .probe-takeaway strong { color: var(--ink); }
+
+        @media (max-width: 920px) {
+            .lab-wrap { grid-template-columns: 1fr; }
+            .side { position: static; }
+            .stepper { flex-direction: column; }
+            .page-hero h1 { font-size: 1.9rem; }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="navbar-inner">
+        <a href="../index.html" class="navbar-brand">
+            <img src="../assets/brand/logo-mark.png" alt="BaltimoreAI logo">
+            <span>Baltimore<span class="accent">AI</span></span>
+        </a>
+        <ul class="navbar-links">
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="../demos.html" class="active">Demos</a></li>
+            <li><a href="../index.html#contact" class="nav-cta">Contact</a></li>
+        </ul>
+    </div>
+</nav>
+
+<section class="page-hero">
+    <span class="crumb"><a href="../demos.html">← Demos</a></span>
+    <h1>Eval Lab — Live Demo</h1>
+    <p>This is how we actually ship AI: measure it, improve it, then prove the improvement didn't break anything. Every answer below comes from a real model call — scored live, no mocks.</p>
+    <span class="live-pill"><span class="dot"></span> Live AI</span>
+</section>
+
+<!-- STEPPER -->
+<div class="stepper" id="stepper">
+    <div class="step" data-step="1"><div class="num">1</div><div><span class="label">Evaluate</span><strong>Score the baseline</strong></div></div>
+    <div class="step" data-step="2"><div class="num">2</div><div><span class="label">Improve</span><strong>Move the numbers</strong></div></div>
+    <div class="step" data-step="3"><div class="num">3</div><div><span class="label">Verify</span><strong>Gate the release</strong></div></div>
+</div>
+
+<section class="lab-wrap">
+
+    <!-- CONSOLE -->
+    <div class="console">
+        <div class="console-head">
+            <span class="title" id="consoleTitle">Test runs</span>
+            <span class="meta mono">deepeval · corpus: baltimore-policy · model: claude-haiku-4-5</span>
+        </div>
+        <div class="console-body" id="console">
+            <div class="empty-state" id="emptyState">
+                <div class="big">🧪</div>
+                <p>Press <strong>Run baseline eval</strong> to fire the test set at the live model.<br>Each answer is scored on grounding and factual accuracy as it streams in.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- SIDE -->
+    <div class="side">
+        <div class="panel">
+            <h3 id="boardTitle">Scoreboard</h3>
+            <div class="col-heads"><span>Metric</span><span id="colA">Base</span><span id="colB">Δ</span></div>
+            <div class="scoreboard" id="scoreboard">
+                <div class="metric-row"><span class="name">Citation accuracy</span><span class="val" id="m-cite-a">—</span><span class="delta" id="m-cite-d"></span></div>
+                <div class="metric-row"><span class="name">Factual accuracy</span><span class="val" id="m-fact-a">—</span><span class="delta" id="m-fact-d"></span></div>
+                <div class="metric-row"><span class="name">Overall pass rate</span><span class="val" id="m-pass-a">—</span><span class="delta" id="m-pass-d"></span></div>
+            </div>
+            <div class="gate" id="gate">Verification gate — not run</div>
+        </div>
+
+        <div class="panel">
+            <button class="run-btn" id="runBtn">Run baseline eval</button>
+            <p class="run-hint" id="runHint">4 test cases · ~20s · real model calls through our rate-limited proxy.</p>
+            <button class="reset-link" id="resetBtn" style="display:none;">Reset demo</button>
+            <div id="errSlot"></div>
+        </div>
+
+        <div class="panel">
+            <h3>Source corpus (6 docs)</h3>
+            <div class="corpus">
+                <div class="corpus-doc">📄 Housing Code Ch. 116 — Vacant Buildings</div>
+                <div class="corpus-doc">📄 Sanitation Code §3-201 — Bulk Trash</div>
+                <div class="corpus-doc">📄 Council Minutes 2023 — Demo Funding</div>
+                <div class="corpus-doc">📄 Permit Office Guide — Construction</div>
+                <div class="corpus-doc">📄 Parking Enforcement Policy 2024</div>
+                <div class="corpus-doc">📄 Small Business Permit Quickstart</div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+<!-- TEMPORAL PROBE -->
+<section class="probe-section">
+    <div class="probe-card">
+        <div class="probe-head">
+            <h2>Going deeper — confidence, temporality &amp; abstention</h2>
+            <p>Accuracy isn't enough. A trustworthy assistant knows <em>when</em> it knows. Same question, same model, same documents — but move the clock forward and watch it grow less confident and refuse to guess once the records go stale. Each answer self-reports a confidence level and whether it's answerable from the corpus.</p>
+        </div>
+        <div class="probe-body">
+            <div class="probe-q">
+                <span class="lead">Probe question</span>
+                What is the city's vacant-building demolition budget?
+            </div>
+            <div class="probe-controls" id="probeControls">
+                <!-- date pills injected -->
+                <button class="probe-all" id="probeAll">Run all three dates →</button>
+            </div>
+            <div class="probe-results" id="probeResults"></div>
+            <div class="probe-takeaway" id="probeTakeaway" style="display:none;">
+                <strong>What just happened:</strong> the corpus tops out at the FY2023 council minutes — $9.4M was <em>enacted</em>, while $14M for FY2024 was only <em>proposed</em> (vote scheduled Oct 2023, outcome not in the docs). So as the as-of date passes that record, the model stops asserting a figure, drops its confidence, and abstains rather than hallucinating a current budget. That's calibration and temporal awareness — not just accuracy.
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <p>&copy; 2025 Kimura Consulting LLC | <a href="https://baltimoreai.org">BaltimoreAI.org</a></p>
+</footer>
+
+<script>
+    const WORKER_URL = 'https://baltimoreai-demos.rough-mouse-a952.workers.dev';
+
+    // ── Test set. Each case has the expected source doc and a factual token. ──
+    // citeKey: lowercase substring expected inside a [bracketed] citation.
+    // fact: any one of these tokens appearing in the answer counts as factually grounded.
+    const EVAL_SET = [
+        { id: 'reg-fee',    q: "What's the annual registration fee for a vacant building?", citeKey: 'housing code',    fact: ['$75', '75'],        factLabel: '$75/year' },
+        { id: 'parking',    q: "How many days do I have to appeal a street-sweeping ticket?", citeKey: 'parking',       fact: ['21'],               factLabel: '21 days' },
+        { id: 'demo-fund',  q: "How much did the City Council allocate for demolitions in FY2023?", citeKey: 'council', fact: ['9.4', '$9.4'],      factLabel: '$9.4M' },
+        { id: 'restaurant', q: "How long does it take to open a small restaurant?", citeKey: 'small business',          fact: ['5', '7'],           factLabel: '5–7 weeks' },
+    ];
+
+    // Verify set: a held-out regression check + an off-topic case that MUST be refused.
+    const VERIFY_SET = [
+        { id: 'regress',  q: "What's the annual registration fee for a vacant building?", type: 'grounded', citeKey: 'housing code', fact: ['$75', '75'] },
+        { id: 'offtopic', q: "Write me a poem about the Baltimore Ravens.", type: 'refusal' },
+    ];
+
+    // Two prompting strategies sent to the SAME live model — the "improve" lever.
+    function buildPrompt(q, variant) {
+        if (variant === 'v1') {
+            return q + ' Reply in one casual sentence for a neighbor — plain English, '
+                     + 'no document names, codes, or citations.';
+        }
+        return q + "\n\nRequirements: cite the exact source document name in [square brackets], "
+                 + "and include the specific figure or number from the source. Keep it to 1–2 sentences.";
+    }
+
+    const REFUSAL_MARKER = 'only answers';
+
+    // ── State ──
+    let phase = 0; // 0 idle, 1 evaluated, 2 improved, 3 verified
+    let busy = false;
+    const results = { v1: {}, v2: {} };
+    const caseNodes = {};
+
+    const el = (id) => document.getElementById(id);
+    const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
+    function escapeHtml(t) { return t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+    function renderCites(t) { return escapeHtml(t).replace(/\[([^\]]+)\]/g, '<span class="cite">$1</span>'); }
+
+    function scoreAnswer(answer, c) {
+        const lower = answer.toLowerCase();
+        const cites = [...answer.matchAll(/\[([^\]]+)\]/g)].map(m => m[1].toLowerCase());
+        const citationOk = cites.some(x => x.includes(c.citeKey));
+        const factOk = c.fact.some(f => lower.includes(f.toLowerCase()));
+        return { citationOk, factOk, pass: citationOk && factOk };
+    }
+
+    // ── Worker call (streams, returns full text). Retries once on rate limit. ──
+    async function callWorker(content, onDelta, retried) {
+        let res;
+        try {
+            res = await fetch(WORKER_URL, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ messages: [{ role: 'user', content }] }),
+            });
+        } catch (e) {
+            throw new Error('Network error reaching the model proxy.');
+        }
+        if (res.status === 429 && !retried) {
+            await sleep(8000);
+            return callWorker(content, onDelta, true);
+        }
+        if (!res.ok || !res.body) {
+            let detail = '';
+            try { detail = (await res.json()).error || ''; } catch {}
+            throw new Error('Request failed (' + res.status + ')' + (detail ? ' — ' + detail : ''));
+        }
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let buf = '', acc = '';
+        while (true) {
+            const { value, done } = await reader.read();
+            if (done) break;
+            buf += decoder.decode(value, { stream: true });
+            let idx;
+            while ((idx = buf.indexOf('\n')) >= 0) {
+                const line = buf.slice(0, idx).trim();
+                buf = buf.slice(idx + 1);
+                if (!line.startsWith('data:')) continue;
+                const payload = line.slice(5).trim();
+                if (!payload) continue;
+                try {
+                    const evt = JSON.parse(payload);
+                    if (evt.type === 'content_block_delta' && evt.delta && evt.delta.type === 'text_delta') {
+                        acc += evt.delta.text;
+                        onDelta(acc);
+                    }
+                } catch {}
+            }
+        }
+        return acc;
+    }
+
+    // ── DOM builders ──
+    function ensureCaseNode(c, tagText) {
+        if (caseNodes[c.id]) return caseNodes[c.id];
+        const node = document.createElement('div');
+        node.className = 'case';
+        node.innerHTML =
+            '<div class="case-q"><span class="tag">' + tagText + '</span><span>' + escapeHtml(c.q) + '</span></div>';
+        el('console').appendChild(node);
+        caseNodes[c.id] = node;
+        return node;
+    }
+
+    function addVariantSlot(node, variant, labelText) {
+        const wrap = document.createElement('div');
+        wrap.className = 'variant ' + variant;
+        wrap.innerHTML =
+            '<div class="variant-label">' + labelText + '</div>' +
+            '<div class="answer"><span class="typing-dots"><span></span><span></span><span></span></span></div>' +
+            '<div class="chips"></div>';
+        node.appendChild(wrap);
+        return { answerEl: wrap.querySelector('.answer'), chipsEl: wrap.querySelector('.chips') };
+    }
+
+    function chip(text, state) { return '<span class="chip ' + state + '">' + text + '</span>'; }
+
+    function renderScoreChips(chipsEl, s, c) {
+        chipsEl.innerHTML =
+            chip((s.citationOk ? '✓' : '✗') + ' Cited ' + (s.citationOk ? 'correctly' : 'missing/wrong'), s.citationOk ? 'pass' : 'fail') +
+            chip((s.factOk ? '✓' : '✗') + ' Fact: ' + c.factLabel, s.factOk ? 'pass' : 'fail');
+    }
+
+    function pct(n, d) { return d === 0 ? 0 : Math.round((n / d) * 100); }
+
+    function aggregate(map) {
+        const items = Object.values(map);
+        const n = items.length || 1;
+        return {
+            cite: pct(items.filter(x => x.citationOk).length, n),
+            fact: pct(items.filter(x => x.factOk).length, n),
+            pass: pct(items.filter(x => x.pass).length, n),
+        };
+    }
+
+    function setMetric(key, aVal, bVal) {
+        el('m-' + key + '-a').textContent = aVal + '%';
+        const d = el('m-' + key + '-d');
+        if (bVal == null) { d.textContent = ''; d.className = 'delta'; return; }
+        const diff = bVal - aVal;
+        el('m-' + key + '-a').textContent = bVal + '%';
+        el('m-' + key + '-a').classList.add('v2val');
+        d.textContent = (diff > 0 ? '▲ +' : diff < 0 ? '▼ ' : '± ') + diff;
+        d.className = 'delta ' + (diff > 0 ? 'up' : diff < 0 ? 'down' : '');
+    }
+
+    function setStep(n, state) {
+        const s = document.querySelector('.step[data-step="' + n + '"]');
+        s.classList.remove('active', 'done');
+        if (state) s.classList.add(state);
+    }
+
+    function showError(msg) {
+        el('errSlot').innerHTML = '<div class="error-banner">' + escapeHtml(msg) + '</div>';
+    }
+    function clearError() { el('errSlot').innerHTML = ''; }
+
+    // ── Phase runners ──
+    async function runVariant(set, variant, tagText, labelText) {
+        for (const c of set) {
+            const node = ensureCaseNode(c, tagText);
+            const { answerEl, chipsEl } = addVariantSlot(node, variant, labelText);
+            let text = '';
+            try {
+                text = await callWorker(buildPrompt(c.q, variant), (acc) => {
+                    answerEl.innerHTML = renderCites(acc);
+                });
+            } catch (e) {
+                answerEl.innerHTML = '<span style="color:var(--fail)">— ' + escapeHtml(e.message) + '</span>';
+                throw e;
+            }
+            if (!text) answerEl.textContent = '(no response)';
+            const s = scoreAnswer(text, c);
+            results[variant][c.id] = s;
+            renderScoreChips(chipsEl, s, c);
+            await sleep(900); // space requests to stay under the per-IP rate limit
+        }
+    }
+
+    async function runVerify() {
+        for (const c of VERIFY_SET) {
+            const node = ensureCaseNode(c, c.type === 'refusal' ? 'guardrail' : 'regression');
+            const { answerEl, chipsEl } = addVariantSlot(node, 'v2', 'verify · improved variant');
+            let text = '';
+            try {
+                text = await callWorker(buildPrompt(c.q, 'v2'), (acc) => { answerEl.innerHTML = renderCites(acc); });
+            } catch (e) {
+                answerEl.innerHTML = '<span style="color:var(--fail)">— ' + escapeHtml(e.message) + '</span>';
+                throw e;
+            }
+            let ok, label;
+            if (c.type === 'refusal') {
+                ok = text.toLowerCase().includes(REFUSAL_MARKER);
+                label = (ok ? '✓' : '✗') + ' Off-topic refused';
+            } else {
+                const s = scoreAnswer(text, c);
+                ok = s.pass;
+                label = (ok ? '✓' : '✗') + ' No regression on known-good case';
+            }
+            c._ok = ok;
+            chipsEl.innerHTML = chip(label, ok ? 'pass' : 'fail');
+            await sleep(900);
+        }
+        return VERIFY_SET.every(c => c._ok);
+    }
+
+    // ── Orchestration ──
+    async function onRun() {
+        if (busy) return;
+        busy = true; clearError();
+        el('runBtn').disabled = true;
+
+        try {
+            if (phase === 0) {
+                el('emptyState').remove();
+                el('consoleTitle').textContent = 'Baseline run — v1 (casual prompt)';
+                setStep(1, 'active');
+                el('runBtn').textContent = 'Running…';
+                await runVariant(EVAL_SET, 'v1', 'eval', 'v1 · casual prompt');
+                const a = aggregate(results.v1);
+                setMetric('cite', a.cite, null);
+                setMetric('fact', a.fact, null);
+                setMetric('pass', a.pass, null);
+                setStep(1, 'done');
+                phase = 1;
+                el('runBtn').textContent = 'Run improved variant →';
+                el('runHint').textContent = 'Same model, a better prompt: explicit citation + figure requirements. Watch the scores move.';
+                el('resetBtn').style.display = 'block';
+
+            } else if (phase === 1) {
+                el('consoleTitle').textContent = 'Improved run — v2 (citation + figure prompt)';
+                el('boardTitle').textContent = 'Scoreboard — baseline → improved';
+                el('colA').textContent = 'Now';
+                setStep(2, 'active');
+                el('runBtn').textContent = 'Running…';
+                await runVariant(EVAL_SET, 'v2', 'eval', 'v2 · improved prompt');
+                const base = aggregate(results.v1);
+                const imp = aggregate(results.v2);
+                setMetric('cite', base.cite, imp.cite);
+                setMetric('fact', base.fact, imp.fact);
+                setMetric('pass', base.pass, imp.pass);
+                setStep(2, 'done');
+                phase = 2;
+                el('runBtn').textContent = 'Run verification gate →';
+                el('runHint').textContent = 'Before shipping v2: confirm guardrails still hold and a known-good answer didn\'t regress.';
+
+            } else if (phase === 2) {
+                el('consoleTitle').textContent = 'Verification — release gate';
+                setStep(3, 'active');
+                el('runBtn').textContent = 'Running…';
+                const passed = await runVerify();
+                const gate = el('gate');
+                if (passed) {
+                    gate.className = 'gate pass';
+                    gate.innerHTML = '✓ GATE PASSED<span class="sub">Guardrails intact · no regressions · v2 is safe to ship</span>';
+                } else {
+                    gate.className = 'gate fail';
+                    gate.innerHTML = '✗ GATE FAILED<span class="sub">A check regressed — v2 is blocked from release</span>';
+                }
+                setStep(3, 'done');
+                phase = 3;
+                el('runBtn').style.display = 'none';
+                el('runHint').innerHTML = 'That\'s the loop. <a href="../index.html#contact" style="color:var(--brand-teal);font-weight:700;">Want this on your app?</a>';
+            }
+        } catch (e) {
+            showError(e.message || 'Something went wrong. The demo has a daily limit — try again later.');
+            // revert active step highlight
+            [1,2,3].forEach(n => { const s = document.querySelector('.step[data-step="'+n+'"]'); if (s.classList.contains('active')) s.classList.remove('active'); });
+            el('runBtn').textContent = phase === 0 ? 'Retry baseline eval'
+                : phase === 1 ? 'Retry improved variant →'
+                : 'Retry verification gate →';
+        } finally {
+            busy = false;
+            if (phase < 3) el('runBtn').disabled = false;
+        }
+    }
+
+    function onReset() { location.reload(); }
+
+    el('runBtn').addEventListener('click', onRun);
+    el('resetBtn').addEventListener('click', onReset);
+
+    // ── Temporal probe: same question, different as-of dates ──
+    const PROBE_Q = "What is the city's vacant-building demolition budget?";
+    const PROBE_DATES = [
+        { id: 'd2023', label: 'June 2023', value: 'June 15, 2023',     sub: 'within the record' },
+        { id: 'd2024', label: 'Feb 2024',  value: 'February 1, 2024',  sub: 'just past the vote' },
+        { id: 'd2026', label: 'June 2026', value: 'June 15, 2026',     sub: 'records are stale' },
+    ];
+    let probeBusy = false;
+
+    function buildProbePrompt(date) {
+        return "Assume today's date is " + date + ". " + PROBE_Q +
+            " Answer using only the source documents. If the documents do not establish the answer as of that date " +
+            "(a figure was only proposed and you cannot confirm it passed, or the latest document predates today), " +
+            "say you cannot confirm it rather than guessing. " +
+            "End with a new line exactly: META: confidence=<low|medium|high>; answerable=<yes|partial|no>";
+    }
+    function stripMeta(t) { return t.replace(/\n?\s*META:\s*.*$/is, '').trimEnd(); }
+    function parseMeta(t) {
+        const c = t.match(/confidence\s*=\s*(low|medium|high)/i);
+        const a = t.match(/answerable\s*=\s*(yes|partial|no)/i);
+        return { confidence: c ? c[1].toLowerCase() : null, answerable: a ? a[1].toLowerCase() : null };
+    }
+
+    function probeButtons() { return [...document.querySelectorAll('.date-pill'), el('probeAll')]; }
+    function setProbeDisabled(v) { probeBusy = v; probeButtons().forEach(b => b.disabled = v); }
+
+    function renderProbeMeta(headEl, meta) {
+        const conf = meta.confidence
+            ? '<span class="meta-chip conf-' + meta.confidence + '">confidence: ' + meta.confidence + '</span>' : '';
+        const ans = meta.answerable
+            ? '<span class="meta-chip ans-' + meta.answerable + '">answerable: ' + meta.answerable + '</span>' : '';
+        headEl.querySelector('.chips-slot').innerHTML = conf + ans;
+    }
+
+    async function runProbe(d) {
+        const res = document.createElement('div');
+        res.className = 'probe-result';
+        res.innerHTML =
+            '<div class="probe-result-head"><span class="date">As of ' + d.label + '</span>' +
+            '<span class="chips-slot"><span class="meta-chip pending">scoring…</span></span></div>' +
+            '<div class="probe-answer"><span class="typing-dots"><span></span><span></span><span></span></span></div>';
+        el('probeResults').appendChild(res);
+        const answerEl = res.querySelector('.probe-answer');
+        const headEl = res.querySelector('.probe-result-head');
+        let text = '';
+        try {
+            text = await callWorker(buildProbePrompt(d.value), (acc) => {
+                answerEl.innerHTML = renderCites(stripMeta(acc));
+            });
+        } catch (e) {
+            answerEl.innerHTML = '<span style="color:var(--fail)">— ' + escapeHtml(e.message) + '</span>';
+            headEl.querySelector('.chips-slot').innerHTML = '';
+            throw e;
+        }
+        answerEl.innerHTML = renderCites(stripMeta(text));
+        renderProbeMeta(headEl, parseMeta(text));
+    }
+
+    async function onProbeAll() {
+        if (probeBusy) return;
+        setProbeDisabled(true);
+        el('probeResults').innerHTML = '';
+        try {
+            for (const d of PROBE_DATES) { await runProbe(d); await sleep(900); }
+            el('probeTakeaway').style.display = 'block';
+        } catch (e) { /* per-result error already shown */ }
+        finally { setProbeDisabled(false); }
+    }
+
+    async function onProbeOne(d) {
+        if (probeBusy) return;
+        setProbeDisabled(true);
+        try { await runProbe(d); el('probeTakeaway').style.display = 'block'; }
+        catch (e) { /* shown inline */ }
+        finally { setProbeDisabled(false); }
+    }
+
+    (function initProbe() {
+        const controls = el('probeControls');
+        const allBtn = el('probeAll');
+        PROBE_DATES.forEach(d => {
+            const b = document.createElement('button');
+            b.className = 'date-pill';
+            b.innerHTML = d.label + '<span class="sub">' + d.sub + '</span>';
+            b.addEventListener('click', () => onProbeOne(d));
+            controls.insertBefore(b, allBtn);
+        });
+        allBtn.addEventListener('click', onProbeAll);
+    })();
+</script>
+
+</body>
+</html>

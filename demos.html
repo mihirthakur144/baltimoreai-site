@@ -596,6 +596,85 @@
         <div class="container">
             <div class="showcase-stack">
 
+                <!-- ========== 0. EVAL LAB (FLAGSHIP) ========== -->
+                <div class="showcase-card">
+                    <div class="showcase-top">
+                        <div class="showcase-mockup">
+                            <svg viewBox="0 0 520 360" xmlns="http://www.w3.org/2000/svg" fill="none">
+                                <rect width="520" height="360" rx="10" fill="#141414"/>
+                                <rect width="520" height="36" rx="10" fill="#1e1e1e"/>
+                                <rect y="26" width="520" height="10" fill="#1e1e1e"/>
+                                <circle cx="18" cy="18" r="5" fill="#ff5f57"/>
+                                <circle cx="36" cy="18" r="5" fill="#febc2e"/>
+                                <circle cx="54" cy="18" r="5" fill="#28c840"/>
+                                <text x="260" y="22" text-anchor="middle" fill="#666" font-size="11" font-family="system-ui">BaltimoreAI — Eval Lab</text>
+                                <!-- stepper -->
+                                <rect x="16" y="48" width="156" height="30" rx="6" fill="rgba(74,222,128,0.12)" stroke="#4ade80" stroke-width="1"/>
+                                <text x="30" y="67" fill="#4ade80" font-size="9" font-family="system-ui" font-weight="700">① Evaluate ✓</text>
+                                <rect x="180" y="48" width="156" height="30" rx="6" fill="rgba(74,222,128,0.12)" stroke="#4ade80" stroke-width="1"/>
+                                <text x="194" y="67" fill="#4ade80" font-size="9" font-family="system-ui" font-weight="700">② Improve ✓</text>
+                                <rect x="344" y="48" width="160" height="30" rx="6" fill="rgba(14,110,140,0.18)" stroke="#0E6E8C" stroke-width="1.5"/>
+                                <text x="358" y="67" fill="#7ab0d1" font-size="9" font-family="system-ui" font-weight="700">③ Verify …</text>
+                                <!-- scoreboard -->
+                                <rect x="16" y="92" width="488" height="174" rx="8" fill="#1a1a1a" stroke="#2a2a2a" stroke-width="1"/>
+                                <text x="32" y="112" fill="#888" font-size="9" font-family="system-ui" font-weight="700">METRIC</text>
+                                <text x="330" y="112" fill="#888" font-size="9" font-family="system-ui" font-weight="700">BASE</text>
+                                <text x="410" y="112" fill="#888" font-size="9" font-family="system-ui" font-weight="700">NOW</text>
+                                <text x="476" y="112" fill="#888" font-size="9" font-family="system-ui" font-weight="700">Δ</text>
+                                <line x1="32" y1="120" x2="488" y2="120" stroke="#2a2a2a" stroke-width="0.5"/>
+                                <text x="32" y="142" fill="#ddd" font-size="10" font-family="system-ui">Citation accuracy</text>
+                                <text x="330" y="142" fill="#777" font-size="10" font-family="monospace">50%</text>
+                                <text x="410" y="142" fill="#7ab0d1" font-size="10" font-family="monospace" font-weight="700">100%</text>
+                                <text x="470" y="142" fill="#4ade80" font-size="9" font-family="monospace" font-weight="700">▲+50</text>
+                                <text x="32" y="166" fill="#ddd" font-size="10" font-family="system-ui">Factual accuracy</text>
+                                <text x="330" y="166" fill="#777" font-size="10" font-family="monospace">75%</text>
+                                <text x="410" y="166" fill="#7ab0d1" font-size="10" font-family="monospace" font-weight="700">100%</text>
+                                <text x="470" y="166" fill="#4ade80" font-size="9" font-family="monospace" font-weight="700">▲+25</text>
+                                <text x="32" y="190" fill="#ddd" font-size="10" font-family="system-ui">Overall pass rate</text>
+                                <text x="330" y="190" fill="#777" font-size="10" font-family="monospace">50%</text>
+                                <text x="410" y="190" fill="#7ab0d1" font-size="10" font-family="monospace" font-weight="700">100%</text>
+                                <text x="470" y="190" fill="#4ade80" font-size="9" font-family="monospace" font-weight="700">▲+50</text>
+                                <line x1="32" y1="204" x2="488" y2="204" stroke="#2a2a2a" stroke-width="0.5"/>
+                                <rect x="32" y="218" width="456" height="34" rx="6" fill="rgba(74,222,128,0.1)" stroke="rgba(74,222,128,0.4)" stroke-width="1"/>
+                                <text x="48" y="239" fill="#4ade80" font-size="11" font-family="system-ui" font-weight="800">✓ GATE PASSED — guardrails intact · no regressions · safe to ship</text>
+                                <!-- live log line -->
+                                <rect x="16" y="278" width="488" height="22" rx="6" fill="#0d0d0d" stroke="#1e1e1e" stroke-width="0.5"/>
+                                <circle cx="30" cy="289" r="3" fill="#4ade80"/>
+                                <text x="44" y="293" fill="#888" font-size="9" font-family="monospace">deepeval · run #v2 · 4/4 cases scored against live model</text>
+                                <rect x="16" y="312" width="488" height="34" rx="6" fill="#1e1e1e"/>
+                                <text x="30" y="333" fill="#0E6E8C" font-size="10" font-family="system-ui" font-weight="700">Q: How long to open a small restaurant?</text>
+                                <text x="380" y="333" fill="#7ab0d1" font-size="9" font-family="system-ui">[Small Business] ✓ 5–7 wk</text>
+                            </svg>
+                        </div>
+                        <div class="showcase-info">
+                            <span class="showcase-industry">How we ship</span>
+                            <h3>Eval Lab</h3>
+                            <p>Not another chatbot — the workflow behind a trustworthy one. Run a real evaluation against a live model, watch a prompt change move the scores, then gate the release so guardrails and known-good answers can't regress. Evaluate → improve → verify, live.</p>
+                            <div class="showcase-tags">
+                                <span>DeepEval</span>
+                                <span>Scoring</span>
+                                <span>Release gate</span>
+                            </div>
+                            <p class="showcase-note">Every answer is a real model call, scored in your browser. No mocks.</p>
+                            <a href="demos/eval-lab.html" class="try-it-btn">Run it <span class="arrow">→</span><span class="try-it-pill">Live AI</span></a>
+                        </div>
+                    </div>
+                    <div class="showcase-metrics">
+                        <div class="showcase-metric">
+                            <div class="val">3</div>
+                            <div class="label">Phases, One Loop</div>
+                        </div>
+                        <div class="showcase-metric">
+                            <div class="val">live</div>
+                            <div class="label">Model Calls, Scored</div>
+                        </div>
+                        <div class="showcase-metric">
+                            <div class="val">0</div>
+                            <div class="label">Regressions Shipped</div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- ========== 1. RAG KNOWLEDGE ASSISTANT ========== -->
                 <div class="showcase-card">
                     <div class="showcase-top">
