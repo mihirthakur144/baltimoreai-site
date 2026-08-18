@@ -303,6 +303,32 @@
             box-shadow: 0 14px 28px rgba(14,110,140,0.35);
         }
 
+        /* --- TEAM --- */
+        .team-section { background: var(--page-bg); padding: 10px 2rem 70px; }
+        .team-inner { max-width: 900px; margin: 0 auto; }
+        .team-head { text-align: center; margin-bottom: 30px; }
+        .team-head h2 { font-size: 1.9rem; color: var(--ink); margin-bottom: 6px; }
+        .team-head h2 .accent { color: var(--brand-teal); }
+        .team-head p { color: var(--ink-muted); font-size: 1rem; }
+        .team-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .person {
+            display: flex; gap: 18px; align-items: center;
+            background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px;
+            padding: 22px 24px; text-align: left;
+        }
+        .person img {
+            width: 112px; height: 112px; border-radius: 50%; object-fit: cover; flex-shrink: 0;
+            border: 3px solid var(--brand-teal-light);
+            filter: grayscale(1) contrast(1.05);   /* unifies two different photos; remove for color */
+        }
+        .person h3 { font-size: 1.2rem; color: var(--ink); margin-bottom: 2px; }
+        .person .role { font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.7px; color: var(--brand-teal-dark); margin-bottom: 8px; }
+        .person .bio { font-size: 0.95rem; color: var(--ink-muted); line-height: 1.5; }
+        .person .links { margin-top: 8px; font-size: 0.85rem; }
+        .person .links a { color: var(--brand-teal-dark); font-weight: 700; text-decoration: none; border-bottom: 1px solid var(--brand-teal-light); }
+        .person .links a:hover { border-color: var(--brand-teal); }
+        @media (max-width: 760px) { .team-grid { grid-template-columns: 1fr; } .person { padding: 18px; } .person img { width: 88px; height: 88px; } }
+
         /* --- WHO WE SERVE --- */
         .serve-section {
             background: var(--section-alt);
@@ -784,6 +810,36 @@
             <div class="opinion">
                 <span class="num">03</span>
                 <p>Written scope and price before any work starts.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- WHO YOU'D WORK WITH -->
+    <section class="team-section">
+        <div class="team-inner">
+            <div class="team-head">
+                <h2>Who you'd <span class="accent">work with</span></h2>
+                <p>Two people. You'll talk to one of us on the first call and the last.</p>
+            </div>
+            <div class="team-grid">
+                <div class="person">
+                    <img src="assets/team/will.jpg" alt="Will Cole" width="112" height="112">
+                    <div>
+                        <h3>Will Cole</h3>
+                        <p class="role">Founder</p>
+                        <p class="bio">NIH data science, then federal cloud. Runs the audits.</p>
+                        <p class="links"><a href="#" rel="noopener">LinkedIn</a></p>
+                    </div>
+                </div>
+                <div class="person">
+                    <img src="assets/team/mihir.jpg" alt="Mihir" width="112" height="112">
+                    <div>
+                        <h3>Mihir [Last name]</h3>
+                        <p class="role">[Role]</p>
+                        <p class="bio">[One line: what he did before, what he does here.]</p>
+                        <p class="links"><a href="#" rel="noopener">LinkedIn</a></p>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
