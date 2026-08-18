@@ -274,7 +274,7 @@
 
 <section class="page-hero">
     <span class="crumb"><a href="../demos.html">← Demos</a></span>
-    <h1>Document Processor — Live Demo</h1>
+    <h1>Document Processor — Interactive Demo</h1>
     <p>Pick a sample document below and watch our extractor pull structured fields out of it in real time.</p>
 </section>
 
@@ -331,7 +331,7 @@
 </section>
 
 <footer>
-    <p>&copy; 2025 Kimura Consulting LLC | <a href="https://baltimoreai.org">BaltimoreAI.org</a></p>
+    <p>&copy; <span class="yr">2026</span> Kimura Consulting LLC | <a href="https://baltimoreai.org">BaltimoreAI.org</a></p>
 </footer>
 
 <script>
@@ -535,5 +535,6 @@
     loadDoc('intake');
 </script>
 
+<script id="yr-script">document.querySelectorAll(".yr").forEach(function(e){e.textContent=new Date().getFullYear();});</script>
 </body>
 </html>

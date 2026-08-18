@@ -319,7 +319,7 @@
 </section>
 
 <footer>
-    <p>&copy; 2025 Kimura Consulting LLC | <a href="https://baltimoreai.org">BaltimoreAI.org</a></p>
+    <p>&copy; <span class="yr">2026</span> Kimura Consulting LLC | <a href="https://baltimoreai.org">BaltimoreAI.org</a></p>
 </footer>
 
 <script>
@@ -467,5 +467,6 @@
     });
 </script>
 
+<script id="yr-script">document.querySelectorAll(".yr").forEach(function(e){e.textContent=new Date().getFullYear();});</script>
 </body>
 </html>

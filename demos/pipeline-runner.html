@@ -280,7 +280,7 @@
 
 <section class="page-hero">
     <span class="crumb"><a href="../demos.html">← Demos</a></span>
-    <h1>Automation Pipeline — Live Demo</h1>
+    <h1>Automation Pipeline — Interactive Demo</h1>
     <p>An inbound request comes in. Watch the pipeline classify it, pull the data, and route it — all in seconds, end to end.</p>
 </section>
 
@@ -366,7 +366,7 @@
 </section>
 
 <footer>
-    <p>&copy; 2025 Kimura Consulting LLC | <a href="https://baltimoreai.org">BaltimoreAI.org</a></p>
+    <p>&copy; <span class="yr">2026</span> Kimura Consulting LLC | <a href="https://baltimoreai.org">BaltimoreAI.org</a></p>
 </footer>
 
 <script>
@@ -587,5 +587,6 @@
     loadScenario('onboarding');
 </script>
 
+<script id="yr-script">document.querySelectorAll(".yr").forEach(function(e){e.textContent=new Date().getFullYear();});</script>
 </body>
 </html>

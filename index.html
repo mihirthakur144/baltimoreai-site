@@ -482,6 +482,31 @@
             text-align: center;
         }
 
+        .cta-note {
+            max-width: 620px; margin: 22px auto 0;
+            font-size: 0.95rem; line-height: 1.55;
+            color: rgba(255,255,255,0.85);
+        }
+        .how-it-starts { max-width: 900px; margin: 0 auto 56px; }
+        .how-it-starts .section-title { margin-bottom: 36px; }
+        .start-steps {
+            list-style: none; counter-reset: step;
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+        }
+        .start-steps li {
+            counter-increment: step; position: relative;
+            background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px;
+            padding: 22px 22px 22px 58px; font-size: 0.95rem; line-height: 1.55; color: var(--ink-muted);
+        }
+        .start-steps li::before {
+            content: counter(step); position: absolute; left: 18px; top: 20px;
+            width: 28px; height: 28px; border-radius: 50%; background: var(--brand-teal); color: var(--white);
+            font-family: 'Roboto Slab', Georgia, serif; font-weight: 800; font-size: 0.85rem;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .start-steps li strong { color: var(--ink); display: block; margin-bottom: 4px; }
+        @media (max-width: 900px) { .start-steps { grid-template-columns: 1fr; } }
+
         /* --- CONTACT --- */
         .contact-section {
             background: var(--section-alt);
@@ -741,6 +766,7 @@
                 <p>We build systems that answer customer questions, process documents, extract insights, and automate workflows. Most of it runs on large language models.</p>
             </div>
             <a href="#contact" class="cta-button">Talk to us</a>
+            <p class="cta-note">Starts with a free 90-minute audit. If there's something worth building, you get a written scope and price before any work begins. About half our audits end with "you don't need this."</p>
         </div>
     </section>
 
@@ -757,7 +783,7 @@
             </div>
             <div class="opinion">
                 <span class="num">03</span>
-                <p>Half our intake calls end with "you don't need this."</p>
+                <p>Written scope and price before any work starts.</p>
             </div>
         </div>
     </section>
@@ -907,6 +933,14 @@
     <!-- CONTACT -->
     <section id="contact" class="contact-section">
         <div class="container">
+            <div class="how-it-starts">
+                <h2 class="section-title">How it <span class="accent">starts</span></h2>
+                <ol class="start-steps">
+                    <li><strong>Free 90-minute audit.</strong> We walk your workflows and tell you where AI helps, and where it doesn't.</li>
+                    <li><strong>Written scope and price.</strong> Before any work begins. If we'd be overkill, we say so.</li>
+                    <li><strong>Build, measure, ship.</strong> Scored against real questions before it goes live.</li>
+                </ol>
+            </div>
             <div class="contact-grid">
                 <div class="form-box">
                     <h3>Send us a message</h3>
@@ -968,7 +1002,7 @@
                     <img src="assets/brand/logo-mark.png" alt="">
                     <div class="name">Baltimore<span class="accent">AI</span></div>
                 </div>
-                <p class="footer-tag">AI consulting based in Baltimore.</p>
+                <p class="footer-tag">We build LLM systems for Baltimore organizations. BaltimoreAI is the trade name of Kimura Consulting LLC.</p>
             </div>
             <div class="footer-col">
                 <h4>Get in touch</h4>
@@ -984,7 +1018,7 @@
             </div>
         </div>
         <div class="footer-bottom">
-            <span>&copy; 2025 Kimura Consulting LLC</span>
+            <span>&copy; <span class="yr">2026</span> Kimura Consulting LLC</span>
             <span>Serving Baltimore, Maryland</span>
         </div>
     </footer>
@@ -1080,5 +1114,6 @@
         });
     </script>
 
+<script id="yr-script">document.querySelectorAll(".yr").forEach(function(e){e.textContent=new Date().getFullYear();});</script>
 </body>
 </html>
