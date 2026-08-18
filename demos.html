@@ -26,7 +26,7 @@
     </script>
     <!-- End Microsoft Clarity -->
     <title>Demos — BaltimoreAI</title>
-    <meta name="description" content="AI tools that run in production — knowledge assistants, document processors, and automation pipelines built for Baltimore businesses.">
+    <meta name="description" content="Live and illustrated demos: knowledge assistants, document processing, automation pipelines, and more, built by BaltimoreAI.">
     <link rel="icon" type="image/png" href="assets/brand/logo-mark.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -145,7 +145,7 @@
             position: relative;
             background: linear-gradient(135deg, var(--brand-teal) 0%, var(--brand-teal-dark) 100%);
             color: var(--white);
-            padding: 160px 2rem 80px;
+            padding: 140px 2rem 56px;
             text-align: center;
             overflow: hidden;
         }
@@ -158,289 +158,147 @@
             pointer-events: none;
         }
         .page-hero > * { position: relative; z-index: 1; }
+        .page-hero h1 { color: var(--white); font-size: 2.6rem; margin-bottom: 0.6rem; letter-spacing: -1px; }
+        .page-hero p { font-size: 1.08rem; max-width: 560px; margin: 0 auto; color: rgba(255,255,255,0.92); }
 
-        .page-hero h1 {
-            color: var(--white);
-            font-size: 2.8rem;
-            margin-bottom: 0.8rem;
-            letter-spacing: -1px;
+        /* --- FILTER BAR --- */
+        .filter-bar {
+            position: sticky; top: 68px; z-index: 50;
+            background: rgba(247,249,250,0.92);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
         }
-        .page-hero p {
-            font-size: 1.1rem;
-            max-width: 620px;
-            margin: 0 auto;
-            color: rgba(255,255,255,0.92);
+        .filter-inner {
+            max-width: 1200px; margin: 0 auto; padding: 12px 20px;
+            display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
         }
-
-        /* --- LAYOUT --- */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 80px 20px 60px;
+        .filter-label {
+            font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px;
+            color: var(--ink-faint); margin-right: 6px;
         }
-
-        /* =============================================
-           UNIFIED SHOWCASE CARDS
-           ============================================= */
-        .showcase-section { padding: 0 2rem; background: var(--section-alt); }
-
-        .showcase-stack {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            gap: 56px;
+        .chip {
+            appearance: none; border: 1px solid var(--border-strong); background: var(--white);
+            color: var(--ink-muted); padding: 6px 14px; border-radius: 20px;
+            font: inherit; font-size: 0.82rem; font-weight: 600; cursor: pointer;
+            transition: all 0.15s;
         }
+        .chip:hover { border-color: var(--brand-teal); color: var(--brand-teal-dark); }
+        .chip.on { background: var(--brand-teal); border-color: var(--brand-teal); color: var(--white); }
 
-        .showcase-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            overflow: hidden;
-            transition: all 0.25s;
+        /* --- GRID --- */
+        .demo-section { background: var(--section-alt); padding: 44px 2rem 24px; }
+        .demo-grid {
+            max-width: 1200px; margin: 0 auto;
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px;
+        }
+        .demo-card {
+            background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px;
+            overflow: hidden; display: flex; flex-direction: column;
             box-shadow: 0 4px 14px rgba(15,26,32,0.04);
+            transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
         }
-        .showcase-card:hover {
-            border-color: var(--brand-teal-light);
-            box-shadow: 0 12px 32px rgba(14,110,140,0.10);
-        }
+        .demo-card:hover { border-color: var(--brand-teal-light); box-shadow: 0 12px 32px rgba(14,110,140,0.10); transform: translateY(-2px); }
+        .demo-card.hide { display: none; }
+        .demo-card.reveal { animation: cardIn 0.28s ease-out; }
+        @keyframes cardIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 
-        /* Top: mockup + info side by side */
-        .showcase-top {
-            display: grid;
-            grid-template-columns: 1.1fr 1fr;
-            gap: 0;
-        }
-
-        .showcase-card:nth-child(even) .showcase-top {
-            direction: rtl;
-        }
-
-        .showcase-card:nth-child(even) .showcase-top > * {
-            direction: ltr;
-        }
-
-        .showcase-mockup {
+        .demo-mock {
             position: relative;
             background: linear-gradient(135deg, var(--brand-teal-bg) 0%, #e6eef2 100%);
-            padding: 28px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            padding: 22px 26px 0;
             overflow: hidden;
-            min-height: 380px;
         }
-
-        .showcase-mockup svg {
-            width: 100%;
-            height: auto;
-            display: block;
-            border-radius: 10px;
-            filter: drop-shadow(0 12px 32px rgba(14,110,140,0.18));
+        .demo-mock .frame {
+            overflow: hidden; aspect-ratio: 520 / 322;
+            border-radius: 10px 10px 0 0;
+            box-shadow: 0 8px 24px rgba(14,110,140,0.16);
         }
-
-        .showcase-mockup::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(14,110,140,0.04) 0%, transparent 60%);
-            pointer-events: none;
+        .demo-mock svg { width: 100%; height: auto; display: block; }
+        .demo-mock a { display: block; }
+        .demo-mock a:hover .frame { box-shadow: 0 10px 28px rgba(14,110,140,0.24); }
+        .demo-mock .live-badge {
+            position: absolute; top: 12px; right: 12px;
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 4px 10px; border-radius: 12px;
+            background: rgba(15,26,32,0.78); border: 1px solid rgba(255,255,255,0.15);
+            font-size: 0.62rem; font-weight: 800; color: var(--white);
+            text-transform: uppercase; letter-spacing: 0.6px;
         }
-
-        .showcase-info {
-            padding: 44px 48px 44px 32px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+        .live-badge::before {
+            content: ''; width: 6px; height: 6px; border-radius: 50%;
+            background: #4ade80; box-shadow: 0 0 6px #4ade80;
+            animation: pulse 1.6s ease-in-out infinite;
         }
+        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
 
-        .showcase-card:nth-child(even) .showcase-info {
-            padding: 44px 32px 44px 48px;
-        }
+        .demo-body { padding: 20px 24px 22px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
+        .demo-ind { font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.7px; color: var(--brand-teal-dark); }
+        .demo-body h3 { font-size: 1.35rem; line-height: 1.2; color: var(--ink); }
+        .demo-body p { font-size: 0.98rem; color: var(--ink-muted); line-height: 1.5; }
+        .demo-action { margin-top: auto; padding-top: 14px; display: flex; align-items: center; gap: 14px; }
 
-        .showcase-industry {
-            display: inline-block;
-            background: var(--brand-teal-bg);
-            color: var(--brand-teal-dark);
-            border: 1px solid var(--brand-teal-light);
-            padding: 4px 14px;
-            border-radius: 20px;
-            font-size: 0.72rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            align-self: flex-start;
-            margin-bottom: 14px;
-        }
-
-        .showcase-info h3 {
-            font-size: 1.6rem;
-            margin-bottom: 12px;
-            line-height: 1.25;
-            color: var(--ink);
-        }
-
-        .showcase-info > p {
-            font-size: 1rem;
-            line-height: 1.7;
-            color: var(--ink-muted);
-            margin-bottom: 18px;
-        }
-
-        .showcase-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 18px;
-        }
-
-        .showcase-tags span {
-            background: var(--section-alt);
-            color: var(--ink-muted);
-            padding: 5px 12px;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            border: 1px solid var(--border);
-        }
-
-        .showcase-note {
-            font-size: 0.85rem;
-            color: var(--ink-faint);
-            font-style: italic;
-        }
-
-        .try-it-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            margin-top: 18px;
-            align-self: flex-start;
-            padding: 10px 22px;
-            background: var(--brand-teal);
-            color: var(--white);
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 0.82rem;
-            text-transform: uppercase;
-            letter-spacing: 0.6px;
-            transition: all 0.2s;
+        .btn-live {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 10px 20px; border-radius: 8px;
+            background: var(--brand-teal); color: var(--white); text-decoration: none;
+            font-weight: 800; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.6px;
             box-shadow: 0 4px 14px rgba(14,110,140,0.25);
+            transition: all 0.2s;
         }
-
-        .try-it-btn:hover {
-            background: var(--brand-teal-dark);
-            color: var(--white);
-            transform: translateY(-1px);
-            box-shadow: 0 6px 18px rgba(14,110,140,0.4);
+        .btn-live:hover { background: var(--brand-teal-dark); color: var(--white); transform: translateY(-1px); box-shadow: 0 6px 18px rgba(14,110,140,0.4); }
+        .btn-live .arrow { transition: transform 0.2s; }
+        .btn-live:hover .arrow { transform: translateX(3px); }
+        .btn-ask {
+            display: inline-flex; align-items: center; gap: 6px;
+            color: var(--brand-teal-dark); text-decoration: none;
+            font-weight: 700; font-size: 0.85rem;
+            border-bottom: 1px solid var(--brand-teal-light);
+            transition: border-color 0.2s;
         }
-
-        .try-it-btn .arrow { transition: transform 0.2s; }
-        .try-it-btn:hover .arrow { transform: translateX(3px); }
-
-        .try-it-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            margin-left: 8px;
-            padding: 3px 9px;
-            border-radius: 12px;
-            background: rgba(255,255,255,0.18);
-            border: 1px solid rgba(255,255,255,0.35);
-            font-size: 0.62rem;
-            font-weight: 700;
-            color: var(--white);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+        .btn-ask:hover { border-color: var(--brand-teal); }
+        .demo-empty {
+            grid-column: 1 / -1; text-align: center; padding: 50px 20px; color: var(--ink-faint); font-size: 0.95rem;
+            display: none;
         }
-        .try-it-pill::before {
-            content: '';
-            width: 5px; height: 5px; border-radius: 50%;
-            background: #4ade80;
-            box-shadow: 0 0 6px #4ade80;
-        }
+        .demo-empty.show { display: block; }
 
-        /* Bottom: metrics strip */
-        .showcase-metrics {
-            display: flex;
-            border-top: 1px solid var(--border);
-            background: var(--section-alt);
+        /* --- HOW WE SHIP STRIP --- */
+        .ship-strip { background: var(--section-alt); padding: 24px 2rem 72px; }
+        .ship-inner {
+            max-width: 1200px; margin: 0 auto;
+            display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap;
+            padding: 22px 28px;
+            background: var(--brand-teal-deeper); color: var(--white); border-radius: 14px;
         }
-
-        .showcase-metric {
-            flex: 1;
-            padding: 22px 18px;
-            text-align: center;
-            border-right: 1px solid var(--border);
+        .ship-inner .txt { display: flex; align-items: center; gap: 16px; }
+        .ship-inner .txt strong { font-family: 'Roboto Slab', Georgia, serif; font-size: 1.1rem; }
+        .ship-inner .txt span { color: rgba(255,255,255,0.78); font-size: 0.95rem; }
+        .ship-inner a {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 10px 20px; border-radius: 8px;
+            background: var(--white); color: var(--brand-teal-deeper); text-decoration: none;
+            font-weight: 800; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.6px;
+            transition: transform 0.15s;
         }
-
-        .showcase-metric:last-child { border-right: none; }
-
-        .showcase-metric .val {
-            font-size: 1.7rem;
-            font-weight: 800;
-            color: var(--brand-teal);
-            line-height: 1;
-            margin-bottom: 4px;
-        }
-
-        .showcase-metric .label {
-            font-size: 0.7rem;
-            color: var(--ink-faint);
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
+        .ship-inner a:hover { transform: translateY(-1px); }
 
         /* --- CTA BANNER --- */
+        .cta-section { padding: 0 2rem 80px; background: var(--section-alt); }
         .cta-banner {
-            max-width: 900px;
-            margin: 0 auto;
-            text-align: center;
-            padding: 60px 40px;
+            max-width: 900px; margin: 0 auto; text-align: center; padding: 56px 40px;
             background: linear-gradient(135deg, var(--brand-teal) 0%, var(--brand-teal-dark) 100%);
-            border-radius: 16px;
-            border: 1px solid transparent;
-            box-shadow: 0 14px 38px rgba(14,110,140,0.22);
+            border-radius: 16px; box-shadow: 0 14px 38px rgba(14,110,140,0.22);
         }
-
-        .cta-banner h2 {
-            font-size: 2rem;
-            margin-bottom: 12px;
-            color: var(--white);
-        }
-
-        .cta-banner p {
-            font-size: 1.05rem;
-            color: rgba(255,255,255,0.85);
-            margin-bottom: 28px;
-            max-width: 520px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
+        .cta-banner h2 { font-size: 2rem; margin-bottom: 10px; color: var(--white); }
+        .cta-banner p { font-size: 1.05rem; color: rgba(255,255,255,0.85); margin: 0 auto 26px; max-width: 520px; }
         .cta-button {
-            display: inline-block;
-            background: var(--white);
-            color: var(--brand-teal-dark);
-            padding: 1rem 2.5rem;
-            text-decoration: none;
-            border-radius: 50px;
-            font-weight: 800;
-            font-size: 1rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            display: inline-block; background: var(--white); color: var(--brand-teal-dark);
+            padding: 1rem 2.5rem; text-decoration: none; border-radius: 50px;
+            font-weight: 800; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px;
             transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
-            border: none;
             box-shadow: 0 10px 25px rgba(7,62,84,0.25);
         }
-
-        .cta-button:hover {
-            transform: translateY(-2px) scale(1.02);
-            box-shadow: 0 18px 36px rgba(7,62,84,0.35);
-            color: var(--brand-teal-dark);
-        }
+        .cta-button:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 18px 36px rgba(7,62,84,0.35); color: var(--brand-teal-dark); }
 
         /* --- FOOTER --- */
         footer {
@@ -510,41 +368,19 @@
 
         /* --- RESPONSIVE --- */
         @media (max-width: 900px) {
-            .showcase-top {
-                grid-template-columns: 1fr;
-            }
-
-            .showcase-card:nth-child(even) .showcase-top {
-                direction: ltr;
-            }
-
-            .showcase-info,
-            .showcase-card:nth-child(even) .showcase-info {
-                padding: 28px 24px;
-            }
-
-            .showcase-mockup {
-                min-height: 260px;
-                padding: 20px;
-            }
-
-            .showcase-metrics {
-                flex-wrap: wrap;
-            }
-
-            .showcase-metric {
-                flex: 1 1 33%;
-                min-width: 0;
-            }
+            .demo-grid { grid-template-columns: 1fr; }
         }
-
         @media (max-width: 768px) {
             .page-hero h1 { font-size: 2rem; }
-            .page-hero { padding-top: 130px; }
-            .container { padding: 60px 20px 50px; }
+            .page-hero { padding-top: 120px; }
+            .filter-bar { top: 68px; }
+            .filter-inner { padding: 10px 16px; gap: 6px; }
+            .filter-label { display: none; }
+            .chip { font-size: 0.78rem; padding: 5px 12px; }
+            .demo-section { padding: 28px 16px 16px; }
+            .demo-mock { padding: 16px 18px 0; }
 
             .menu-toggle { display: block; }
-
             .navbar-links {
                 display: none;
                 position: absolute;
@@ -557,10 +393,11 @@
                 gap: 1.2rem;
                 border-bottom: 1px solid var(--border);
             }
-
             .navbar-links.open { display: flex; }
 
-            .cta-banner { margin: 0 20px; padding: 40px 24px; }
+            .ship-inner { padding: 20px; }
+            .cta-section { padding: 0 16px 60px; }
+            .cta-banner { padding: 40px 24px; }
             .cta-banner h2 { font-size: 1.6rem; }
         }
     </style>
@@ -587,99 +424,31 @@
 
     <!-- PAGE HERO -->
     <section class="page-hero">
-        <h1>What We Build</h1>
-        <p>Real tools running in production for Baltimore organizations. Here's what they look like and what they deliver.</p>
+        <h1>See it work</h1>
+        <p>Three of these run live on a real model. The rest show what we'd build for you.</p>
     </section>
 
-    <!-- UNIFIED SHOWCASE -->
-    <section class="showcase-section">
-        <div class="container">
-            <div class="showcase-stack">
+    <!-- FILTER -->
+    <div class="filter-bar">
+        <div class="filter-inner" id="filters">
+            <span class="filter-label">Show me</span>
+                <button class="chip on" data-filter="all">All</button>
+                <button class="chip" data-filter="smb">Small business</button>
+                <button class="chip" data-filter="gov">Government</button>
+                <button class="chip" data-filter="healthcare">Healthcare</button>
+                <button class="chip" data-filter="research">Research</button>
+                <button class="chip" data-filter="legal">Legal</button>
+                <button class="chip" data-filter="mfg">Manufacturing</button>
+                <button class="chip" data-filter="retail">Retail</button>
+        </div>
+    </div>
 
-                <!-- ========== 0. EVAL LAB (FLAGSHIP) ========== -->
-                <div class="showcase-card">
-                    <div class="showcase-top">
-                        <div class="showcase-mockup">
-                            <svg viewBox="0 0 520 360" xmlns="http://www.w3.org/2000/svg" fill="none">
-                                <rect width="520" height="360" rx="10" fill="#141414"/>
-                                <rect width="520" height="36" rx="10" fill="#1e1e1e"/>
-                                <rect y="26" width="520" height="10" fill="#1e1e1e"/>
-                                <circle cx="18" cy="18" r="5" fill="#ff5f57"/>
-                                <circle cx="36" cy="18" r="5" fill="#febc2e"/>
-                                <circle cx="54" cy="18" r="5" fill="#28c840"/>
-                                <text x="260" y="22" text-anchor="middle" fill="#666" font-size="11" font-family="system-ui">BaltimoreAI — Eval Lab</text>
-                                <!-- stepper -->
-                                <rect x="16" y="48" width="156" height="30" rx="6" fill="rgba(74,222,128,0.12)" stroke="#4ade80" stroke-width="1"/>
-                                <text x="30" y="67" fill="#4ade80" font-size="9" font-family="system-ui" font-weight="700">① Evaluate ✓</text>
-                                <rect x="180" y="48" width="156" height="30" rx="6" fill="rgba(74,222,128,0.12)" stroke="#4ade80" stroke-width="1"/>
-                                <text x="194" y="67" fill="#4ade80" font-size="9" font-family="system-ui" font-weight="700">② Improve ✓</text>
-                                <rect x="344" y="48" width="160" height="30" rx="6" fill="rgba(14,110,140,0.18)" stroke="#0E6E8C" stroke-width="1.5"/>
-                                <text x="358" y="67" fill="#7ab0d1" font-size="9" font-family="system-ui" font-weight="700">③ Verify …</text>
-                                <!-- scoreboard -->
-                                <rect x="16" y="92" width="488" height="174" rx="8" fill="#1a1a1a" stroke="#2a2a2a" stroke-width="1"/>
-                                <text x="32" y="112" fill="#888" font-size="9" font-family="system-ui" font-weight="700">METRIC</text>
-                                <text x="330" y="112" fill="#888" font-size="9" font-family="system-ui" font-weight="700">BASE</text>
-                                <text x="410" y="112" fill="#888" font-size="9" font-family="system-ui" font-weight="700">NOW</text>
-                                <text x="476" y="112" fill="#888" font-size="9" font-family="system-ui" font-weight="700">Δ</text>
-                                <line x1="32" y1="120" x2="488" y2="120" stroke="#2a2a2a" stroke-width="0.5"/>
-                                <text x="32" y="142" fill="#ddd" font-size="10" font-family="system-ui">Citation accuracy</text>
-                                <text x="330" y="142" fill="#777" font-size="10" font-family="monospace">50%</text>
-                                <text x="410" y="142" fill="#7ab0d1" font-size="10" font-family="monospace" font-weight="700">100%</text>
-                                <text x="470" y="142" fill="#4ade80" font-size="9" font-family="monospace" font-weight="700">▲+50</text>
-                                <text x="32" y="166" fill="#ddd" font-size="10" font-family="system-ui">Factual accuracy</text>
-                                <text x="330" y="166" fill="#777" font-size="10" font-family="monospace">75%</text>
-                                <text x="410" y="166" fill="#7ab0d1" font-size="10" font-family="monospace" font-weight="700">100%</text>
-                                <text x="470" y="166" fill="#4ade80" font-size="9" font-family="monospace" font-weight="700">▲+25</text>
-                                <text x="32" y="190" fill="#ddd" font-size="10" font-family="system-ui">Overall pass rate</text>
-                                <text x="330" y="190" fill="#777" font-size="10" font-family="monospace">50%</text>
-                                <text x="410" y="190" fill="#7ab0d1" font-size="10" font-family="monospace" font-weight="700">100%</text>
-                                <text x="470" y="190" fill="#4ade80" font-size="9" font-family="monospace" font-weight="700">▲+50</text>
-                                <line x1="32" y1="204" x2="488" y2="204" stroke="#2a2a2a" stroke-width="0.5"/>
-                                <rect x="32" y="218" width="456" height="34" rx="6" fill="rgba(74,222,128,0.1)" stroke="rgba(74,222,128,0.4)" stroke-width="1"/>
-                                <text x="48" y="239" fill="#4ade80" font-size="11" font-family="system-ui" font-weight="800">✓ GATE PASSED — guardrails intact · no regressions · safe to ship</text>
-                                <!-- live log line -->
-                                <rect x="16" y="278" width="488" height="22" rx="6" fill="#0d0d0d" stroke="#1e1e1e" stroke-width="0.5"/>
-                                <circle cx="30" cy="289" r="3" fill="#4ade80"/>
-                                <text x="44" y="293" fill="#888" font-size="9" font-family="monospace">deepeval · run #v2 · 4/4 cases scored against live model</text>
-                                <rect x="16" y="312" width="488" height="34" rx="6" fill="#1e1e1e"/>
-                                <text x="30" y="333" fill="#0E6E8C" font-size="10" font-family="system-ui" font-weight="700">Q: How long to open a small restaurant?</text>
-                                <text x="380" y="333" fill="#7ab0d1" font-size="9" font-family="system-ui">[Small Business] ✓ 5–7 wk</text>
-                            </svg>
-                        </div>
-                        <div class="showcase-info">
-                            <span class="showcase-industry">How we ship</span>
-                            <h3>Eval Lab</h3>
-                            <p>Not another chatbot — the workflow behind a trustworthy one. Run a real evaluation against a live model, watch a prompt change move the scores, then gate the release so guardrails and known-good answers can't regress. Evaluate → improve → verify, live.</p>
-                            <div class="showcase-tags">
-                                <span>DeepEval</span>
-                                <span>Scoring</span>
-                                <span>Release gate</span>
-                            </div>
-                            <p class="showcase-note">Every answer is a real model call, scored in your browser. No mocks.</p>
-                            <a href="demos/eval-lab.html" class="try-it-btn">Run it <span class="arrow">→</span><span class="try-it-pill">Live AI</span></a>
-                        </div>
-                    </div>
-                    <div class="showcase-metrics">
-                        <div class="showcase-metric">
-                            <div class="val">3</div>
-                            <div class="label">Phases, One Loop</div>
-                        </div>
-                        <div class="showcase-metric">
-                            <div class="val">live</div>
-                            <div class="label">Model Calls, Scored</div>
-                        </div>
-                        <div class="showcase-metric">
-                            <div class="val">0</div>
-                            <div class="label">Regressions Shipped</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- ========== 1. RAG KNOWLEDGE ASSISTANT ========== -->
-                <div class="showcase-card">
-                    <div class="showcase-top">
-                        <div class="showcase-mockup">
-                            <svg viewBox="0 0 520 360" xmlns="http://www.w3.org/2000/svg" fill="none">
+    <!-- GRID -->
+    <section class="demo-section">
+        <div class="demo-grid" id="grid">
+                <article class="demo-card" data-tags="gov research smb">
+                    <div class="demo-mock">
+                        <a href="demos/knowledge-assistant.html" aria-label="Open Knowledge Assistant demo"><div class="frame"><svg viewBox="0 0 520 360" xmlns="http://www.w3.org/2000/svg" fill="none">
                                 <rect width="520" height="360" rx="10" fill="#141414"/>
                                 <rect width="520" height="36" rx="10" fill="#1e1e1e"/>
                                 <rect y="26" width="520" height="10" fill="#1e1e1e"/>
@@ -711,42 +480,19 @@
                                 <text x="28" y="342" fill="#444" font-size="10" font-family="system-ui">Ask a question about city policies...</text>
                                 <rect x="466" y="328" width="38" height="20" rx="6" fill="#0E6E8C"/>
                                 <text x="485" y="342" text-anchor="middle" fill="#fff" font-size="9" font-family="system-ui" font-weight="700">Send</text>
-                            </svg>
-                        </div>
-                        <div class="showcase-info">
-                            <span class="showcase-industry">Government</span>
-                            <h3>RAG Knowledge Assistant</h3>
-                            <p>Your team's documents become a searchable knowledge base. Staff ask plain-English questions and get cited answers pulled directly from policy manuals, meeting minutes, or internal guides. No digging through folders.</p>
-                            <div class="showcase-tags">
-                                <span>Search</span>
-                                <span>Q&amp;A</span>
-                                <span>Citations</span>
-                            </div>
-                            <p class="showcase-note">Deployed on-premise. Your data never leaves your network.</p>
-                            <a href="demos/knowledge-assistant.html" class="try-it-btn">Try it <span class="arrow">→</span><span class="try-it-pill">Live AI</span></a>
-                        </div>
+                            </svg></div></a>
+                        <span class="live-badge">Live AI</span>
                     </div>
-                    <div class="showcase-metrics">
-                        <div class="showcase-metric">
-                            <div class="val">10k+</div>
-                            <div class="label">Documents Indexed</div>
-                        </div>
-                        <div class="showcase-metric">
-                            <div class="val">&lt;5s</div>
-                            <div class="label">Avg. Response Time</div>
-                        </div>
-                        <div class="showcase-metric">
-                            <div class="val">94%</div>
-                            <div class="label">Answer Accuracy</div>
-                        </div>
+                    <div class="demo-body">
+                        <span class="demo-ind">Government · Research</span>
+                        <h3>Knowledge Assistant</h3>
+                        <p>Ask your documents a question. Get a cited answer in seconds.</p>
+                        <div class="demo-action"><a href="demos/knowledge-assistant.html" class="btn-live">Try it <span class="arrow">→</span></a></div>
                     </div>
-                </div>
-
-                <!-- ========== 2. DOCUMENT PROCESSOR ========== -->
-                <div class="showcase-card">
-                    <div class="showcase-top">
-                        <div class="showcase-mockup">
-                            <svg viewBox="0 0 520 360" xmlns="http://www.w3.org/2000/svg" fill="none">
+                </article>
+                <article class="demo-card" data-tags="healthcare gov smb">
+                    <div class="demo-mock">
+                        <a href="demos/document-processor.html" aria-label="Open Document Processor demo"><div class="frame"><svg viewBox="0 0 520 360" xmlns="http://www.w3.org/2000/svg" fill="none">
                                 <rect width="520" height="360" rx="10" fill="#141414"/>
                                 <rect width="520" height="36" rx="10" fill="#1e1e1e"/>
                                 <rect y="26" width="520" height="10" fill="#1e1e1e"/>
@@ -797,42 +543,19 @@
                                 <text x="304" y="315" text-anchor="middle" fill="#fff" font-size="10" font-family="system-ui" font-weight="700">Export to EHR</text>
                                 <rect x="370" y="296" width="112" height="30" rx="6" fill="transparent" stroke="#444" stroke-width="1"/>
                                 <text x="426" y="315" text-anchor="middle" fill="#aaa" font-size="10" font-family="system-ui" font-weight="600">Download JSON</text>
-                            </svg>
-                        </div>
-                        <div class="showcase-info">
-                            <span class="showcase-industry">Healthcare</span>
-                            <h3>Document Processor</h3>
-                            <p>PDFs go in, structured data comes out. The system reads scanned forms, detects tables, pulls key fields, and pushes clean records into your existing systems: EHR, CRM, or database.</p>
-                            <div class="showcase-tags">
-                                <span>OCR</span>
-                                <span>Extraction</span>
-                                <span>PDF</span>
-                            </div>
-                            <p class="showcase-note">HIPAA-compliant. Built for medical intake, invoices, and government forms.</p>
-                            <a href="demos/document-processor.html" class="try-it-btn">Try it <span class="arrow">→</span></a>
-                        </div>
+                            </svg></div></a>
+                        <span class="live-badge">Live AI</span>
                     </div>
-                    <div class="showcase-metrics">
-                        <div class="showcase-metric">
-                            <div class="val">85%</div>
-                            <div class="label">Less Manual Entry</div>
-                        </div>
-                        <div class="showcase-metric">
-                            <div class="val">3x</div>
-                            <div class="label">Faster Processing</div>
-                        </div>
-                        <div class="showcase-metric">
-                            <div class="val">96%</div>
-                            <div class="label">Extraction Accuracy</div>
-                        </div>
+                    <div class="demo-body">
+                        <span class="demo-ind">Healthcare · Government</span>
+                        <h3>Document Processor</h3>
+                        <p>Scanned forms and PDFs in. Clean, structured records out.</p>
+                        <div class="demo-action"><a href="demos/document-processor.html" class="btn-live">Try it <span class="arrow">→</span></a></div>
                     </div>
-                </div>
-
-                <!-- ========== 3. AUTOMATION PIPELINE ========== -->
-                <div class="showcase-card">
-                    <div class="showcase-top">
-                        <div class="showcase-mockup">
-                            <svg viewBox="0 0 520 360" xmlns="http://www.w3.org/2000/svg" fill="none">
+                </article>
+                <article class="demo-card" data-tags="smb gov">
+                    <div class="demo-mock">
+                        <a href="demos/pipeline-runner.html" aria-label="Open Automation Pipeline demo"><div class="frame"><svg viewBox="0 0 520 360" xmlns="http://www.w3.org/2000/svg" fill="none">
                                 <rect width="520" height="360" rx="10" fill="#141414"/>
                                 <rect width="520" height="36" rx="10" fill="#1e1e1e"/>
                                 <rect y="26" width="520" height="10" fill="#1e1e1e"/>
@@ -885,42 +608,170 @@
                                 <rect x="32" y="296" width="140" height="26" rx="6" fill="rgba(74,222,128,0.1)" stroke="rgba(74,222,128,0.3)" stroke-width="0.5"/>
                                 <text x="50" y="313" fill="#4ade80" font-size="9" font-family="system-ui" font-weight="700">● All Steps Passed</text>
                                 <text x="380" y="313" fill="#555" font-size="9" font-family="system-ui">Total time: 4.2s</text>
-                            </svg>
-                        </div>
-                        <div class="showcase-info">
-                            <span class="showcase-industry">Small Business</span>
-                            <h3>Automation Pipeline</h3>
-                            <p>Multi-step workflows that run without babysitting. An email arrives, the system classifies it, extracts the relevant data, routes it to the right team, and sends notifications. End to end in seconds.</p>
-                            <div class="showcase-tags">
-                                <span>Orchestration</span>
-                                <span>API</span>
-                                <span>Automation</span>
-                            </div>
-                            <p class="showcase-note">Every pipeline is custom-built around your existing tools and processes.</p>
-                            <a href="demos/pipeline-runner.html" class="try-it-btn">Try it <span class="arrow">→</span></a>
-                        </div>
+                            </svg></div></a>
+                        <span class="live-badge">Live AI</span>
                     </div>
-                    <div class="showcase-metrics">
-                        <div class="showcase-metric">
-                            <div class="val">4.2s</div>
-                            <div class="label">End-to-End Runtime</div>
-                        </div>
-                        <div class="showcase-metric">
-                            <div class="val">zero</div>
-                            <div class="label">Manual Steps</div>
-                        </div>
-                        <div class="showcase-metric">
-                            <div class="val">24/7</div>
-                            <div class="label">Always Running</div>
-                        </div>
+                    <div class="demo-body">
+                        <span class="demo-ind">Small Business</span>
+                        <h3>Automation Pipeline</h3>
+                        <p>Email arrives, gets classified, fields pulled, routed to the right team. No hands.</p>
+                        <div class="demo-action"><a href="demos/pipeline-runner.html" class="btn-live">Try it <span class="arrow">→</span></a></div>
                     </div>
-                </div>
+                </article>
+                <article class="demo-card" data-tags="legal smb">
+                    <div class="demo-mock">
+                        <div class="frame"><svg viewBox="0 0 520 360" xmlns="http://www.w3.org/2000/svg" fill="none">
+                                <rect width="520" height="360" rx="10" fill="#141414"/>
+                                <rect width="520" height="36" rx="10" fill="#1e1e1e"/>
+                                <rect y="26" width="520" height="10" fill="#1e1e1e"/>
+                                <circle cx="18" cy="18" r="5" fill="#ff5f57"/>
+                                <circle cx="36" cy="18" r="5" fill="#febc2e"/>
+                                <circle cx="54" cy="18" r="5" fill="#28c840"/>
+                                <text x="260" y="22" text-anchor="middle" fill="#666" font-size="11" font-family="system-ui">BaltimoreAI — Meeting Intelligence</text>
 
-                <!-- ========== 4. SYNTHETIC DATA ========== -->
-                <div class="showcase-card">
-                    <div class="showcase-top">
-                        <div class="showcase-mockup">
-                            <svg viewBox="0 0 520 360" xmlns="http://www.w3.org/2000/svg" fill="none">
+                                <!-- Recording bar -->
+                                <rect x="16" y="50" width="488" height="40" rx="8" fill="#1a1a1a" stroke="#2a2a2a" stroke-width="1"/>
+                                <circle cx="34" cy="70" r="6" fill="#ef4444"><animate attributeName="opacity" values="0.4;1;0.4" dur="1.4s" repeatCount="indefinite"/></circle>
+                                <text x="48" y="74" fill="#fff" font-size="10" font-family="system-ui" font-weight="700">RECORDING</text>
+                                <text x="120" y="74" fill="#777" font-size="10" font-family="ui-monospace, monospace">00:24:18</text>
+                                <text x="200" y="74" fill="#666" font-size="9.5" font-family="system-ui">Wed Mar 12 · Smith v. Reyes deposition prep</text>
+
+                                <!-- Waveform -->
+                                <g transform="translate(420, 60)">
+                                    <rect x="0" y="6" width="2" height="8" fill="#0E6E8C"/>
+                                    <rect x="5" y="2" width="2" height="16" fill="#0E6E8C"/>
+                                    <rect x="10" y="4" width="2" height="12" fill="#0E6E8C"/>
+                                    <rect x="15" y="0" width="2" height="20" fill="#0E6E8C"/>
+                                    <rect x="20" y="3" width="2" height="14" fill="#0E6E8C"/>
+                                    <rect x="25" y="6" width="2" height="8" fill="#0E6E8C"/>
+                                    <rect x="30" y="1" width="2" height="18" fill="#0E6E8C"/>
+                                    <rect x="35" y="4" width="2" height="12" fill="#0E6E8C"/>
+                                    <rect x="40" y="2" width="2" height="16" fill="#0E6E8C"/>
+                                    <rect x="45" y="5" width="2" height="10" fill="#0E6E8C"/>
+                                    <rect x="50" y="0" width="2" height="20" fill="#0E6E8C"/>
+                                    <rect x="55" y="3" width="2" height="14" fill="#0E6E8C"/>
+                                    <rect x="60" y="6" width="2" height="8" fill="#0E6E8C"/>
+                                </g>
+
+                                <!-- Transcript -->
+                                <text x="16" y="112" fill="#888" font-size="9" font-family="system-ui" font-weight="700">LIVE TRANSCRIPT</text>
+                                <text x="16" y="132" fill="#7ab0d1" font-size="9.5" font-family="system-ui" font-weight="600">Counsel Reyes (00:23:42)</text>
+                                <text x="16" y="146" fill="#bbb" font-size="10" font-family="system-ui">…we'll need the chain-of-custody documents from</text>
+                                <text x="16" y="160" fill="#bbb" font-size="10" font-family="system-ui">the lab by Friday, otherwise the timeline slips into</text>
+                                <text x="16" y="174" fill="#bbb" font-size="10" font-family="system-ui">April. Karen, can you reach out to Dr. Holcomb?</text>
+                                <text x="16" y="194" fill="#7ab0d1" font-size="9.5" font-family="system-ui" font-weight="600">Karen Park (00:24:01)</text>
+                                <text x="16" y="208" fill="#bbb" font-size="10" font-family="system-ui">Yes — I'll send a request today and CC Marcus.</text>
+
+                                <!-- Action items panel -->
+                                <rect x="280" y="100" width="224" height="240" rx="8" fill="#1a1a1a" stroke="#2a2a2a" stroke-width="1"/>
+                                <text x="296" y="120" fill="#0E6E8C" font-size="9" font-family="system-ui" font-weight="700">⚡ ACTION ITEMS · 4 detected</text>
+
+                                <rect x="296" y="132" width="192" height="44" rx="6" fill="#0f0f0f" stroke="#222" stroke-width="0.5"/>
+                                <rect x="296" y="132" width="3" height="44" fill="#0E6E8C"/>
+                                <text x="306" y="146" fill="#ddd" font-size="9" font-family="system-ui" font-weight="600">Email Dr. Holcomb re: chain-of-</text>
+                                <text x="306" y="158" fill="#ddd" font-size="9" font-family="system-ui" font-weight="600">custody documents</text>
+                                <text x="306" y="170" fill="#777" font-size="8" font-family="system-ui">Karen Park · due Fri Mar 14</text>
+
+                                <rect x="296" y="182" width="192" height="44" rx="6" fill="#0f0f0f" stroke="#222" stroke-width="0.5"/>
+                                <rect x="296" y="182" width="3" height="44" fill="#0E6E8C"/>
+                                <text x="306" y="196" fill="#ddd" font-size="9" font-family="system-ui" font-weight="600">CC Marcus on the lab request</text>
+                                <text x="306" y="208" fill="#ddd" font-size="9" font-family="system-ui" font-weight="600">thread</text>
+                                <text x="306" y="220" fill="#777" font-size="8" font-family="system-ui">Karen Park · today</text>
+
+                                <rect x="296" y="232" width="192" height="44" rx="6" fill="#0f0f0f" stroke="#222" stroke-width="0.5"/>
+                                <rect x="296" y="232" width="3" height="44" fill="#0E6E8C"/>
+                                <text x="306" y="246" fill="#ddd" font-size="9" font-family="system-ui" font-weight="600">Reschedule depo if docs slip</text>
+                                <text x="306" y="258" fill="#ddd" font-size="9" font-family="system-ui" font-weight="600">past Friday</text>
+                                <text x="306" y="270" fill="#777" font-size="8" font-family="system-ui">Counsel Reyes · contingent</text>
+
+                                <rect x="296" y="282" width="192" height="44" rx="6" fill="#0f0f0f" stroke="#222" stroke-width="0.5"/>
+                                <rect x="296" y="282" width="3" height="44" fill="#0E6E8C"/>
+                                <text x="306" y="296" fill="#ddd" font-size="9" font-family="system-ui" font-weight="600">Update case file with new</text>
+                                <text x="306" y="308" fill="#ddd" font-size="9" font-family="system-ui" font-weight="600">timeline before Wed prep</text>
+                                <text x="306" y="320" fill="#777" font-size="8" font-family="system-ui">Marcus Lee · Tue Mar 11</text>
+
+                                <!-- Footer -->
+                                <rect x="16" y="320" width="250" height="22" rx="6" fill="rgba(14,110,140,0.12)" stroke="rgba(14,110,140,0.4)" stroke-width="0.5"/>
+                                <text x="28" y="335" fill="#0E6E8C" font-size="9" font-family="system-ui" font-weight="700">📨 Auto-send summary to attendees</text>
+                            </svg></div>
+                        
+                    </div>
+                    <div class="demo-body">
+                        <span class="demo-ind">Legal · Professional Services</span>
+                        <h3>Meeting Intelligence</h3>
+                        <p>Record the call. Get the transcript, a summary, and action items with owners.</p>
+                        <div class="demo-action"><a href="index.html#contact" class="btn-ask">Ask us about this →</a></div>
+                    </div>
+                </article>
+                <article class="demo-card" data-tags="smb gov healthcare mfg retail">
+                    <div class="demo-mock">
+                        <div class="frame"><svg viewBox="0 0 520 360" xmlns="http://www.w3.org/2000/svg" fill="none">
+                                <rect width="520" height="360" rx="10" fill="#141414"/>
+                                <rect width="520" height="36" rx="10" fill="#1e1e1e"/>
+                                <rect y="26" width="520" height="10" fill="#1e1e1e"/>
+                                <circle cx="18" cy="18" r="5" fill="#ff5f57"/>
+                                <circle cx="36" cy="18" r="5" fill="#febc2e"/>
+                                <circle cx="54" cy="18" r="5" fill="#28c840"/>
+                                <text x="260" y="22" text-anchor="middle" fill="#666" font-size="11" font-family="system-ui">BaltimoreAI — System Integration</text>
+
+                                <!-- Center hub -->
+                                <circle cx="260" cy="170" r="44" fill="#1e1e1e" stroke="#0E6E8C" stroke-width="2"/>
+                                <text x="260" y="164" text-anchor="middle" fill="#0E6E8C" font-size="20">🤖</text>
+                                <text x="260" y="182" text-anchor="middle" fill="#fff" font-size="8" font-family="system-ui" font-weight="700">AI LAYER</text>
+
+                                <!-- Left nodes -->
+                                <rect x="30" y="60" width="110" height="50" rx="8" fill="#1a1a1a" stroke="#2C5F7C" stroke-width="1.2"/>
+                                <text x="85" y="82" text-anchor="middle" fill="#7ab0d1" font-size="9" font-family="system-ui" font-weight="700">ERP System</text>
+                                <text x="85" y="98" text-anchor="middle" fill="#555" font-size="7.5" font-family="system-ui">SAP / NetSuite</text>
+                                <line x1="140" y1="85" x2="218" y2="155" stroke="#2C5F7C" stroke-width="1" stroke-dasharray="3 3"/>
+                                <circle cx="179" cy="120" r="3" fill="#2C5F7C" opacity="0.5"><animate attributeName="opacity" values="0.2;0.8;0.2" dur="2s" repeatCount="indefinite"/></circle>
+
+                                <rect x="30" y="150" width="110" height="50" rx="8" fill="#1a1a1a" stroke="#2C5F7C" stroke-width="1.2"/>
+                                <text x="85" y="172" text-anchor="middle" fill="#7ab0d1" font-size="9" font-family="system-ui" font-weight="700">Database</text>
+                                <text x="85" y="188" text-anchor="middle" fill="#555" font-size="7.5" font-family="system-ui">PostgreSQL</text>
+                                <line x1="140" y1="175" x2="216" y2="170" stroke="#2C5F7C" stroke-width="1" stroke-dasharray="3 3"/>
+
+                                <rect x="30" y="240" width="110" height="50" rx="8" fill="#1a1a1a" stroke="#2C5F7C" stroke-width="1.2"/>
+                                <text x="85" y="262" text-anchor="middle" fill="#7ab0d1" font-size="9" font-family="system-ui" font-weight="700">Legacy CRM</text>
+                                <text x="85" y="278" text-anchor="middle" fill="#555" font-size="7.5" font-family="system-ui">Custom / On-Prem</text>
+                                <line x1="140" y1="265" x2="218" y2="190" stroke="#2C5F7C" stroke-width="1" stroke-dasharray="3 3"/>
+
+                                <!-- Right nodes -->
+                                <rect x="380" y="60" width="110" height="50" rx="8" fill="#1a1a1a" stroke="#4ade80" stroke-width="1.2"/>
+                                <text x="435" y="82" text-anchor="middle" fill="#4ade80" font-size="9" font-family="system-ui" font-weight="700">Slack / Teams</text>
+                                <text x="435" y="98" text-anchor="middle" fill="#555" font-size="7.5" font-family="system-ui">Notifications</text>
+                                <line x1="380" y1="85" x2="302" y2="155" stroke="#4ade80" stroke-width="1" stroke-dasharray="3 3"/>
+                                <circle cx="341" cy="120" r="3" fill="#4ade80" opacity="0.5"><animate attributeName="opacity" values="0.2;0.8;0.2" dur="2s" begin="0.5s" repeatCount="indefinite"/></circle>
+
+                                <rect x="380" y="150" width="110" height="50" rx="8" fill="#1a1a1a" stroke="#4ade80" stroke-width="1.2"/>
+                                <text x="435" y="172" text-anchor="middle" fill="#4ade80" font-size="9" font-family="system-ui" font-weight="700">Dashboard</text>
+                                <text x="435" y="188" text-anchor="middle" fill="#555" font-size="7.5" font-family="system-ui">Live Reporting</text>
+                                <line x1="380" y1="175" x2="304" y2="170" stroke="#4ade80" stroke-width="1" stroke-dasharray="3 3"/>
+
+                                <rect x="380" y="240" width="110" height="50" rx="8" fill="#1a1a1a" stroke="#4ade80" stroke-width="1.2"/>
+                                <text x="435" y="262" text-anchor="middle" fill="#4ade80" font-size="9" font-family="system-ui" font-weight="700">Email / SMTP</text>
+                                <text x="435" y="278" text-anchor="middle" fill="#555" font-size="7.5" font-family="system-ui">Auto-Responses</text>
+                                <line x1="380" y1="265" x2="302" y2="190" stroke="#4ade80" stroke-width="1" stroke-dasharray="3 3"/>
+
+                                <!-- Bottom status bar -->
+                                <rect x="16" y="316" width="488" height="30" rx="6" fill="#0d0d0d" stroke="#1e1e1e" stroke-width="1"/>
+                                <circle cx="32" cy="331" r="4" fill="#4ade80"/>
+                                <text x="44" y="335" fill="#999" font-size="9" font-family="system-ui">6 systems connected</text>
+                                <text x="260" y="335" fill="#555" font-size="9" font-family="system-ui">Last sync: 2 min ago</text>
+                                <text x="430" y="335" fill="#4ade80" font-size="9" font-family="system-ui" font-weight="600">All healthy ●</text>
+                            </svg></div>
+                        
+                    </div>
+                    <div class="demo-body">
+                        <span class="demo-ind">Any Existing Stack</span>
+                        <h3>System Integration</h3>
+                        <p>AI on top of the tools you already run. Nothing replaced.</p>
+                        <div class="demo-action"><a href="index.html#contact" class="btn-ask">Ask us about this →</a></div>
+                    </div>
+                </article>
+                <article class="demo-card" data-tags="healthcare research mfg">
+                    <div class="demo-mock">
+                        <div class="frame"><svg viewBox="0 0 520 360" xmlns="http://www.w3.org/2000/svg" fill="none">
                                 <rect width="520" height="360" rx="10" fill="#141414"/>
                                 <rect width="520" height="36" rx="10" fill="#1e1e1e"/>
                                 <rect y="26" width="520" height="10" fill="#1e1e1e"/>
@@ -1013,149 +864,19 @@
                                 <text x="334" y="342" text-anchor="middle" fill="#fff" font-size="9" font-family="system-ui" font-weight="700">Export CSV</text>
                                 <rect x="392" y="326" width="100" height="24" rx="6" fill="transparent" stroke="#444" stroke-width="1"/>
                                 <text x="442" y="342" text-anchor="middle" fill="#aaa" font-size="9" font-family="system-ui" font-weight="600">Export JSON</text>
-                            </svg>
-                        </div>
-                        <div class="showcase-info">
-                            <span class="showcase-industry">Healthcare · Research · QA</span>
-                            <h3>Synthetic Data Generation</h3>
-                            <p>Need 10,000 realistic patient intake forms to test a new system? Training data for a text classifier? Simulated sensor readings to stress-test a product? We generate it: structured, realistic, edge-case-rich. No real data required.</p>
-                            <div class="showcase-tags">
-                                <span>Test Data</span>
-                                <span>Form Data</span>
-                                <span>Text &amp; NLP</span>
-                                <span>Privacy-Safe</span>
-                            </div>
-                            <p class="showcase-note">No real PII. Statistically realistic. Ready for testing, training, or compliance.</p>
-                        </div>
+                            </svg></div>
+                        
                     </div>
-                    <div class="showcase-metrics">
-                        <div class="showcase-metric">
-                            <div class="val">5,000+</div>
-                            <div class="label">Records Per Run</div>
-                        </div>
-                        <div class="showcase-metric">
-                            <div class="val">0</div>
-                            <div class="label">Real PII Exposed</div>
-                        </div>
-                        <div class="showcase-metric">
-                            <div class="val">40%</div>
-                            <div class="label">Testing Cost Reduction</div>
-                        </div>
+                    <div class="demo-body">
+                        <span class="demo-ind">Healthcare · Research · QA</span>
+                        <h3>Synthetic Data</h3>
+                        <p>Realistic test data at any scale, with zero real PII.</p>
+                        <div class="demo-action"><a href="index.html#contact" class="btn-ask">Ask us about this →</a></div>
                     </div>
-                </div>
-
-                <!-- ========== 5. MEETING INTELLIGENCE ========== -->
-                <div class="showcase-card">
-                    <div class="showcase-top">
-                        <div class="showcase-mockup">
-                            <svg viewBox="0 0 520 360" xmlns="http://www.w3.org/2000/svg" fill="none">
-                                <rect width="520" height="360" rx="10" fill="#141414"/>
-                                <rect width="520" height="36" rx="10" fill="#1e1e1e"/>
-                                <rect y="26" width="520" height="10" fill="#1e1e1e"/>
-                                <circle cx="18" cy="18" r="5" fill="#ff5f57"/>
-                                <circle cx="36" cy="18" r="5" fill="#febc2e"/>
-                                <circle cx="54" cy="18" r="5" fill="#28c840"/>
-                                <text x="260" y="22" text-anchor="middle" fill="#666" font-size="11" font-family="system-ui">BaltimoreAI — Meeting Intelligence</text>
-
-                                <!-- Recording bar -->
-                                <rect x="16" y="50" width="488" height="40" rx="8" fill="#1a1a1a" stroke="#2a2a2a" stroke-width="1"/>
-                                <circle cx="34" cy="70" r="6" fill="#ef4444"><animate attributeName="opacity" values="0.4;1;0.4" dur="1.4s" repeatCount="indefinite"/></circle>
-                                <text x="48" y="74" fill="#fff" font-size="10" font-family="system-ui" font-weight="700">RECORDING</text>
-                                <text x="120" y="74" fill="#777" font-size="10" font-family="ui-monospace, monospace">00:24:18</text>
-                                <text x="200" y="74" fill="#666" font-size="9.5" font-family="system-ui">Wed Mar 12 · Smith v. Reyes deposition prep</text>
-
-                                <!-- Waveform -->
-                                <g transform="translate(420, 60)">
-                                    <rect x="0" y="6" width="2" height="8" fill="#0E6E8C"/>
-                                    <rect x="5" y="2" width="2" height="16" fill="#0E6E8C"/>
-                                    <rect x="10" y="4" width="2" height="12" fill="#0E6E8C"/>
-                                    <rect x="15" y="0" width="2" height="20" fill="#0E6E8C"/>
-                                    <rect x="20" y="3" width="2" height="14" fill="#0E6E8C"/>
-                                    <rect x="25" y="6" width="2" height="8" fill="#0E6E8C"/>
-                                    <rect x="30" y="1" width="2" height="18" fill="#0E6E8C"/>
-                                    <rect x="35" y="4" width="2" height="12" fill="#0E6E8C"/>
-                                    <rect x="40" y="2" width="2" height="16" fill="#0E6E8C"/>
-                                    <rect x="45" y="5" width="2" height="10" fill="#0E6E8C"/>
-                                    <rect x="50" y="0" width="2" height="20" fill="#0E6E8C"/>
-                                    <rect x="55" y="3" width="2" height="14" fill="#0E6E8C"/>
-                                    <rect x="60" y="6" width="2" height="8" fill="#0E6E8C"/>
-                                </g>
-
-                                <!-- Transcript -->
-                                <text x="16" y="112" fill="#888" font-size="9" font-family="system-ui" font-weight="700">LIVE TRANSCRIPT</text>
-                                <text x="16" y="132" fill="#7ab0d1" font-size="9.5" font-family="system-ui" font-weight="600">Counsel Reyes (00:23:42)</text>
-                                <text x="16" y="146" fill="#bbb" font-size="10" font-family="system-ui">…we'll need the chain-of-custody documents from</text>
-                                <text x="16" y="160" fill="#bbb" font-size="10" font-family="system-ui">the lab by Friday, otherwise the timeline slips into</text>
-                                <text x="16" y="174" fill="#bbb" font-size="10" font-family="system-ui">April. Karen, can you reach out to Dr. Holcomb?</text>
-                                <text x="16" y="194" fill="#7ab0d1" font-size="9.5" font-family="system-ui" font-weight="600">Karen Park (00:24:01)</text>
-                                <text x="16" y="208" fill="#bbb" font-size="10" font-family="system-ui">Yes — I'll send a request today and CC Marcus.</text>
-
-                                <!-- Action items panel -->
-                                <rect x="280" y="100" width="224" height="240" rx="8" fill="#1a1a1a" stroke="#2a2a2a" stroke-width="1"/>
-                                <text x="296" y="120" fill="#0E6E8C" font-size="9" font-family="system-ui" font-weight="700">⚡ ACTION ITEMS · 4 detected</text>
-
-                                <rect x="296" y="132" width="192" height="44" rx="6" fill="#0f0f0f" stroke="#222" stroke-width="0.5"/>
-                                <rect x="296" y="132" width="3" height="44" fill="#0E6E8C"/>
-                                <text x="306" y="146" fill="#ddd" font-size="9" font-family="system-ui" font-weight="600">Email Dr. Holcomb re: chain-of-</text>
-                                <text x="306" y="158" fill="#ddd" font-size="9" font-family="system-ui" font-weight="600">custody documents</text>
-                                <text x="306" y="170" fill="#777" font-size="8" font-family="system-ui">Karen Park · due Fri Mar 14</text>
-
-                                <rect x="296" y="182" width="192" height="44" rx="6" fill="#0f0f0f" stroke="#222" stroke-width="0.5"/>
-                                <rect x="296" y="182" width="3" height="44" fill="#0E6E8C"/>
-                                <text x="306" y="196" fill="#ddd" font-size="9" font-family="system-ui" font-weight="600">CC Marcus on the lab request</text>
-                                <text x="306" y="208" fill="#ddd" font-size="9" font-family="system-ui" font-weight="600">thread</text>
-                                <text x="306" y="220" fill="#777" font-size="8" font-family="system-ui">Karen Park · today</text>
-
-                                <rect x="296" y="232" width="192" height="44" rx="6" fill="#0f0f0f" stroke="#222" stroke-width="0.5"/>
-                                <rect x="296" y="232" width="3" height="44" fill="#0E6E8C"/>
-                                <text x="306" y="246" fill="#ddd" font-size="9" font-family="system-ui" font-weight="600">Reschedule depo if docs slip</text>
-                                <text x="306" y="258" fill="#ddd" font-size="9" font-family="system-ui" font-weight="600">past Friday</text>
-                                <text x="306" y="270" fill="#777" font-size="8" font-family="system-ui">Counsel Reyes · contingent</text>
-
-                                <rect x="296" y="282" width="192" height="44" rx="6" fill="#0f0f0f" stroke="#222" stroke-width="0.5"/>
-                                <rect x="296" y="282" width="3" height="44" fill="#0E6E8C"/>
-                                <text x="306" y="296" fill="#ddd" font-size="9" font-family="system-ui" font-weight="600">Update case file with new</text>
-                                <text x="306" y="308" fill="#ddd" font-size="9" font-family="system-ui" font-weight="600">timeline before Wed prep</text>
-                                <text x="306" y="320" fill="#777" font-size="8" font-family="system-ui">Marcus Lee · Tue Mar 11</text>
-
-                                <!-- Footer -->
-                                <rect x="16" y="320" width="250" height="22" rx="6" fill="rgba(14,110,140,0.12)" stroke="rgba(14,110,140,0.4)" stroke-width="0.5"/>
-                                <text x="28" y="335" fill="#0E6E8C" font-size="9" font-family="system-ui" font-weight="700">📨 Auto-send summary to attendees</text>
-                            </svg>
-                        </div>
-                        <div class="showcase-info">
-                            <span class="showcase-industry">Legal · Professional Services</span>
-                            <h3>Meeting Intelligence</h3>
-                            <p>Record a meeting, deposition, or client call. Get back a clean transcript, a one-paragraph summary, and a list of action items with assignees and due dates. Distributed to attendees automatically.</p>
-                            <div class="showcase-tags">
-                                <span>Transcription</span>
-                                <span>Summarization</span>
-                                <span>Action Items</span>
-                            </div>
-                            <p class="showcase-note">Speaker-attributed. PII redaction available. Stays inside your firm's network.</p>
-                        </div>
-                    </div>
-                    <div class="showcase-metrics">
-                        <div class="showcase-metric">
-                            <div class="val">2 min</div>
-                            <div class="label">Summary Ready</div>
-                        </div>
-                        <div class="showcase-metric">
-                            <div class="val">95%</div>
-                            <div class="label">Speaker Accuracy</div>
-                        </div>
-                        <div class="showcase-metric">
-                            <div class="val">~6 hr/wk</div>
-                            <div class="label">Saved Per Attorney</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- ========== 6. DEMAND FORECASTING ========== -->
-                <div class="showcase-card">
-                    <div class="showcase-top">
-                        <div class="showcase-mockup">
-                            <svg viewBox="0 0 520 360" xmlns="http://www.w3.org/2000/svg" fill="none">
+                </article>
+                <article class="demo-card" data-tags="retail">
+                    <div class="demo-mock">
+                        <div class="frame"><svg viewBox="0 0 520 360" xmlns="http://www.w3.org/2000/svg" fill="none">
                                 <rect width="520" height="360" rx="10" fill="#141414"/>
                                 <rect width="520" height="36" rx="10" fill="#1e1e1e"/>
                                 <rect y="26" width="520" height="10" fill="#1e1e1e"/>
@@ -1243,41 +964,19 @@
 
                                 <rect x="370" y="310" width="122" height="22" rx="5" fill="#0E6E8C"/>
                                 <text x="431" y="324" text-anchor="middle" fill="#fff" font-size="9" font-family="system-ui" font-weight="700">Auto-create POs</text>
-                            </svg>
-                        </div>
-                        <div class="showcase-info">
-                            <span class="showcase-industry">Retail · Distribution</span>
-                            <h3>Demand Forecasting</h3>
-                            <p>Predict what's going to sell, when, and where. Combines your sales history with seasonality, holidays, and external signals to keep stock right and trigger reorders before you run out.</p>
-                            <div class="showcase-tags">
-                                <span>Forecasting</span>
-                                <span>Inventory</span>
-                                <span>Auto-Reorder</span>
-                            </div>
-                            <p class="showcase-note">Connects to Shopify, NetSuite, QuickBooks, and most warehouse systems.</p>
-                        </div>
+                            </svg></div>
+                        
                     </div>
-                    <div class="showcase-metrics">
-                        <div class="showcase-metric">
-                            <div class="val">92%+</div>
-                            <div class="label">Forecast Accuracy</div>
-                        </div>
-                        <div class="showcase-metric">
-                            <div class="val">−18%</div>
-                            <div class="label">Stockouts</div>
-                        </div>
-                        <div class="showcase-metric">
-                            <div class="val">−22%</div>
-                            <div class="label">Excess Inventory</div>
-                        </div>
+                    <div class="demo-body">
+                        <span class="demo-ind">Retail · Distribution</span>
+                        <h3>Demand Forecasting</h3>
+                        <p>Know what sells when, and reorder before you run out.</p>
+                        <div class="demo-action"><a href="index.html#contact" class="btn-ask">Ask us about this →</a></div>
                     </div>
-                </div>
-
-                <!-- ========== 7. VISUAL QA ========== -->
-                <div class="showcase-card">
-                    <div class="showcase-top">
-                        <div class="showcase-mockup">
-                            <svg viewBox="0 0 520 360" xmlns="http://www.w3.org/2000/svg" fill="none">
+                </article>
+                <article class="demo-card" data-tags="mfg">
+                    <div class="demo-mock">
+                        <div class="frame"><svg viewBox="0 0 520 360" xmlns="http://www.w3.org/2000/svg" fill="none">
                                 <rect width="520" height="360" rx="10" fill="#141414"/>
                                 <rect width="520" height="36" rx="10" fill="#1e1e1e"/>
                                 <rect y="26" width="520" height="10" fill="#1e1e1e"/>
@@ -1353,136 +1052,37 @@
                                 <text x="180" y="332" fill="#facc15" font-size="9" font-family="system-ui">3 cracks in last hour → flag forge temp drift</text>
                                 <rect x="396" y="316" width="100" height="18" rx="4" fill="#0E6E8C"/>
                                 <text x="446" y="328" text-anchor="middle" fill="#fff" font-size="9" font-family="system-ui" font-weight="700">View dashboard</text>
-                            </svg>
-                        </div>
-                        <div class="showcase-info">
-                            <span class="showcase-industry">Manufacturing · QA</span>
-                            <h3>Visual Quality Inspection</h3>
-                            <p>A camera over your line plus our model = 100% inspection at 40 ms per part. Catches surface defects, missing components, and assembly errors. Flags upstream drift before it ruins a batch.</p>
-                            <div class="showcase-tags">
-                                <span>Computer Vision</span>
-                                <span>Defect Detection</span>
-                                <span>Edge Inference</span>
-                            </div>
-                            <p class="showcase-note">Trains on your parts. Runs on a small edge box on the floor. No cloud round trip.</p>
-                        </div>
+                            </svg></div>
+                        
                     </div>
-                    <div class="showcase-metrics">
-                        <div class="showcase-metric">
-                            <div class="val">42 ms</div>
-                            <div class="label">Per-Part Inference</div>
-                        </div>
-                        <div class="showcase-metric">
-                            <div class="val">100%</div>
-                            <div class="label">Coverage</div>
-                        </div>
-                        <div class="showcase-metric">
-                            <div class="val">−63%</div>
-                            <div class="label">Escape Defects</div>
-                        </div>
+                    <div class="demo-body">
+                        <span class="demo-ind">Manufacturing</span>
+                        <h3>Visual Quality Inspection</h3>
+                        <p>A camera on the line catches every defect at 40 ms a part.</p>
+                        <div class="demo-action"><a href="index.html#contact" class="btn-ask">Ask us about this →</a></div>
                     </div>
-                </div>
+                </article>
+            <div class="demo-empty" id="empty">Nothing tagged for that yet. <a href="index.html#contact" style="color:var(--brand-teal-dark);font-weight:700;">Tell us what you need →</a></div>
+        </div>
+    </section>
 
-                <!-- ========== 8. SYSTEM INTEGRATION ========== -->
-                <div class="showcase-card">
-                    <div class="showcase-top">
-                        <div class="showcase-mockup">
-                            <svg viewBox="0 0 520 360" xmlns="http://www.w3.org/2000/svg" fill="none">
-                                <rect width="520" height="360" rx="10" fill="#141414"/>
-                                <rect width="520" height="36" rx="10" fill="#1e1e1e"/>
-                                <rect y="26" width="520" height="10" fill="#1e1e1e"/>
-                                <circle cx="18" cy="18" r="5" fill="#ff5f57"/>
-                                <circle cx="36" cy="18" r="5" fill="#febc2e"/>
-                                <circle cx="54" cy="18" r="5" fill="#28c840"/>
-                                <text x="260" y="22" text-anchor="middle" fill="#666" font-size="11" font-family="system-ui">BaltimoreAI — System Integration</text>
-
-                                <!-- Center hub -->
-                                <circle cx="260" cy="170" r="44" fill="#1e1e1e" stroke="#0E6E8C" stroke-width="2"/>
-                                <text x="260" y="164" text-anchor="middle" fill="#0E6E8C" font-size="20">🤖</text>
-                                <text x="260" y="182" text-anchor="middle" fill="#fff" font-size="8" font-family="system-ui" font-weight="700">AI LAYER</text>
-
-                                <!-- Left nodes -->
-                                <rect x="30" y="60" width="110" height="50" rx="8" fill="#1a1a1a" stroke="#2C5F7C" stroke-width="1.2"/>
-                                <text x="85" y="82" text-anchor="middle" fill="#7ab0d1" font-size="9" font-family="system-ui" font-weight="700">ERP System</text>
-                                <text x="85" y="98" text-anchor="middle" fill="#555" font-size="7.5" font-family="system-ui">SAP / NetSuite</text>
-                                <line x1="140" y1="85" x2="218" y2="155" stroke="#2C5F7C" stroke-width="1" stroke-dasharray="3 3"/>
-                                <circle cx="179" cy="120" r="3" fill="#2C5F7C" opacity="0.5"><animate attributeName="opacity" values="0.2;0.8;0.2" dur="2s" repeatCount="indefinite"/></circle>
-
-                                <rect x="30" y="150" width="110" height="50" rx="8" fill="#1a1a1a" stroke="#2C5F7C" stroke-width="1.2"/>
-                                <text x="85" y="172" text-anchor="middle" fill="#7ab0d1" font-size="9" font-family="system-ui" font-weight="700">Database</text>
-                                <text x="85" y="188" text-anchor="middle" fill="#555" font-size="7.5" font-family="system-ui">PostgreSQL</text>
-                                <line x1="140" y1="175" x2="216" y2="170" stroke="#2C5F7C" stroke-width="1" stroke-dasharray="3 3"/>
-
-                                <rect x="30" y="240" width="110" height="50" rx="8" fill="#1a1a1a" stroke="#2C5F7C" stroke-width="1.2"/>
-                                <text x="85" y="262" text-anchor="middle" fill="#7ab0d1" font-size="9" font-family="system-ui" font-weight="700">Legacy CRM</text>
-                                <text x="85" y="278" text-anchor="middle" fill="#555" font-size="7.5" font-family="system-ui">Custom / On-Prem</text>
-                                <line x1="140" y1="265" x2="218" y2="190" stroke="#2C5F7C" stroke-width="1" stroke-dasharray="3 3"/>
-
-                                <!-- Right nodes -->
-                                <rect x="380" y="60" width="110" height="50" rx="8" fill="#1a1a1a" stroke="#4ade80" stroke-width="1.2"/>
-                                <text x="435" y="82" text-anchor="middle" fill="#4ade80" font-size="9" font-family="system-ui" font-weight="700">Slack / Teams</text>
-                                <text x="435" y="98" text-anchor="middle" fill="#555" font-size="7.5" font-family="system-ui">Notifications</text>
-                                <line x1="380" y1="85" x2="302" y2="155" stroke="#4ade80" stroke-width="1" stroke-dasharray="3 3"/>
-                                <circle cx="341" cy="120" r="3" fill="#4ade80" opacity="0.5"><animate attributeName="opacity" values="0.2;0.8;0.2" dur="2s" begin="0.5s" repeatCount="indefinite"/></circle>
-
-                                <rect x="380" y="150" width="110" height="50" rx="8" fill="#1a1a1a" stroke="#4ade80" stroke-width="1.2"/>
-                                <text x="435" y="172" text-anchor="middle" fill="#4ade80" font-size="9" font-family="system-ui" font-weight="700">Dashboard</text>
-                                <text x="435" y="188" text-anchor="middle" fill="#555" font-size="7.5" font-family="system-ui">Live Reporting</text>
-                                <line x1="380" y1="175" x2="304" y2="170" stroke="#4ade80" stroke-width="1" stroke-dasharray="3 3"/>
-
-                                <rect x="380" y="240" width="110" height="50" rx="8" fill="#1a1a1a" stroke="#4ade80" stroke-width="1.2"/>
-                                <text x="435" y="262" text-anchor="middle" fill="#4ade80" font-size="9" font-family="system-ui" font-weight="700">Email / SMTP</text>
-                                <text x="435" y="278" text-anchor="middle" fill="#555" font-size="7.5" font-family="system-ui">Auto-Responses</text>
-                                <line x1="380" y1="265" x2="302" y2="190" stroke="#4ade80" stroke-width="1" stroke-dasharray="3 3"/>
-
-                                <!-- Bottom status bar -->
-                                <rect x="16" y="316" width="488" height="30" rx="6" fill="#0d0d0d" stroke="#1e1e1e" stroke-width="1"/>
-                                <circle cx="32" cy="331" r="4" fill="#4ade80"/>
-                                <text x="44" y="335" fill="#999" font-size="9" font-family="system-ui">6 systems connected</text>
-                                <text x="260" y="335" fill="#555" font-size="9" font-family="system-ui">Last sync: 2 min ago</text>
-                                <text x="430" y="335" fill="#4ade80" font-size="9" font-family="system-ui" font-weight="600">All healthy ●</text>
-                            </svg>
-                        </div>
-                        <div class="showcase-info">
-                            <span class="showcase-industry">Any Existing Stack</span>
-                            <h3>System Integration</h3>
-                            <p>We connect AI to the tools you already use: ERPs, databases, CRMs, email, and legacy systems. No rip-and-replace. The AI layer sits on top and makes everything work together.</p>
-                            <div class="showcase-tags">
-                                <span>Connectors</span>
-                                <span>Data Sync</span>
-                                <span>Legacy Systems</span>
-                            </div>
-                            <p class="showcase-note">Works with what you have. No vendor lock-in.</p>
-                        </div>
-                    </div>
-                    <div class="showcase-metrics">
-                        <div class="showcase-metric">
-                            <div class="val">6+</div>
-                            <div class="label">Systems Connected</div>
-                        </div>
-                        <div class="showcase-metric">
-                            <div class="val">0</div>
-                            <div class="label">Systems Replaced</div>
-                        </div>
-                        <div class="showcase-metric">
-                            <div class="val">2–4 wk</div>
-                            <div class="label">Typical Deploy Time</div>
-                        </div>
-                    </div>
-                </div>
-
+    <!-- HOW WE SHIP -->
+    <section class="ship-strip">
+        <div class="ship-inner">
+            <div class="txt">
+                <strong>How we make sure these are right</strong>
+                <span>Measure → improve → verify, on a live model.</span>
             </div>
+            <a href="demos/eval-lab.html">Run the Eval Lab →</a>
         </div>
     </section>
 
     <!-- CTA -->
-    <section style="padding: 0 2rem 120px;">
-        <div class="container" style="padding-bottom: 0;">
-            <div class="cta-banner">
-                <h2>Let's talk about your workflow</h2>
-                <p>Free 30-minute call. We'll map your processes and show you where AI fits.</p>
-                <a href="index.html#contact" class="cta-button">Get Started</a>
-            </div>
+    <section class="cta-section">
+        <div class="cta-banner">
+            <h2>Which one is yours?</h2>
+            <p>Free 30-minute call. Bring the workflow that annoys you most.</p>
+            <a href="index.html#contact" class="cta-button">Book a call</a>
         </div>
     </section>
 
@@ -1514,5 +1114,27 @@
         </div>
     </footer>
 
+    <script>
+        (function () {
+            var chips = document.querySelectorAll('#filters .chip');
+            var cards = document.querySelectorAll('#grid .demo-card');
+            var empty = document.getElementById('empty');
+            function apply(f) {
+                var shown = 0;
+                cards.forEach(function (c) {
+                    var on = f === 'all' || (' ' + c.dataset.tags + ' ').indexOf(' ' + f + ' ') !== -1;
+                    c.classList.toggle('hide', !on);
+                    c.classList.remove('reveal');
+                    if (on) { void c.offsetWidth; c.classList.add('reveal'); shown++; }
+                });
+                empty.classList.toggle('show', shown === 0);
+                chips.forEach(function (ch) { ch.classList.toggle('on', ch.dataset.filter === f); });
+                if (history.replaceState) history.replaceState(null, '', f === 'all' ? location.pathname : '#' + f);
+            }
+            chips.forEach(function (ch) { ch.addEventListener('click', function () { apply(ch.dataset.filter); }); });
+            var h = location.hash.replace('#', '');
+            if (h && document.querySelector('#filters .chip[data-filter="' + h + '"]')) apply(h);
+        })();
+    </script>
 </body>
 </html>

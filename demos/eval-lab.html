@@ -60,7 +60,7 @@
         .page-hero {
             position: relative;
             background: linear-gradient(135deg, var(--brand-teal) 0%, var(--brand-teal-dark) 100%);
-            color: var(--white); padding: 130px 2rem 50px; text-align: center; overflow: hidden;
+            color: var(--white); padding: 120px 2rem 44px; text-align: center; overflow: hidden;
         }
         .page-hero::before {
             content: ''; position: absolute; inset: 0;
@@ -122,8 +122,10 @@
         .console-head .meta { font-size: 0.72rem; color: var(--ink-faint); }
         .console-body { padding: 16px; display: flex; flex-direction: column; gap: 14px; min-height: 320px; }
 
-        .empty-state { text-align: center; color: var(--ink-faint); padding: 60px 20px; }
-        .empty-state .big { font-size: 2.2rem; margin-bottom: 10px; }
+        .empty-state { text-align: center; color: var(--ink-faint); padding: 56px 20px; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+        .empty-state .lead { font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; color: var(--brand-teal-dark); }
+        .empty-state .sub { font-size: 0.82rem; }
+        .run-btn.big-run { width: auto; padding: 16px 34px; font-size: 1rem; }
 
         .case {
             border: 1px solid var(--border); border-radius: 12px; overflow: hidden;
@@ -199,7 +201,12 @@
         /* --- TEMPORAL PROBE --- */
         .probe-section { max-width: 1100px; margin: 0 auto; padding: 0 20px 80px; }
         .probe-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; box-shadow: 0 6px 24px rgba(15,26,32,0.06); }
-        .probe-head { padding: 22px 24px; border-bottom: 1px solid var(--border); background: var(--section-alt); }
+        .probe-head { padding: 22px 24px; background: var(--section-alt); cursor: pointer; list-style: none; position: relative; }
+        .probe-head::-webkit-details-marker { display: none; }
+        .probe-head::after { content: '+'; position: absolute; right: 24px; top: 20px; font-size: 1.6rem; font-weight: 300; color: var(--brand-teal); line-height: 1; }
+        details[open] .probe-head { border-bottom: 1px solid var(--border); }
+        details[open] .probe-head::after { content: '−'; }
+        .probe-toggle { display: inline-block; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; color: var(--brand-teal-dark); margin-bottom: 6px; }
         .probe-head h2 { font-size: 1.3rem; margin-bottom: 4px; }
         .probe-head p { font-size: 0.9rem; color: var(--ink-muted); max-width: 720px; }
         .probe-body { padding: 22px 24px; }
@@ -233,6 +240,11 @@
             .stepper { flex-direction: column; }
             .page-hero h1 { font-size: 1.9rem; }
         }
+        @media (max-width: 600px) {
+            .navbar { padding: 0 1rem; }
+            .navbar-links { gap: 1rem; }
+            .navbar-links li:not(:last-child) { display: none; }
+        }
     </style>
 </head>
 <body>
@@ -253,14 +265,14 @@
 
 <section class="page-hero">
     <span class="crumb"><a href="../demos.html">← Demos</a></span>
-    <h1>Eval Lab — Live Demo</h1>
-    <p>This is how we actually ship AI: measure it, improve it, then prove the improvement didn't break anything. Every answer below comes from a real model call — scored live, no mocks.</p>
+    <h1>Eval Lab</h1>
+    <p>Watch a prompt change move real scores, then gate the release. Every answer is a live model call.</p>
     <span class="live-pill"><span class="dot"></span> Live AI</span>
 </section>
 
 <!-- STEPPER -->
 <div class="stepper" id="stepper">
-    <div class="step" data-step="1"><div class="num">1</div><div><span class="label">Evaluate</span><strong>Score the baseline</strong></div></div>
+    <div class="step active" data-step="1"><div class="num">1</div><div><span class="label">Evaluate</span><strong>Score the baseline</strong></div></div>
     <div class="step" data-step="2"><div class="num">2</div><div><span class="label">Improve</span><strong>Move the numbers</strong></div></div>
     <div class="step" data-step="3"><div class="num">3</div><div><span class="label">Verify</span><strong>Gate the release</strong></div></div>
 </div>
@@ -275,14 +287,22 @@
         </div>
         <div class="console-body" id="console">
             <div class="empty-state" id="emptyState">
-                <div class="big">🧪</div>
-                <p>Press <strong>Run baseline eval</strong> to fire the test set at the live model.<br>Each answer is scored on grounding and factual accuracy as it streams in.</p>
+                <p class="lead">Step 1 · Score the bot as it is today</p>
+                <button class="run-btn big-run" id="runBtnMain">▶ Ask it 4 questions</button>
+                <p class="sub">About 20 seconds. Real model, real scoring, no mocks.</p>
             </div>
         </div>
     </div>
 
     <!-- SIDE -->
     <div class="side">
+        <div class="panel" id="runPanel" style="display:none;">
+            <button class="run-btn" id="runBtn">▶ Ask it 4 questions</button>
+            <p class="run-hint" id="runHint">Step 1 of 3 · ~20s · live model calls through our rate-limited proxy.</p>
+            <button class="reset-link" id="resetBtn" style="display:none;">Reset demo</button>
+            <div id="errSlot"></div>
+        </div>
+
         <div class="panel">
             <h3 id="boardTitle">Scoreboard</h3>
             <div class="col-heads"><span>Metric</span><span id="colA">Base</span><span id="colB">Δ</span></div>
@@ -292,13 +312,6 @@
                 <div class="metric-row"><span class="name">Overall pass rate</span><span class="val" id="m-pass-a">—</span><span class="delta" id="m-pass-d"></span></div>
             </div>
             <div class="gate" id="gate">Verification gate — not run</div>
-        </div>
-
-        <div class="panel">
-            <button class="run-btn" id="runBtn">Run baseline eval</button>
-            <p class="run-hint" id="runHint">4 test cases · ~20s · real model calls through our rate-limited proxy.</p>
-            <button class="reset-link" id="resetBtn" style="display:none;">Reset demo</button>
-            <div id="errSlot"></div>
         </div>
 
         <div class="panel">
@@ -318,11 +331,12 @@
 
 <!-- TEMPORAL PROBE -->
 <section class="probe-section">
-    <div class="probe-card">
-        <div class="probe-head">
-            <h2>Going deeper — confidence, temporality &amp; abstention</h2>
-            <p>Accuracy isn't enough. A trustworthy assistant knows <em>when</em> it knows. Same question, same model, same documents — but move the clock forward and watch it grow less confident and refuse to guess once the records go stale. Each answer self-reports a confidence level and whether it's answerable from the corpus.</p>
-        </div>
+    <details class="probe-card">
+        <summary class="probe-head">
+            <span class="probe-toggle">Go deeper</span>
+            <h2>Does it know when it <em>doesn't</em> know?</h2>
+            <p>Same question, same model, same documents. Move the clock forward and watch it lose confidence, then refuse to guess once the records go stale.</p>
+        </summary>
         <div class="probe-body">
             <div class="probe-q">
                 <span class="lead">Probe question</span>
@@ -337,7 +351,7 @@
                 <strong>What just happened:</strong> the corpus tops out at the FY2023 council minutes — $9.4M was <em>enacted</em>, while $14M for FY2024 was only <em>proposed</em> (vote scheduled Oct 2023, outcome not in the docs). So as the as-of date passes that record, the model stops asserting a figure, drops its confidence, and abstains rather than hallucinating a current budget. That's calibration and temporal awareness — not just accuracy.
             </div>
         </div>
-    </div>
+    </details>
 </section>
 
 <footer>
@@ -469,8 +483,8 @@
 
     function renderScoreChips(chipsEl, s, c) {
         chipsEl.innerHTML =
-            chip((s.citationOk ? '✓' : '✗') + ' Cited ' + (s.citationOk ? 'correctly' : 'missing/wrong'), s.citationOk ? 'pass' : 'fail') +
-            chip((s.factOk ? '✓' : '✗') + ' Fact: ' + c.factLabel, s.factOk ? 'pass' : 'fail');
+            chip(s.citationOk ? '✓ Cited its source' : '✗ No source cited', s.citationOk ? 'pass' : 'fail') +
+            chip((s.factOk ? '✓ Right answer: ' : '✗ Missed: ') + c.factLabel, s.factOk ? 'pass' : 'fail');
     }
 
     function pct(n, d) { return d === 0 ? 0 : Math.round((n / d) * 100); }
@@ -565,6 +579,7 @@
         try {
             if (phase === 0) {
                 el('emptyState').remove();
+                el('runPanel').style.display = 'block';
                 el('consoleTitle').textContent = 'Baseline run — v1 (casual prompt)';
                 setStep(1, 'active');
                 el('runBtn').textContent = 'Running…';
@@ -575,8 +590,8 @@
                 setMetric('pass', a.pass, null);
                 setStep(1, 'done');
                 phase = 1;
-                el('runBtn').textContent = 'Run improved variant →';
-                el('runHint').textContent = 'Same model, a better prompt: explicit citation + figure requirements. Watch the scores move.';
+                el('runBtn').textContent = 'Now try a better prompt →';
+                el('runHint').textContent = 'Step 2 of 3 · same model, same questions. The prompt now demands a citation and the exact figure.';
                 el('resetBtn').style.display = 'block';
 
             } else if (phase === 1) {
@@ -593,8 +608,8 @@
                 setMetric('pass', base.pass, imp.pass);
                 setStep(2, 'done');
                 phase = 2;
-                el('runBtn').textContent = 'Run verification gate →';
-                el('runHint').textContent = 'Before shipping v2: confirm guardrails still hold and a known-good answer didn\'t regress.';
+                el('runBtn').textContent = 'Check nothing broke →';
+                el('runHint').textContent = 'Step 3 of 3 · before shipping v2: an off-topic question must still be refused, and a known-good answer must still pass.';
 
             } else if (phase === 2) {
                 el('consoleTitle').textContent = 'Verification — release gate';
@@ -618,9 +633,9 @@
             showError(e.message || 'Something went wrong. The demo has a daily limit — try again later.');
             // revert active step highlight
             [1,2,3].forEach(n => { const s = document.querySelector('.step[data-step="'+n+'"]'); if (s.classList.contains('active')) s.classList.remove('active'); });
-            el('runBtn').textContent = phase === 0 ? 'Retry baseline eval'
-                : phase === 1 ? 'Retry improved variant →'
-                : 'Retry verification gate →';
+            el('runBtn').textContent = phase === 0 ? 'Retry →'
+                : phase === 1 ? 'Retry the better prompt →'
+                : 'Retry the check →';
         } finally {
             busy = false;
             if (phase < 3) el('runBtn').disabled = false;
@@ -630,6 +645,7 @@
     function onReset() { location.reload(); }
 
     el('runBtn').addEventListener('click', onRun);
+    el('runBtnMain').addEventListener('click', onRun);
     el('resetBtn').addEventListener('click', onReset);
 
     // ── Temporal probe: same question, different as-of dates ──
