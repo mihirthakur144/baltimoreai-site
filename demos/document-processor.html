@@ -176,7 +176,9 @@
             text-align: center; padding: 30px;
         }
         .empty-state .icon { font-size: 2.5rem; margin-bottom: 14px; opacity: 0.5; }
-        .empty-state p { font-size: 0.9rem; max-width: 240px; }
+        .empty-state p { font-size: 0.95rem; max-width: 260px; color: var(--ink-muted); }
+        .empty-state .sub { font-size: 0.8rem; color: var(--ink-faint); margin-top: 12px; }
+        .run-btn.big-run { padding: 14px 30px; font-size: 0.95rem; margin-top: 4px; }
 
         .field {
             background: var(--section-alt); border: 1px solid var(--border);
@@ -309,8 +311,9 @@
             <div class="panel-body">
                 <div id="fieldsContainer">
                     <div class="empty-state" id="emptyState">
-                        <div class="icon">⌛</div>
-                        <p>Click "Process Document" to extract structured data from the form on the left.</p>
+                        <p>Pull the fields out of the form on the left.</p>
+                        <button class="run-btn big-run">▶ Process Document</button>
+                        <p class="sub">Pick a different sample above to try another document type.</p>
                     </div>
                 </div>
                 <div class="summary-bar" id="summaryBar">
@@ -442,8 +445,9 @@
         docStat.textContent = DOCS[key].stat;
         fieldsContainer.innerHTML = `
             <div class="empty-state">
-                <div class="icon">⌛</div>
-                <p>Click "Process Document" to extract structured data from the form on the left.</p>
+                <p>Pull the fields out of the form on the left.</p>
+                <button class="run-btn big-run">▶ Process Document</button>
+                <p class="sub">Pick a different sample above to try another document type.</p>
             </div>
         `;
         fieldStat.textContent = '— waiting —';
@@ -526,6 +530,7 @@
     }
 
     runBtn.addEventListener('click', process);
+    fieldsContainer.addEventListener('click', (e) => { const b = e.target.closest('.run-btn'); if (b) { b.disabled = true; process(); } });
 
     loadDoc('intake');
 </script>

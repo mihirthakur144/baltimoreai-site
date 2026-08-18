@@ -399,7 +399,7 @@
     const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 
     function escapeHtml(t) { return t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
-    function renderCites(t) { return escapeHtml(t).replace(/\[([^\]]+)\]/g, '<span class="cite">$1</span>'); }
+    function renderCites(t) { return escapeHtml(t).replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>').replace(/\[([^\]]+)\]/g, '<span class="cite">$1</span>'); }
 
     function scoreAnswer(answer, c) {
         const lower = answer.toLowerCase();
@@ -409,8 +409,10 @@
         return { citationOk, factOk, pass: citationOk && factOk };
     }
 
-    // ── Worker call (streams, returns full text). Retries once on rate limit. ──
-    async function callWorker(content, onDelta, retried) {
+    // ── Worker call (streams, returns full text). Backs off and retries on rate limit. ──
+    const RETRY_WAITS = [10000, 15000, 20000];
+    async function callWorker(content, onDelta, attempt) {
+        attempt = attempt || 0;
         let res;
         try {
             res = await fetch(WORKER_URL, {
@@ -421,9 +423,13 @@
         } catch (e) {
             throw new Error('Network error reaching the model proxy.');
         }
-        if (res.status === 429 && !retried) {
-            await sleep(8000);
-            return callWorker(content, onDelta, true);
+        if (res.status === 429 && attempt < RETRY_WAITS.length) {
+            let left = RETRY_WAITS[attempt] / 1000;
+            while (left > 0) {
+                onDelta('⏳ Demo is busy — retrying in ' + left + 's…');
+                await sleep(1000); left -= 1;
+            }
+            return callWorker(content, onDelta, attempt + 1);
         }
         if (!res.ok || !res.body) {
             let detail = '';
@@ -578,7 +584,7 @@
 
         try {
             if (phase === 0) {
-                el('emptyState').remove();
+                const es = el('emptyState'); if (es) es.remove();
                 el('runPanel').style.display = 'block';
                 el('consoleTitle').textContent = 'Baseline run — v1 (casual prompt)';
                 setStep(1, 'active');

@@ -304,7 +304,7 @@
         </div>
 
         <div class="side-card">
-            <h3>Source corpus (5 docs)</h3>
+            <h3>Source corpus (6 docs)</h3>
             <div class="corpus">
                 <div class="corpus-doc"><span class="icon">📄</span> Housing Code Ch. 116 — Vacant Buildings</div>
                 <div class="corpus-doc"><span class="icon">📄</span> Sanitation Code §3-201 — Bulk Trash</div>
@@ -336,7 +336,7 @@
 
     function renderCitations(text) {
         const escaped = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-        return escaped.replace(/\[([^\]]+)\]/g, '<span class="cite">$1</span>');
+        return escaped.replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>').replace(/\[([^\]]+)\]/g, '<span class="cite">$1</span>');
     }
 
     function addMessage(role, text) {

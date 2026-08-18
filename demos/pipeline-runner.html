@@ -259,6 +259,7 @@
             .navbar-links { gap: 1rem; }
             .navbar-links li:not(:last-child) { display: none; }
         }
+        .panel { scroll-margin-top: 84px; }
     </style>
 </head>
 <body>
@@ -533,6 +534,9 @@
         runBtn.textContent = '⏳ Running…';
         resetStages();
         logEl.innerHTML = '';
+        // bring the stages + log into view so the run is watchable on a laptop screen
+        const stagesPanel = document.getElementById('stages').closest('.panel');
+        stagesPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
         const cfg = SCENARIOS[current];
         const runId = '#' + (1800 + Math.floor(Math.random() * 200));
