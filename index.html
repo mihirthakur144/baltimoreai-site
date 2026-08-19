@@ -304,9 +304,9 @@
         }
 
         /* --- TEAM --- */
-        .team-section { background: var(--page-bg); padding: 10px 2rem 70px; }
+        .team-section { background: var(--page-bg); padding: 64px 2rem 10px; }
         .team-inner { max-width: 900px; margin: 0 auto; }
-        .team-head { text-align: center; margin-bottom: 30px; }
+        .team-head { text-align: center; margin-bottom: 26px; }
         .team-head h2 { font-size: 1.9rem; color: var(--ink); margin-bottom: 6px; }
         .team-head h2 .accent { color: var(--brand-teal); }
         .team-head p { color: var(--ink-muted); font-size: 1rem; }
@@ -821,6 +821,35 @@
         </div>
     </section>
 
+    <!-- WHO YOU'D WORK WITH -->
+    <section class="team-section">
+        <div class="team-inner">
+            <div class="team-head">
+                <h2>Who you'd <span class="accent">work with</span></h2>
+            </div>
+            <div class="team-grid">
+                <div class="person">
+                    <img src="assets/team/will.jpg" alt="Will Cole" width="112" height="112">
+                    <div>
+                        <h3>Will Cole</h3>
+                        <p class="role">Engineering</p>
+                        <p class="bio">NIH chemistry data science. Federal government cloud engineer.</p>
+                        <p class="links"><a href="https://www.linkedin.com/in/williamtimothycole/" target="_blank" rel="noopener">LinkedIn</a></p>
+                    </div>
+                </div>
+                <div class="person">
+                    <img src="assets/team/mihir.jpg" alt="Mihir Thakur" width="112" height="112">
+                    <div>
+                        <h3>Mihir Thakur</h3>
+                        <p class="role">Engineering</p>
+                        <p class="bio">AWS cloud, databases, and scaling systems from prototype to production.</p>
+                        <p class="links"><a href="https://www.linkedin.com/in/mihir-thakur-985479182/" target="_blank" rel="noopener">LinkedIn</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- OPINIONS -->
     <section class="opinions">
         <div class="opinions-inner">
@@ -835,36 +864,6 @@
             <div class="opinion">
                 <span class="num">03</span>
                 <p>Written scope and price before any work starts.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- WHO YOU'D WORK WITH -->
-    <section class="team-section">
-        <div class="team-inner">
-            <div class="team-head">
-                <h2>Who you'd <span class="accent">work with</span></h2>
-                <p>Two people. You'll talk to one of us on the first call and the last.</p>
-            </div>
-            <div class="team-grid">
-                <div class="person">
-                    <img src="assets/team/will.jpg" alt="Will Cole" width="112" height="112">
-                    <div>
-                        <h3>Will Cole</h3>
-                        <p class="role">Founder</p>
-                        <p class="bio">NIH data science, then federal cloud. Runs the audits.</p>
-                        <p class="links"><a href="https://www.linkedin.com/in/williamtimothycole/" target="_blank" rel="noopener">LinkedIn</a></p>
-                    </div>
-                </div>
-                <div class="person">
-                    <img src="assets/team/mihir.jpg" alt="Mihir Thakur" width="112" height="112">
-                    <div>
-                        <h3>Mihir Thakur</h3>
-                        <p class="role">Engineering</p>
-                        <p class="bio">Builds the systems and the eval harnesses that score them.</p>
-                        <p class="links"><a href="https://www.linkedin.com/in/mihir-thakur-985479182/" target="_blank" rel="noopener">LinkedIn</a></p>
-                    </div>
-                </div>
             </div>
         </div>
     </section>
@@ -1224,23 +1223,39 @@
                 videoId: VID, width: 200, height: 112,
                 playerVars: { autoplay: 1, playsinline: 1, rel: 0, modestbranding: 1, controls: 0 },
                 events: {
-                    onReady: function () { ready = true; player.setVolume(60); try { player.playVideo(); } catch (e) {} },
+                    onReady: function () {
+                        ready = true; player.setVolume(60);
+                        try { player.playVideo(); } catch (e) {}
+                        // If the browser refuses autoplay-with-sound, start muted (always allowed) and unmute on first gesture.
+                        setTimeout(function () {
+                            if (player.getPlayerState() !== YT.PlayerState.PLAYING) {
+                                muted = true; document.getElementById('npMute').textContent = '🔇';
+                                try { player.mute(); player.playVideo(); } catch (e) {}
+                                hint.textContent = 'tap anywhere for sound'; hint.hidden = false;
+                            }
+                        }, 1200);
+                    },
                     onStateChange: function (e) {
-                        if (e.data === YT.PlayerState.PLAYING) { started = true; np.classList.add('playing'); hint.hidden = true; }
+                        if (e.data === YT.PlayerState.PLAYING) { started = true; np.classList.add('playing'); if (!muted) hint.hidden = true; }
                         if (e.data === YT.PlayerState.PAUSED || e.data === YT.PlayerState.ENDED) np.classList.remove('playing');
                     }
                 }
             });
         };
         // Browsers block autoplay-with-sound until the visitor interacts; start on first gesture.
+        var unmutedByGesture = false;
         function kick() {
-            if (started || !ready) return;
-            try { player.unMute(); player.playVideo(); } catch (e) {}
+            if (!ready || unmutedByGesture) return;
+            try {
+                if (muted) { player.unMute(); muted = false; document.getElementById('npMute').textContent = '🔊'; }
+                if (player.getPlayerState() !== YT.PlayerState.PLAYING) player.playVideo();
+                unmutedByGesture = true; hint.hidden = true;
+            } catch (e) {}
         }
-        ['pointerdown', 'keydown', 'touchstart', 'scroll'].forEach(function (ev) {
-            window.addEventListener(ev, kick, { passive: true, once: false });
+        // Only events that count as user activation can unlock sound (scroll does not).
+        ['pointerdown', 'keydown', 'touchend'].forEach(function (ev) {
+            window.addEventListener(ev, kick, { passive: true });
         });
-        setTimeout(function () { if (!started) hint.hidden = false; }, 1800);
 
         document.getElementById('npToggle').addEventListener('click', function (e) {
             e.stopPropagation(); if (!ready) return;
@@ -1248,6 +1263,7 @@
             if (st === YT.PlayerState.PLAYING) { player.pauseVideo(); this.textContent = '▶'; }
             else { player.playVideo(); this.textContent = '❚❚'; }
         });
+        document.getElementById('npMute').addEventListener('pointerdown', function (e) { e.stopPropagation(); unmutedByGesture = true; });
         document.getElementById('npMute').addEventListener('click', function (e) {
             e.stopPropagation(); if (!ready) return;
             muted = !muted; if (muted) player.mute(); else player.unMute(); this.textContent = muted ? '🔇' : '🔊';
