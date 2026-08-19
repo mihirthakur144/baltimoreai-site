@@ -318,16 +318,16 @@
 
         /* --- TEAM --- */
         .team-section { background: var(--page-bg); padding: 64px 2rem 70px; }
-        .team-inner { max-width: 900px; margin: 0 auto; }
+        .team-inner { max-width: 1100px; margin: 0 auto; }
         .team-head { text-align: center; margin-bottom: 26px; }
         .team-head h2 { font-size: 1.9rem; color: var(--ink); margin-bottom: 6px; }
         .team-head h2 .accent { color: var(--brand-teal); }
         .team-head p { color: var(--ink-muted); font-size: 1rem; }
-        .team-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .team-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; max-width: 1000px; margin: 0 auto; }
         .person {
-            display: flex; gap: 18px; align-items: center;
+            display: flex; flex-direction: column; gap: 14px; align-items: center;
             background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px;
-            padding: 22px 24px; text-align: left;
+            padding: 26px 22px; text-align: center;
         }
         .person img {
             width: 112px; height: 112px; border-radius: 50%; object-fit: cover; flex-shrink: 0;
@@ -340,7 +340,7 @@
         .person .links { margin-top: 8px; font-size: 0.85rem; }
         .person .links a { color: var(--brand-teal-dark); font-weight: 700; text-decoration: none; border-bottom: 1px solid var(--brand-teal-light); }
         .person .links a:hover { border-color: var(--brand-teal); }
-        @media (max-width: 760px) { .team-grid { grid-template-columns: 1fr; } .person { padding: 18px; } .person img { width: 88px; height: 88px; } }
+        @media (max-width: 860px) { .team-grid { grid-template-columns: 1fr; max-width: 420px; } .person { padding: 20px; } }
 
         /* --- WHO WE SERVE --- */
         .serve-section {
@@ -839,6 +839,14 @@
                         <p class="role">Engineering</p>
                         <p class="bio">AWS cloud, databases, and scaling systems from prototype to production.</p>
                         <p class="links"><a href="https://www.linkedin.com/in/mihir-thakur-985479182/" target="_blank" rel="noopener">LinkedIn</a></p>
+                    </div>
+                </div>
+                <div class="person">
+                    <img src="assets/team/elliot.jpg" alt="Elliot Tower" width="112" height="112">
+                    <div>
+                        <h3>Elliot Tower</h3>
+                        <p class="role">Engineering</p>
+                        <p class="links"><a href="https://www.linkedin.com/in/elliot-tower/" target="_blank" rel="noopener">LinkedIn</a></p>
                     </div>
                 </div>
             </div>
