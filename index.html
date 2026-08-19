@@ -28,6 +28,11 @@
     <title>BaltimoreAI — Practical AI for Baltimore Businesses</title>
     <meta name="description" content="AI consultancy comprised of former NIH Data Scientists and National Security Cloud Engineers serving Baltimore businesses.">
     <link rel="icon" type="image/png" href="assets/brand/logo-mark.png">
+    <link rel="preconnect" href="https://www.youtube.com">
+    <link rel="preconnect" href="https://i.ytimg.com">
+    <link rel="preconnect" href="https://www.google.com">
+    <link rel="dns-prefetch" href="https://googlevideo.com">
+    <script async src="https://www.youtube.com/iframe_api"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@500;700;800;900&display=swap" rel="stylesheet">
@@ -1172,16 +1177,22 @@
         if (sessionStorage.getItem('np-closed')) return;
         np.hidden = false;
 
-        var tag = document.createElement('script'); tag.src = 'https://www.youtube.com/iframe_api';
-        document.head.appendChild(tag);
-        window.onYouTubeIframeAPIReady = function () {
+        // Build the iframe right now (autoplay baked in) so YouTube starts loading before the API even arrives.
+        var ifr = document.createElement('iframe');
+        ifr.id = 'npVideo';
+        ifr.src = 'https://www.youtube.com/embed/' + VID + '?autoplay=1&playsinline=1&rel=0&modestbranding=1&enablejsapi=1'
+                + '&controls=' + (isTouch ? 1 : 0) + '&origin=' + encodeURIComponent(location.origin);
+        ifr.allow = 'autoplay; encrypted-media; picture-in-picture';
+        ifr.setAttribute('allowfullscreen', ''); ifr.setAttribute('frameborder', '0');
+        var slot = document.getElementById('npVideo'); slot.parentNode.replaceChild(ifr, slot);
+
+        function attach() {
             player = new YT.Player('npVideo', {
-                videoId: VID, width: 200, height: 112,
-                playerVars: { autoplay: 1, playsinline: 1, rel: 0, modestbranding: 1, controls: isTouch ? 1 : 0 },
                 events: {
                     onReady: function () {
                         ready = true; player.setVolume(60);
-                        try { player.playVideo(); } catch (e) {}
+                        var st0 = player.getPlayerState();
+                        if (st0 === -1 || st0 === YT.PlayerState.CUED) { try { player.playVideo(); } catch (e) {} }
                         // If the browser refuses autoplay-with-sound the player never leaves UNSTARTED/CUED.
                         // Buffering counts as started. Only then fall back to muted autoplay + unmute on first gesture.
                         var checks = 0;
@@ -1205,7 +1216,8 @@
                     }
                 }
             });
-        };
+        }
+        if (window.YT && YT.Player) attach(); else window.onYouTubeIframeAPIReady = attach;
         // Browsers block autoplay-with-sound until the visitor interacts; start on first gesture.
         var unmutedByGesture = false;
         function kick() {
