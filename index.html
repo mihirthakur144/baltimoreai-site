@@ -1182,17 +1182,25 @@
                     onReady: function () {
                         ready = true; player.setVolume(60);
                         try { player.playVideo(); } catch (e) {}
-                        // If the browser refuses autoplay-with-sound, start muted (always allowed) and unmute on first gesture.
-                        setTimeout(function () {
-                            if (player.getPlayerState() !== YT.PlayerState.PLAYING) {
+                        // If the browser refuses autoplay-with-sound the player never leaves UNSTARTED/CUED.
+                        // Buffering counts as started. Only then fall back to muted autoplay + unmute on first gesture.
+                        var checks = 0;
+                        var t = setInterval(function () {
+                            if (started) { clearInterval(t); return; }
+                            var st = player.getPlayerState();
+                            var notStarted = (st === -1 || st === YT.PlayerState.CUED);
+                            checks++;
+                            if (notStarted && checks >= 3) {          // ~2.4s with no start at all
+                                clearInterval(t);
                                 muted = true; document.getElementById('npMute').textContent = '🔇';
                                 try { player.mute(); player.playVideo(); } catch (e) {}
                                 hint.hidden = false;
-                            }
-                        }, 1200);
+                            } else if (!notStarted && checks >= 8) { clearInterval(t); }  // buffering slowly; leave it alone
+                        }, 800);
                     },
                     onStateChange: function (e) {
-                        if (e.data === YT.PlayerState.PLAYING) { started = true; np.classList.add('playing'); if (!muted) hint.hidden = true; }
+                        if (e.data === YT.PlayerState.PLAYING || e.data === YT.PlayerState.BUFFERING) { started = true; }
+                        if (e.data === YT.PlayerState.PLAYING) { np.classList.add('playing'); if (!muted) hint.hidden = true; }
                         if (e.data === YT.PlayerState.PAUSED || e.data === YT.PlayerState.ENDED) np.classList.remove('playing');
                     }
                 }
