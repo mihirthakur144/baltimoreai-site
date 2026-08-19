@@ -554,7 +554,11 @@
         .np.playing .np-eq i { animation: eq 0.9s ease-in-out infinite; }
         .np.playing .np-eq i:nth-child(2) { animation-delay: 0.15s; } .np.playing .np-eq i:nth-child(3) { animation-delay: 0.3s; } .np.playing .np-eq i:nth-child(4) { animation-delay: 0.45s; }
         @keyframes eq { 0%,100% { height: 4px; } 50% { height: 14px; } }
-        .np-hint { padding: 0 12px 10px; font-size: 0.7rem; color: rgba(255,255,255,0.6); }
+        .np-hint {
+            display: block; width: calc(100% - 24px); margin: 0 12px 12px;
+            padding: 9px 0; border-radius: 8px; border: none; cursor: pointer;
+            background: var(--brand-teal); color: var(--white); font: inherit; font-size: 0.8rem; font-weight: 800;
+        }
         .np-hint[hidden] { display: none; }
         @media (max-width: 600px) { .np { left: 10px; bottom: 10px; width: 200px; } .np-video, .np-video iframe { width: 200px !important; height: 113px !important; } }
 
@@ -1206,13 +1210,14 @@
             <button class="np-btn" id="npMute" aria-label="Mute">🔊</button>
             <button class="np-btn np-x" id="npClose" aria-label="Close">×</button>
         </div>
-        <div class="np-hint" id="npHint">tap anywhere for sound</div>
+        <button class="np-hint" id="npHint">🔊 Tap for sound</button>
     </div>
     <script>
     (function () {
         var VID = 'oiusDE0KND8';
         var np = document.getElementById('np'), hint = document.getElementById('npHint');
         var player, ready = false, started = false, muted = false;
+        var isTouch = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
         if (sessionStorage.getItem('np-closed')) return;
         np.hidden = false;
 
@@ -1221,7 +1226,7 @@
         window.onYouTubeIframeAPIReady = function () {
             player = new YT.Player('npVideo', {
                 videoId: VID, width: 200, height: 112,
-                playerVars: { autoplay: 1, playsinline: 1, rel: 0, modestbranding: 1, controls: 0 },
+                playerVars: { autoplay: 1, playsinline: 1, rel: 0, modestbranding: 1, controls: isTouch ? 1 : 0 },
                 events: {
                     onReady: function () {
                         ready = true; player.setVolume(60);
@@ -1231,7 +1236,7 @@
                             if (player.getPlayerState() !== YT.PlayerState.PLAYING) {
                                 muted = true; document.getElementById('npMute').textContent = '🔇';
                                 try { player.mute(); player.playVideo(); } catch (e) {}
-                                hint.textContent = 'tap anywhere for sound'; hint.hidden = false;
+                                hint.hidden = false;
                             }
                         }, 1200);
                     },
@@ -1263,6 +1268,7 @@
             if (st === YT.PlayerState.PLAYING) { player.pauseVideo(); this.textContent = '▶'; }
             else { player.playVideo(); this.textContent = '❚❚'; }
         });
+        hint.addEventListener('click', function (e) { e.stopPropagation(); unmutedByGesture = false; kick(); });
         document.getElementById('npMute').addEventListener('pointerdown', function (e) { e.stopPropagation(); unmutedByGesture = true; });
         document.getElementById('npMute').addEventListener('click', function (e) {
             e.stopPropagation(); if (!ready) return;
