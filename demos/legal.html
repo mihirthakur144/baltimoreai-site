@@ -136,7 +136,45 @@
         }
         @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
 
-        .research-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 24px; }
+        .case-picker { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 18px 0 26px; }
+        .case-card {
+            text-align: left; padding: 14px 16px; border-radius: 10px; font-family: inherit;
+            background: var(--card-bg); border: 1px solid var(--border); cursor: pointer;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .case-card:hover { border-color: var(--brand-teal); }
+        .case-card.selected { border-color: var(--brand-accent); box-shadow: 0 0 0 2px rgba(255,111,76,0.2); }
+        .case-card .case-tag {
+            display: block; font-size: 0.64rem; font-weight: 800; text-transform: uppercase;
+            letter-spacing: 0.5px; color: var(--brand-accent); margin-bottom: 6px;
+        }
+        .case-card h4 { font-size: 0.92rem; margin-bottom: 6px; line-height: 1.3; }
+        .case-card .case-hint { font-size: 0.7rem; color: var(--ink-faint); }
+
+        .research-grid { display: grid; grid-template-columns: 1fr 1.3fr; gap: 24px; }
+        .side-card .sub { font-size: 0.8rem; color: var(--ink-muted); margin-bottom: 12px; }
+
+        .doc-modal-overlay {
+            display: none; position: fixed; inset: 0; z-index: 2000;
+            background: rgba(10,10,10,0.55); align-items: center; justify-content: center; padding: 20px;
+        }
+        .doc-modal-overlay.open { display: flex; }
+        .doc-modal {
+            background: var(--card-bg); border-radius: 14px; max-width: 560px; width: 100%;
+            max-height: 80vh; overflow-y: auto; padding: 26px 28px; position: relative;
+            box-shadow: 0 24px 60px rgba(0,0,0,0.35);
+        }
+        .doc-modal .doc-modal-close {
+            position: absolute; top: 14px; right: 16px; background: none; border: none;
+            font-size: 1.3rem; color: var(--ink-faint); cursor: pointer; line-height: 1;
+        }
+        .doc-modal .doc-modal-close:hover { color: var(--ink); }
+        .doc-modal h3 { font-size: 1.1rem; margin-bottom: 4px; padding-right: 24px; }
+        .doc-modal .doc-modal-tag {
+            display: inline-block; font-size: 0.68rem; font-weight: 800; text-transform: uppercase;
+            letter-spacing: 0.5px; color: var(--brand-accent); margin-bottom: 14px;
+        }
+        .doc-modal p { font-size: 0.92rem; color: var(--ink-muted); line-height: 1.65; }
 
         .chat-panel {
             background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px;
@@ -211,11 +249,24 @@
         .suggested button:hover { border-color: var(--brand-teal); background: var(--brand-teal-bg); }
         .corpus { display: flex; flex-direction: column; gap: 10px; }
         .corpus-doc {
+            width: 100%; text-align: left; font-family: inherit; text-decoration: none;
             display: flex; flex-direction: column; gap: 5px;
             padding: 10px 12px; border-radius: 6px;
             background: var(--brand-teal-bg); border: 1px solid var(--border);
+            cursor: pointer; transition: border-color 0.2s;
         }
+        .corpus-doc:hover { border-color: var(--brand-teal); }
+        .corpus-doc .doc-type-tag {
+            align-self: flex-start;
+            font-size: 0.62rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;
+            padding: 2px 7px; border-radius: 3px;
+        }
+        .doc-type-case-law .doc-type-tag { background: #e4e9f5; color: #33508c; }
+        .doc-type-statute .doc-type-tag { background: #e6f0e8; color: #2f6b3f; }
+        .doc-type-firm-policy .doc-type-tag { background: #f0ece0; color: #7a6a3f; }
         .corpus-doc .row { font-size: 0.82rem; font-weight: 700; color: var(--ink); }
+        .corpus-doc .row .cite { font-weight: 500; color: var(--ink-muted); font-size: 0.76rem; }
+        .corpus-doc .row .open-hint { font-weight: 500; color: var(--ink-faint); font-size: 0.72rem; margin-left: 6px; }
         .corpus-doc .summary { font-size: 0.78rem; color: var(--ink-muted); line-height: 1.5; }
         .error-banner {
             margin: 10px 14px; padding: 10px 14px;
@@ -336,8 +387,12 @@
 
         @media (max-width: 900px) {
             .research-grid, .processor-grid, .mi-wrap { grid-template-columns: 1fr; }
+            .case-picker { grid-template-columns: 1fr 1fr; }
             .chat-panel { height: 500px; }
             .page-hero h1 { font-size: 1.9rem; }
+        }
+        @media (max-width: 560px) {
+            .case-picker { grid-template-columns: 1fr; }
         }
         @media (max-width: 600px) {
             .navbar { padding: 0 1rem; }
@@ -380,63 +435,53 @@
     <!-- ══════════ PANEL 1: CASE RESEARCH ══════════ -->
     <div class="panel active" id="panel-research">
         <span class="live-pill"><span class="dot"></span> Live AI</span>
+
+        <div class="case-picker" id="casePicker">
+            <button class="case-card" data-case="meridian">
+                <span class="case-tag">Contract · Force Majeure</span>
+                <h4>Meridian Logistics v. Coastal Freight</h4>
+                <span class="case-hint">Click to open</span>
+            </button>
+            <button class="case-card" data-case="vantage">
+                <span class="case-tag">Bankruptcy · Lease Assignment</span>
+                <h4>In re Vantage Retail Group</h4>
+                <span class="case-hint">Click to open</span>
+            </button>
+            <button class="case-card" data-case="ashford">
+                <span class="case-tag">Employment · Non-Compete</span>
+                <h4>Ashford Tech v. Reyes</h4>
+                <span class="case-hint">Click to open</span>
+            </button>
+            <button class="case-card" data-case="whitfield">
+                <span class="case-tag">Trusts &amp; Estates · Fiduciary Duty</span>
+                <h4>Whitfield Family Trust Dispute</h4>
+                <span class="case-hint">Click to open</span>
+            </button>
+        </div>
+
         <div class="research-grid">
+            <div class="side-panel">
+                <div class="side-card">
+                    <h3 id="lawBoxTitle">Case Details</h3>
+                    <p class="sub" id="lawBoxEmpty">Click a case file above to load the law, statutes, and precedent relevant to it.</p>
+                    <p class="sub" id="lawBoxNote" hidden style="margin-top:-6px;">Case Law and Statute entries are real and link to a real source. Firm Policy entries are this sample firm's own internal guidance.</p>
+                    <div class="corpus" id="lawBoxList" hidden></div>
+                </div>
+            </div>
             <div class="chat-panel">
                 <div class="chat-header">
-                    <span class="title">Sample Firm Case Research Assistant</span>
+                    <span class="title" id="chatTitle">Sample Firm Case Research Assistant</span>
                     <span class="model">claude-haiku-4-5</span>
                 </div>
                 <div class="chat-messages" id="messages">
                     <div class="msg assistant">
                         <div class="avatar">AI</div>
-                        <div class="bubble">Hi — I can answer questions about the sample case files listed on the right. Try a suggested question, or ask your own.</div>
+                        <div class="bubble">Please select a case file above before we get started — I'll need to know which matter we're working on.</div>
                     </div>
                 </div>
                 <div class="chat-input-row">
-                    <input class="chat-input" id="input" type="text" placeholder="Ask about precedent, statutes, firm policy…" maxlength="2000" autocomplete="off">
-                    <button class="send-btn" id="send">Send</button>
-                </div>
-            </div>
-            <div class="side-panel">
-                <div class="side-card">
-                    <h3>Try a question</h3>
-                    <div class="suggested" id="suggested">
-                        <button data-q="Can force majeure excuse full non-performance after a fire at one facility?">Can force majeure excuse full non-performance after a fire at one facility?</button>
-                        <button data-q="What's the default late-payment interest rate on a commercial contract?">What's the default late-payment interest rate on a commercial contract?</button>
-                        <button data-q="Does a lease's no-assignment clause survive Chapter 11?">Does a lease's no-assignment clause survive Chapter 11?</button>
-                        <button data-q="How long can a non-compete run and still be enforceable?">How long can a non-compete run and still be enforceable?</button>
-                        <button data-q="What's the burden-shifting framework for a retaliation claim?">What's the burden-shifting framework for a retaliation claim?</button>
-                    </div>
-                </div>
-                <div class="side-card">
-                    <h3>Case Summary — relevant law (6 docs · fictional)</h3>
-                    <p style="font-size:0.8rem;color:var(--ink-muted);margin-bottom:12px;">Every law, statute, and precedent the assistant can cite, summarized in plain English:</p>
-                    <div class="corpus" id="corpusList">
-                        <div class="corpus-doc">
-                            <span class="row">📄 Halloway v. Pierce Logistics</span>
-                            <span class="summary">Force majeure clauses are read narrowly: a fire at one facility doesn't excuse missing all your supply obligations unless the clause explicitly covers single-facility events.</span>
-                        </div>
-                        <div class="corpus-doc">
-                            <span class="row">📄 Md. Com. Law § 14-302 (Sample)</span>
-                            <span class="summary">If a commercial contract doesn't set its own late-payment rate, the default is 1% monthly interest starting 60 days out, once written notice has been given.</span>
-                        </div>
-                        <div class="corpus-doc">
-                            <span class="row">📄 In re Vantage Retail Group</span>
-                            <span class="summary">A landlord's generic "no assignment without consent" clause doesn't automatically block a lease assignment during Chapter 11 — it has to specifically address insolvency to survive.</span>
-                        </div>
-                        <div class="corpus-doc">
-                            <span class="row">📄 Firm Memo — Non-Compete Standards</span>
-                            <span class="summary">Non-competes under 24 months, reasonable in scope, and tied to a real business interest are enforceable. Overbroad ones are usually narrowed by the court rather than thrown out entirely.</span>
-                        </div>
-                        <div class="corpus-doc">
-                            <span class="row">📄 Turner v. Bright Path Clinics</span>
-                            <span class="summary">In a retaliation claim, once the employee makes a plausible case, the employer must give a legitimate reason for the termination — and the employee then gets a chance to show that reason is pretextual.</span>
-                        </div>
-                        <div class="corpus-doc">
-                            <span class="row">📄 Firm Client Intake Policy</span>
-                            <span class="summary">Run a 7-year conflict check before opening any new matter. If a former client sits on the other side, both parties need to sign a written waiver before the firm proceeds.</span>
-                        </div>
-                    </div>
+                    <input class="chat-input" id="input" type="text" placeholder="Select a case file to begin…" maxlength="2000" autocomplete="off" disabled>
+                    <button class="send-btn" id="send" disabled>Send</button>
                 </div>
             </div>
         </div>
@@ -577,6 +622,15 @@
 
 </section>
 
+<div class="doc-modal-overlay" id="docModalOverlay">
+    <div class="doc-modal">
+        <button class="doc-modal-close" id="docModalClose" aria-label="Close">×</button>
+        <span class="doc-modal-tag" id="docModalTag">Firm policy — internal, sample</span>
+        <h3 id="docModalTitle"></h3>
+        <p id="docModalBody"></p>
+    </div>
+</div>
+
 <footer>
     <p>&copy; <span class="yr">2026</span> Kimura Consulting LLC | <a href="https://bethesdaai.org">BethesdaAI.org</a></p>
 </footer>
@@ -598,10 +652,161 @@
     // will fail with a network error until that's live.
     const WORKER_URL = 'https://baltimoreai-legal-demo.rough-mouse-a952.workers.dev';
 
+    // Case Law / Statute entries below are real, well-known authorities (not
+    // invented) and link out to a real source. Firm Policy entries are the
+    // sample firm's own internal guidance, so they stay in-page (no external
+    // "real" version exists for another firm's internal memo).
+    const CASES = {
+        meridian: {
+            title: 'Meridian Logistics v. Coastal Freight',
+            tag: 'Contract · Force Majeure',
+            docs: [
+                {
+                    name: 'Kel Kim Corp. v. Central Markets, Inc.',
+                    cite: '70 N.Y.2d 900 (1987)',
+                    type: 'Case Law',
+                    summary: 'Force majeure clauses are read narrowly: the specific event claimed to excuse performance generally has to be listed in the clause itself, not just implied by broad language.',
+                    url: 'https://scholar.google.com/scholar?q=%22Kel+Kim+Corp.+v.+Central+Markets%22',
+                },
+                {
+                    name: 'UCC § 2-615',
+                    cite: 'Excuse by Failure of Presupposed Conditions',
+                    type: 'Statute',
+                    summary: 'The Uniform Commercial Code\'s default excuse doctrine: a seller isn\'t in breach if performance became impracticable because of an event both sides assumed wouldn\'t happen — with notice required.',
+                    url: 'https://www.law.cornell.edu/ucc/2/2-615',
+                },
+            ],
+        },
+        vantage: {
+            title: 'In re Vantage Retail Group',
+            tag: 'Bankruptcy · Lease Assignment',
+            docs: [
+                {
+                    name: '11 U.S.C. § 365',
+                    cite: 'Executory Contracts and Unexpired Leases',
+                    type: 'Statute',
+                    summary: 'The Bankruptcy Code section governing lease assignment in Chapter 11 — it generally overrides a lease\'s anti-assignment language, so long as the debtor gives adequate assurance of future performance.',
+                    url: 'https://www.law.cornell.edu/uscode/text/11/365',
+                },
+                {
+                    name: 'Firm Client Intake Policy',
+                    cite: 'Sample — internal firm policy',
+                    type: 'Firm Policy',
+                    summary: 'Run a 7-year conflict check before opening any new matter. If a former client sits on the other side, both parties need to sign a written waiver before the firm proceeds.',
+                    full: 'Before opening a new matter, run a conflict check against all current and former clients, adverse parties, and related entities going back 7 years. Matters involving a former client on the opposing side require written waiver from both parties before proceeding. Escalate ambiguous conflicts to the ethics partner.',
+                },
+            ],
+        },
+        ashford: {
+            title: 'Ashford Tech v. Reyes',
+            tag: 'Employment · Non-Compete',
+            docs: [
+                {
+                    name: 'BDO Seidman v. Hirshberg',
+                    cite: '93 N.Y.2d 382 (1999)',
+                    type: 'Case Law',
+                    summary: 'Set the reasonableness test for non-competes: duration, geographic scope, and a legitimate business interest — and that overbroad terms can be narrowed by the court instead of voided outright.',
+                    url: 'https://scholar.google.com/scholar?q=%22BDO+Seidman+v.+Hirshberg%22',
+                },
+                {
+                    name: 'McDonnell Douglas Corp. v. Green',
+                    cite: '411 U.S. 792 (1973)',
+                    type: 'Case Law',
+                    summary: 'The foundational U.S. Supreme Court case on the burden-shifting framework used in employment retaliation and discrimination claims.',
+                    url: 'https://www.law.cornell.edu/supremecourt/text/411/792',
+                },
+            ],
+        },
+        whitfield: {
+            title: 'Whitfield Family Trust Dispute',
+            tag: 'Trusts & Estates · Fiduciary Duty',
+            docs: [
+                {
+                    name: 'Meinhard v. Salmon',
+                    cite: '249 N.Y. 458 (1928)',
+                    type: 'Case Law',
+                    summary: 'The classic articulation of fiduciary duty — a fiduciary owes "the punctilio of an honor the most sensitive," the standard still cited across trust, partnership, and corporate law.',
+                    url: 'https://scholar.google.com/scholar?q=%22Meinhard+v.+Salmon%22',
+                },
+                {
+                    name: 'Firm Memo — Fiduciary Duty Standards',
+                    cite: 'Sample — internal firm policy',
+                    type: 'Firm Policy',
+                    summary: 'A trustee\'s core duties are loyalty, prudent administration, and impartiality. Self-dealing is presumptively voidable regardless of good faith — courts weigh process, not just outcome.',
+                    full: 'Internal guidance: a trustee\'s core duties are loyalty, prudent administration, and impartiality among beneficiaries. Self-dealing transactions are presumptively voidable regardless of good faith. When advising a trustee facing removal, document each contested decision\'s rationale contemporaneously — courts weigh process, not just outcome.',
+                },
+            ],
+        },
+    };
+
+    const casePickerEl = document.getElementById('casePicker');
+    const lawBoxEmpty = document.getElementById('lawBoxEmpty');
+    const lawBoxList = document.getElementById('lawBoxList');
+    const lawBoxTitle = document.getElementById('lawBoxTitle');
+    const chatTitle = document.getElementById('chatTitle');
+    const docModalOverlay = document.getElementById('docModalOverlay');
+    const docModalTitle = document.getElementById('docModalTitle');
+    const docModalBody = document.getElementById('docModalBody');
+
+    function openDocModal(doc) {
+        docModalTitle.textContent = doc.name;
+        docModalBody.textContent = doc.full;
+        docModalOverlay.classList.add('open');
+    }
+    function closeDocModal() { docModalOverlay.classList.remove('open'); }
+    document.getElementById('docModalClose').addEventListener('click', closeDocModal);
+    docModalOverlay.addEventListener('click', (e) => { if (e.target === docModalOverlay) closeDocModal(); });
+
+    let selectedCase = null;
+
+    function selectCase(key) {
+        selectedCase = key;
+        const cfg = CASES[key];
+
+        document.querySelectorAll('.case-card').forEach(c => c.classList.toggle('selected', c.dataset.case === key));
+
+        lawBoxTitle.textContent = 'Case Details — ' + cfg.title;
+        lawBoxEmpty.hidden = true;
+        document.getElementById('lawBoxNote').hidden = false;
+        lawBoxList.hidden = false;
+        lawBoxList.innerHTML = '';
+        cfg.docs.forEach((doc) => {
+            const isExternal = doc.type !== 'Firm Policy';
+            const el = document.createElement(isExternal ? 'a' : 'button');
+            el.className = 'corpus-doc doc-type-' + doc.type.replace(/\s+/g, '-').toLowerCase();
+            if (isExternal) {
+                el.href = doc.url;
+                el.target = '_blank';
+                el.rel = 'noopener';
+            }
+            el.innerHTML = `
+                <span class="doc-type-tag">${doc.type}</span>
+                <span class="row">📄 ${doc.name} <span class="cite">${doc.cite}</span><span class="open-hint">${isExternal ? '— opens real source ↗' : '— click to open'}</span></span>
+                <span class="summary">${doc.summary}</span>
+            `;
+            if (!isExternal) el.addEventListener('click', () => openDocModal(doc));
+            lawBoxList.appendChild(el);
+        });
+
+        chatTitle.textContent = cfg.title;
+        history.length = 0;
+        messagesEl.innerHTML = '';
+        addMessage('assistant', `Loaded "${cfg.title}." Would you like me to summarize the case, or is there something else I can help with?`);
+
+        inputEl.disabled = false;
+        sendBtn.disabled = false;
+        inputEl.placeholder = 'Ask about ' + cfg.title + '…';
+        inputEl.focus();
+    }
+
+    casePickerEl.addEventListener('click', (e) => {
+        const card = e.target.closest('.case-card');
+        if (card) selectCase(card.dataset.case);
+    });
+
     const messagesEl = document.getElementById('messages');
     const inputEl = document.getElementById('input');
     const sendBtn = document.getElementById('send');
-    const suggestedEl = document.getElementById('suggested');
     const history = [];
     let busy = false;
 
@@ -644,16 +849,22 @@
         if (busy) return;
         const q = (question || '').trim();
         if (!q) return;
+        if (!selectedCase) {
+            addMessage('assistant', 'Please select a case file above before we get started.');
+            return;
+        }
         busy = true; sendBtn.disabled = true; inputEl.disabled = true; inputEl.value = '';
         addMessage('user', q);
         history.push({ role: 'user', content: q });
         const typingNode = addTyping();
         let bubble = null, accumulated = '';
+        const cfg = CASES[selectedCase];
+        const caseContext = cfg.title + ' — relevant documents: ' + cfg.docs.map(d => d.name).join(', ');
         try {
             const res = await fetch(WORKER_URL, {
                 method: 'POST',
                 headers: { 'content-type': 'application/json' },
-                body: JSON.stringify({ messages: history.slice(-12) }),
+                body: JSON.stringify({ messages: history.slice(-12), caseContext }),
             });
             if (!res.ok || !res.body) {
                 typingNode.remove();
@@ -702,7 +913,6 @@
     }
     sendBtn.addEventListener('click', () => send(inputEl.value));
     inputEl.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(inputEl.value); } });
-    suggestedEl.addEventListener('click', (e) => { const btn = e.target.closest('button[data-q]'); if (btn) send(btn.dataset.q); });
 
     // ═══════════ PANEL 2: CONTRACT REVIEW (staged) ═══════════
     const CR_DOCS = {
