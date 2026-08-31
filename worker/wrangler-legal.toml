@@ -1,0 +1,33 @@
+name = "baltimoreai-legal-demo"
+main = "src/worker-legal.js"
+compatibility_date = "2025-01-15"
+
+# ─── Layer 1: Per-IP rate limit ────────────────────────────────
+# 8 requests per 60 seconds per IP. namespace_id is an arbitrary integer,
+# distinct from the main demo worker's (must be unique per binding).
+[[unsafe.bindings]]
+name = "RATE_LIMITER"
+type = "ratelimit"
+namespace_id = "1002"
+simple = { limit = 8, period = 60 }
+
+# ─── Layer 2: Daily global cap (KV-backed counter) ─────────────
+# This worker is separate from the main demo worker, so it needs its own
+# KV namespace. From inside the worker/ directory, run:
+#
+#   wrangler kv namespace create "DEMO_LIMITS" --config wrangler-legal.toml
+#
+# It prints something like:
+#   id = "abc123def456..."
+#
+# Paste that id into the line below, then:
+#
+#   wrangler deploy --config wrangler-legal.toml
+#
+# Deploying also needs the ANTHROPIC_API_KEY secret set for this worker:
+#
+#   wrangler secret put ANTHROPIC_API_KEY --config wrangler-legal.toml
+#
+[[kv_namespaces]]
+binding = "DEMO_LIMITS"
+id = "PASTE_KV_NAMESPACE_ID_HERE"
