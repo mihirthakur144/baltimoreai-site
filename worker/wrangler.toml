@@ -12,15 +12,13 @@ namespace_id = "1001"
 simple = { limit = 8, period = 60 }
 
 # ─── Layer 2: Daily global cap (KV-backed counter) ─────────────
-# Before first deploy you must create the KV namespace and paste its
-# id below. From inside the worker/ directory, run:
+# KV namespace "DEMO_LIMITS_civic" already created (via the Cloudflare
+# connector) and its id is filled in below. What's left, from inside the
+# worker/ directory:
 #
-#   wrangler kv namespace create "DEMO_LIMITS"
+#   wrangler secret put ANTHROPIC_API_KEY
+#   wrangler deploy
 #
-# It prints something like:
-#   id = "abc123def456..."
-#
-# Paste that id into the line below, then `wrangler deploy`.
 [[kv_namespaces]]
 binding = "DEMO_LIMITS"
-id = "PASTE_KV_NAMESPACE_ID_HERE"
+id = "9b2418c7a56147de8ce7d2cbc8f50321"
