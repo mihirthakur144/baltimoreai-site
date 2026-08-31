@@ -1,4 +1,6 @@
 const ALLOWED_ORIGINS = [
+  'https://bethesdaai.org',
+  'https://www.bethesdaai.org',
   'https://baltimoreai.org',
   'https://www.baltimoreai.org',
   'http://localhost:8000',
