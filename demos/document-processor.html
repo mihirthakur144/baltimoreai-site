@@ -405,93 +405,188 @@
 </footer>
 
 <script>
+    // Sample documents are modeled on the field structure of real forms
+    // (standard HIPAA-style patient intake forms, commercial vendor invoices,
+    // and municipal building permit applications) with original fictional data.
     const DOCS = {
         intake: {
-            stat: '2 pages · 340 KB · intake_form_0472.pdf',
+            stat: '3 pages · 612 KB · intake_form_0472.pdf',
             html: `
-                <h4>METROPOLITAN HEALTH — PATIENT INTAKE FORM</h4>
+                <h4>METROPOLITAN HEALTH — NEW PATIENT INTAKE FORM</h4>
                 <div class="doc-row" data-field="patient_name"><span class="label">Patient Name:</span> Sarah M. Johnson</div>
                 <div class="doc-row" data-field="dob"><span class="label">Date of Birth:</span> 03/15/1988</div>
-                <div class="doc-row" data-field="insurance_id"><span class="label">Insurance ID:</span> BC-7294810-A</div>
+                <div class="doc-row" data-field="sex"><span class="label">Sex:</span> Female</div>
+                <div class="doc-row" data-field="marital_status"><span class="label">Marital Status:</span> Married</div>
+                <div class="doc-row" data-field="ssn_last4"><span class="label">SSN (last 4):</span> XXX-XX-4821</div>
                 <div class="doc-row" data-field="phone"><span class="label">Phone:</span> (410) 555-0148</div>
+                <div class="doc-row" data-field="email"><span class="label">Email:</span> sarah.johnson88@example.com</div>
                 <div class="doc-row" data-field="address"><span class="label">Address:</span> 2417 N. Charles St, Baltimore, MD 21218</div>
-                <div class="doc-row" data-field="complaint"><span class="label">Primary Complaint:</span> Recurring lower back pain, onset ~6 weeks ago</div>
-                <div class="doc-row" data-field="allergies"><span class="label">Allergies:</span> Penicillin, shellfish</div>
-                <div class="doc-row" data-field="meds"><span class="label">Current Medications:</span> Lisinopril 10mg, Metformin 500mg</div>
-                <div class="doc-row"><span class="label">Signature:</span> <i>(signed)</i> &nbsp; <span class="label">Date:</span> 11/14/2024</div>
+                <div class="doc-row" data-field="emergency_contact"><span class="label">Emergency Contact:</span> Michael Johnson (Spouse) — (410) 555-0199</div>
+                <div class="doc-row" data-field="insurance_carrier"><span class="label">Primary Insurance:</span> BlueCross BlueShield of Maryland</div>
+                <div class="doc-row" data-field="insurance_id"><span class="label">Member ID:</span> BC-7294810-A</div>
+                <div class="doc-row" data-field="group_number"><span class="label">Group Number:</span> GRP-33110</div>
+                <div class="doc-row" data-field="secondary_insurance"><span class="label">Secondary Insurance:</span> None</div>
+                <div class="doc-row" data-field="referring_physician"><span class="label">Referring Physician:</span> Dr. Aisha Patel, Family Medicine Associates</div>
+                <div class="doc-row" data-field="complaint"><span class="label">Reason for Visit:</span> Recurring lower back pain, onset ~6 weeks ago, worse with prolonged sitting</div>
+                <div class="doc-row" data-field="allergies"><span class="label">Known Allergies:</span> Penicillin (rash), Shellfish (anaphylaxis)</div>
+                <div class="doc-row" data-field="meds">
+                    <span class="label">Current Medications:</span>
+                    <table>
+                        <tr><th>Medication</th><th>Dose</th><th>Frequency</th></tr>
+                        <tr><td>Lisinopril</td><td>10mg</td><td>Once daily</td></tr>
+                        <tr><td>Metformin</td><td>500mg</td><td>Twice daily</td></tr>
+                        <tr><td>Ibuprofen (OTC)</td><td>200mg</td><td>As needed</td></tr>
+                    </table>
+                </div>
+                <div class="doc-row" data-field="surgical_history"><span class="label">Surgical History:</span> Appendectomy (2011)</div>
+                <div class="doc-row" data-field="family_history"><span class="label">Family History:</span> Father — Type 2 diabetes; Mother — hypertension</div>
+                <div class="doc-row" data-field="social_history"><span class="label">Social History:</span> Non-smoker; alcohol occasional (1–2 drinks/week)</div>
+                <div class="doc-row" data-field="hipaa_ack"><span class="label">HIPAA Acknowledgment:</span> Signed</div>
+                <div class="doc-row" data-field="consent_treat"><span class="label">Consent to Treat:</span> Yes</div>
+                <div class="doc-row" data-field="signature"><span class="label">Signature:</span> <i>(signed)</i> &nbsp; <span class="label">Date:</span> 11/14/2024</div>
                 <div class="scan-line" id="scanLine"></div>
             `,
             fields: [
                 { key: 'patient_name', label: 'Patient Name', value: 'Sarah M. Johnson', conf: 99 },
                 { key: 'dob', label: 'Date of Birth', value: '1988-03-15', conf: 100 },
-                { key: 'insurance_id', label: 'Insurance ID', value: 'BC-7294810-A', conf: 97 },
+                { key: 'sex', label: 'Sex', value: 'Female', conf: 99 },
+                { key: 'marital_status', label: 'Marital Status', value: 'Married', conf: 96 },
+                { key: 'ssn_last4', label: 'SSN (last 4)', value: 'XXXX-4821', conf: 93 },
                 { key: 'phone', label: 'Phone', value: '+1 (410) 555-0148', conf: 96 },
+                { key: 'email', label: 'Email', value: 'sarah.johnson88@example.com', conf: 97 },
                 { key: 'address', label: 'Address', value: '2417 N. Charles St, Baltimore, MD 21218', conf: 94 },
-                { key: 'complaint', label: 'Primary Complaint', value: 'Recurring lower back pain (onset ~6 weeks)', conf: 88 },
-                { key: 'allergies', label: 'Known Allergies', value: 'Penicillin; Shellfish', conf: 95 },
-                { key: 'meds', label: 'Current Medications', value: 'Lisinopril 10mg; Metformin 500mg', conf: 92 },
+                { key: 'emergency_contact', label: 'Emergency Contact', value: 'Michael Johnson (Spouse), +1 (410) 555-0199', conf: 95 },
+                { key: 'insurance_carrier', label: 'Primary Insurance Carrier', value: 'BlueCross BlueShield of Maryland', conf: 98 },
+                { key: 'insurance_id', label: 'Member ID', value: 'BC-7294810-A', conf: 97 },
+                { key: 'group_number', label: 'Group Number', value: 'GRP-33110', conf: 96 },
+                { key: 'secondary_insurance', label: 'Secondary Insurance', value: 'None', conf: 99 },
+                { key: 'referring_physician', label: 'Referring Physician', value: 'Dr. Aisha Patel — Family Medicine Associates', conf: 90 },
+                { key: 'complaint', label: 'Reason for Visit', value: 'Recurring lower back pain (onset ~6 weeks)', conf: 87 },
+                { key: 'allergies', label: 'Known Allergies', value: 'Penicillin (rash); Shellfish (anaphylaxis)', conf: 95 },
+                { key: 'meds', label: 'Current Medications (3)', value: '3 medications extracted (table)', conf: 91 },
+                { key: 'surgical_history', label: 'Surgical History', value: 'Appendectomy (2011)', conf: 88 },
+                { key: 'family_history', label: 'Family History', value: 'Father: T2 diabetes; Mother: hypertension', conf: 84 },
+                { key: 'social_history', label: 'Social History', value: 'Non-smoker; occasional alcohol use', conf: 82 },
+                { key: 'hipaa_ack', label: 'HIPAA Acknowledgment', value: 'Signed', conf: 98 },
+                { key: 'consent_treat', label: 'Consent to Treat', value: 'Yes', conf: 98 },
+                { key: 'signature', label: 'Signature / Date', value: '(signed) — 2024-11-14', conf: 79 },
             ],
         },
         invoice: {
-            stat: '1 page · 184 KB · invoice_INV-44219.pdf',
+            stat: '2 pages · 268 KB · invoice_INV-44219.pdf',
             html: `
                 <h4>HARBOR SUPPLY CO. — INVOICE</h4>
                 <div class="doc-row" data-field="vendor"><span class="label">Vendor:</span> Harbor Supply Co.</div>
+                <div class="doc-row" data-field="vendor_address"><span class="label">Vendor Address:</span> 4820 Pulaski Hwy, Baltimore, MD 21205</div>
+                <div class="doc-row" data-field="vendor_contact"><span class="label">Vendor Contact:</span> (410) 555-0177 · billing@harborsupplyco.com</div>
+                <div class="doc-row" data-field="vendor_tax_id"><span class="label">Vendor Tax ID:</span> EIN 52-1834920</div>
+                <div class="doc-row" data-field="bill_to"><span class="label">Bill To:</span> Federal Hill Construction LLC, 118 Warren Ave, Baltimore, MD 21230</div>
+                <div class="doc-row" data-field="ship_to"><span class="label">Ship To:</span> Same as Bill To</div>
+                <div class="doc-row" data-field="po_number"><span class="label">PO Number:</span> PO-20984</div>
                 <div class="doc-row" data-field="invoice_number"><span class="label">Invoice #:</span> INV-44219</div>
                 <div class="doc-row" data-field="invoice_date"><span class="label">Invoice Date:</span> 11/01/2024</div>
                 <div class="doc-row" data-field="due_date"><span class="label">Due Date:</span> 12/01/2024 (Net 30)</div>
-                <div class="doc-row" data-field="bill_to"><span class="label">Bill To:</span> Federal Hill Construction LLC</div>
+                <div class="doc-row" data-field="terms"><span class="label">Terms:</span> Net 30; 2% discount if paid within 10 days</div>
                 <div class="doc-row" data-field="line_items">
                     <table>
                         <tr><th>Item</th><th>Qty</th><th>Unit</th><th>Total</th></tr>
                         <tr><td>2x4 Lumber, 8ft</td><td>120</td><td>$4.20</td><td>$504.00</td></tr>
-                        <tr><td>Drywall sheets</td><td>40</td><td>$12.50</td><td>$500.00</td></tr>
+                        <tr><td>Drywall sheets, 1/2in</td><td>40</td><td>$12.50</td><td>$500.00</td></tr>
                         <tr><td>Galv. screws (5lb box)</td><td>6</td><td>$28.00</td><td>$168.00</td></tr>
+                        <tr><td>Joint compound (5gal)</td><td>8</td><td>$22.75</td><td>$182.00</td></tr>
+                        <tr><td>Furring strips, 8ft</td><td>60</td><td>$2.15</td><td>$129.00</td></tr>
                     </table>
                 </div>
-                <div class="doc-row" data-field="subtotal"><span class="label">Subtotal:</span> $1,172.00</div>
-                <div class="doc-row" data-field="tax"><span class="label">MD Sales Tax (6%):</span> $70.32</div>
-                <div class="doc-row" data-field="total"><span class="label">Total Due:</span> <b>$1,242.32</b></div>
+                <div class="doc-row" data-field="subtotal"><span class="label">Subtotal:</span> $1,483.00</div>
+                <div class="doc-row" data-field="shipping"><span class="label">Shipping/Freight:</span> $45.00</div>
+                <div class="doc-row" data-field="tax"><span class="label">MD Sales Tax (6%):</span> $91.68</div>
+                <div class="doc-row" data-field="total"><span class="label">Total Due:</span> <b>$1,619.68</b></div>
+                <div class="doc-row" data-field="balance_due"><span class="label">Amount Paid / Balance:</span> $0.00 paid / $1,619.68 due</div>
+                <div class="doc-row" data-field="payment_instructions"><span class="label">Payment Instructions:</span> ACH to Acct ****4471, Routing 055002707, or pay online at harborsupplyco.com/pay</div>
+                <div class="doc-row" data-field="late_terms"><span class="label">Late Payment Terms:</span> 1.5% monthly finance charge on balances unpaid after due date</div>
                 <div class="scan-line" id="scanLine"></div>
             `,
             fields: [
                 { key: 'vendor', label: 'Vendor', value: 'Harbor Supply Co.', conf: 99 },
+                { key: 'vendor_address', label: 'Vendor Address', value: '4820 Pulaski Hwy, Baltimore, MD 21205', conf: 95 },
+                { key: 'vendor_contact', label: 'Vendor Contact', value: '(410) 555-0177 · billing@harborsupplyco.com', conf: 93 },
+                { key: 'vendor_tax_id', label: 'Vendor Tax ID', value: 'EIN 52-1834920', conf: 96 },
+                { key: 'bill_to', label: 'Bill To', value: 'Federal Hill Construction LLC', conf: 95 },
+                { key: 'ship_to', label: 'Ship To', value: 'Same as Bill To', conf: 97 },
+                { key: 'po_number', label: 'PO Number', value: 'PO-20984', conf: 98 },
                 { key: 'invoice_number', label: 'Invoice Number', value: 'INV-44219', conf: 100 },
                 { key: 'invoice_date', label: 'Invoice Date', value: '2024-11-01', conf: 99 },
                 { key: 'due_date', label: 'Due Date', value: '2024-12-01', conf: 98 },
-                { key: 'bill_to', label: 'Bill To', value: 'Federal Hill Construction LLC', conf: 95 },
-                { key: 'line_items', label: 'Line Items (3)', value: '3 items extracted (table)', conf: 91 },
-                { key: 'subtotal', label: 'Subtotal', value: '$1,172.00', conf: 99 },
-                { key: 'tax', label: 'Tax', value: '$70.32 (6% MD)', conf: 98 },
-                { key: 'total', label: 'Total Due', value: '$1,242.32', conf: 100 },
+                { key: 'terms', label: 'Payment Terms', value: 'Net 30; 2% discount within 10 days', conf: 90 },
+                { key: 'line_items', label: 'Line Items (5)', value: '5 items extracted (table)', conf: 91 },
+                { key: 'subtotal', label: 'Subtotal', value: '$1,483.00', conf: 99 },
+                { key: 'shipping', label: 'Shipping/Freight', value: '$45.00', conf: 97 },
+                { key: 'tax', label: 'Tax', value: '$91.68 (6% MD)', conf: 98 },
+                { key: 'total', label: 'Total Due', value: '$1,619.68', conf: 100 },
+                { key: 'balance_due', label: 'Balance Due', value: '$1,619.68 ($0.00 paid)', conf: 96 },
+                { key: 'payment_instructions', label: 'Payment Instructions', value: 'ACH ****4471 · Routing 055002707', conf: 85 },
+                { key: 'late_terms', label: 'Late Payment Terms', value: '1.5%/month on past-due balances', conf: 89 },
             ],
         },
         permit: {
-            stat: '3 pages · 512 KB · permit_app_BLD-2024-8841.pdf',
+            stat: '5 pages · 940 KB · permit_app_BLD-2024-8841.pdf',
             html: `
                 <h4>BALTIMORE CITY — CONSTRUCTION PERMIT APPLICATION</h4>
                 <div class="doc-row" data-field="app_number"><span class="label">Application #:</span> BLD-2024-8841</div>
-                <div class="doc-row" data-field="applicant"><span class="label">Applicant:</span> Reyes Renovations LLC</div>
+                <div class="doc-row" data-field="date_filed"><span class="label">Date Filed:</span> 10/18/2024</div>
+                <div class="doc-row" data-field="permit_type"><span class="label">Permit Type:</span> Building — Interior Alteration/Renovation</div>
                 <div class="doc-row" data-field="property"><span class="label">Property Address:</span> 1834 E. Pratt St, Baltimore, MD 21231</div>
-                <div class="doc-row" data-field="parcel"><span class="label">Parcel ID:</span> 03-1224-0017</div>
-                <div class="doc-row" data-field="work_type"><span class="label">Work Type:</span> Interior renovation, kitchen + 1 bath</div>
-                <div class="doc-row" data-field="declared_cost"><span class="label">Declared Cost:</span> $42,800</div>
-                <div class="doc-row" data-field="contractor"><span class="label">Contractor License:</span> MHIC-104722 (active)</div>
+                <div class="doc-row" data-field="parcel"><span class="label">Parcel ID:</span> 03-1224-0017 (Block 1224, Lot 017)</div>
                 <div class="doc-row" data-field="zoning"><span class="label">Zoning Class:</span> R-8 (Residential, mid-density)</div>
-                <div class="doc-row" data-field="structural"><span class="label">Structural changes?:</span> Yes — partial wall removal (load-bearing)</div>
+                <div class="doc-row" data-field="historic_district"><span class="label">Historic District:</span> No</div>
+                <div class="doc-row" data-field="flood_zone"><span class="label">Flood Zone:</span> Zone X (minimal risk)</div>
+                <div class="doc-row" data-field="owner_name"><span class="label">Owner:</span> Marcus &amp; Elena Reyes</div>
+                <div class="doc-row" data-field="owner_phone"><span class="label">Owner Phone:</span> (410) 555-0231</div>
+                <div class="doc-row" data-field="contractor"><span class="label">Contractor:</span> Reyes Renovations LLC</div>
+                <div class="doc-row" data-field="contractor_license"><span class="label">Contractor License:</span> MHIC-104722 (active, exp. 06/30/2026)</div>
+                <div class="doc-row" data-field="contractor_phone"><span class="label">Contractor Phone:</span> (410) 555-0288</div>
+                <div class="doc-row" data-field="contractor_insurance"><span class="label">Contractor Insurance:</span> GL Certificate #INS-88231, $1M coverage</div>
+                <div class="doc-row" data-field="work_type"><span class="label">Scope of Work:</span> Kitchen remodel and 1 bathroom addition; partial wall removal</div>
+                <div class="doc-row" data-field="declared_cost"><span class="label">Declared Cost:</span> $42,800</div>
+                <div class="doc-row" data-field="sq_ft_affected"><span class="label">Sq. Ft. Affected:</span> 640 sq ft</div>
+                <div class="doc-row" data-field="stories"><span class="label">Stories:</span> 2 (no footprint change)</div>
+                <div class="doc-row" data-field="structural"><span class="label">Structural Work?:</span> Yes — load-bearing wall removal, engineered beam per attached plan</div>
+                <div class="doc-row" data-field="electrical"><span class="label">Electrical Work?:</span> Yes — Sub-Permit ELEC-2024-3312</div>
+                <div class="doc-row" data-field="plumbing"><span class="label">Plumbing Work?:</span> Yes — Sub-Permit PLMB-2024-2207</div>
+                <div class="doc-row" data-field="mechanical"><span class="label">Mechanical/HVAC Work?:</span> No</div>
+                <div class="doc-row" data-field="fire_sprinkler"><span class="label">Fire Sprinkler Required?:</span> No (single-family, &lt;3 stories)</div>
+                <div class="doc-row" data-field="plan_reviewer"><span class="label">Plan Reviewer:</span> D. Okafor, Plan Review Division</div>
+                <div class="doc-row" data-field="permit_fee"><span class="label">Permit Fee:</span> $717.00 (1.5% of declared cost + $75 base)</div>
                 <div class="doc-row" data-field="signature"><span class="label">Owner Signature:</span> <i>(signed)</i> &nbsp; <span class="label">Date:</span> 10/22/2024</div>
                 <div class="scan-line" id="scanLine"></div>
             `,
             fields: [
                 { key: 'app_number', label: 'Application Number', value: 'BLD-2024-8841', conf: 100 },
-                { key: 'applicant', label: 'Applicant', value: 'Reyes Renovations LLC', conf: 98 },
+                { key: 'date_filed', label: 'Date Filed', value: '2024-10-18', conf: 99 },
+                { key: 'permit_type', label: 'Permit Type', value: 'Building — Interior Alteration/Renovation', conf: 93 },
                 { key: 'property', label: 'Property Address', value: '1834 E. Pratt St, Baltimore, MD 21231', conf: 96 },
-                { key: 'parcel', label: 'Parcel ID', value: '03-1224-0017', conf: 99 },
-                { key: 'work_type', label: 'Work Type', value: 'Interior renovation — kitchen + bath', conf: 89 },
-                { key: 'declared_cost', label: 'Declared Cost', value: '$42,800.00', conf: 100 },
-                { key: 'contractor', label: 'Contractor License', value: 'MHIC-104722', conf: 99 },
+                { key: 'parcel', label: 'Parcel ID', value: '03-1224-0017 (Blk 1224, Lot 017)', conf: 99 },
                 { key: 'zoning', label: 'Zoning Class', value: 'R-8', conf: 97 },
-                { key: 'structural', label: 'Structural Change', value: 'Yes (load-bearing wall)', conf: 86 },
+                { key: 'historic_district', label: 'Historic District', value: 'No', conf: 96 },
+                { key: 'flood_zone', label: 'Flood Zone', value: 'Zone X (minimal risk)', conf: 92 },
+                { key: 'owner_name', label: 'Owner', value: 'Marcus & Elena Reyes', conf: 97 },
+                { key: 'owner_phone', label: 'Owner Phone', value: '+1 (410) 555-0231', conf: 95 },
+                { key: 'contractor', label: 'Contractor', value: 'Reyes Renovations LLC', conf: 98 },
+                { key: 'contractor_license', label: 'Contractor License', value: 'MHIC-104722, exp. 2026-06-30', conf: 99 },
+                { key: 'contractor_phone', label: 'Contractor Phone', value: '+1 (410) 555-0288', conf: 94 },
+                { key: 'contractor_insurance', label: 'Contractor Insurance', value: 'GL Cert. #INS-88231, $1M coverage', conf: 90 },
+                { key: 'work_type', label: 'Scope of Work', value: 'Kitchen remodel + bath addition, partial wall removal', conf: 89 },
+                { key: 'declared_cost', label: 'Declared Cost', value: '$42,800.00', conf: 100 },
+                { key: 'sq_ft_affected', label: 'Sq. Ft. Affected', value: '640 sq ft', conf: 91 },
+                { key: 'stories', label: 'Stories', value: '2', conf: 97 },
+                { key: 'structural', label: 'Structural Change', value: 'Yes — load-bearing wall removal', conf: 86 },
+                { key: 'electrical', label: 'Electrical Sub-Permit', value: 'Yes — ELEC-2024-3312', conf: 92 },
+                { key: 'plumbing', label: 'Plumbing Sub-Permit', value: 'Yes — PLMB-2024-2207', conf: 92 },
+                { key: 'mechanical', label: 'Mechanical/HVAC Work', value: 'No', conf: 96 },
+                { key: 'fire_sprinkler', label: 'Fire Sprinkler Required', value: 'No', conf: 95 },
+                { key: 'plan_reviewer', label: 'Plan Reviewer', value: 'D. Okafor, Plan Review Division', conf: 88 },
+                { key: 'permit_fee', label: 'Permit Fee', value: '$717.00', conf: 97 },
+                { key: 'signature', label: 'Owner Signature / Date', value: '(signed) — 2024-10-22', conf: 78 },
             ],
         },
     };
