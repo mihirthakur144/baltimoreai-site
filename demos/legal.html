@@ -264,6 +264,7 @@
         .doc-type-case-law .doc-type-tag { background: #e4e9f5; color: #33508c; }
         .doc-type-statute .doc-type-tag { background: #e6f0e8; color: #2f6b3f; }
         .doc-type-firm-policy .doc-type-tag { background: #f0ece0; color: #7a6a3f; }
+        .doc-type-case-file .doc-type-tag { background: #fff1ec; color: #b6431f; }
         .corpus-doc .row { font-size: 0.82rem; font-weight: 700; color: var(--ink); }
         .corpus-doc .row .cite { font-weight: 500; color: var(--ink-muted); font-size: 0.76rem; }
         .corpus-doc .row .open-hint { font-weight: 500; color: var(--ink-faint); font-size: 0.72rem; margin-left: 6px; }
@@ -509,7 +510,7 @@
                 <div class="side-card">
                     <h3 id="lawBoxTitle">Case Details</h3>
                     <p class="sub" id="lawBoxEmpty">Click a case file above to load the law, statutes, and precedent relevant to it.</p>
-                    <p class="sub" id="lawBoxNote" hidden style="margin-top:-6px;">Case Law and Statute entries are real and link to a real source. Firm Policy entries are this sample firm's own internal guidance.</p>
+                    <p class="sub" id="lawBoxNote" hidden style="margin-top:-6px;">Case Law and Statute entries are real and link to a real source. Case File and Firm Policy entries are this sample firm's own invented materials for this demo matter.</p>
                     <div class="corpus" id="lawBoxList" hidden></div>
                 </div>
             </div>
@@ -695,14 +696,22 @@
     const WORKER_URL = 'https://baltimoreai-legal-demo.rough-mouse-a959.workers.dev';
 
     // Case Law / Statute entries below are real, well-known authorities (not
-    // invented) and link out to a real source. Firm Policy entries are the
-    // sample firm's own internal guidance, so they stay in-page (no external
-    // "real" version exists for another firm's internal memo).
+    // invented) and link out to a real source. Case File and Firm Policy
+    // entries are the sample firm's own invented materials for this demo
+    // matter, so they stay in-page (Case File downloads a sample PDF, Firm
+    // Policy opens an in-page modal) rather than linking to a real source.
     const CASES = {
         meridian: {
             title: 'Meridian Logistics v. Coastal Freight',
             tag: 'Contract · Force Majeure',
             docs: [
+                {
+                    name: 'Meridian Logistics v. Coastal Freight — Case File',
+                    cite: 'Matter No. 2026-CV-0114',
+                    type: 'Case File',
+                    summary: 'Sample case summary memo: parties, facts, procedural posture, and the legal issues this matter turns on.',
+                    pdf: '../assets/demos/legal/meridian-case-summary.pdf',
+                },
                 {
                     name: 'Kel Kim Corp. v. Central Markets, Inc.',
                     cite: '70 N.Y.2d 900 (1987)',
@@ -724,6 +733,13 @@
             tag: 'Bankruptcy · Lease Assignment',
             docs: [
                 {
+                    name: 'In re Vantage Retail Group — Case File',
+                    cite: 'Matter No. 2026-BK-2207',
+                    type: 'Case File',
+                    summary: 'Sample case summary memo: parties, facts, procedural posture, and the legal issues this matter turns on.',
+                    pdf: '../assets/demos/legal/vantage-case-summary.pdf',
+                },
+                {
                     name: '11 U.S.C. § 365',
                     cite: 'Executory Contracts and Unexpired Leases',
                     type: 'Statute',
@@ -744,6 +760,13 @@
             tag: 'Employment · Non-Compete',
             docs: [
                 {
+                    name: 'Ashford Tech v. Reyes — Case File',
+                    cite: 'Matter No. 2026-CV-0388',
+                    type: 'Case File',
+                    summary: 'Sample case summary memo: parties, facts, procedural posture, and the legal issues this matter turns on.',
+                    pdf: '../assets/demos/legal/ashford-case-summary.pdf',
+                },
+                {
                     name: 'BDO Seidman v. Hirshberg',
                     cite: '93 N.Y.2d 382 (1999)',
                     type: 'Case Law',
@@ -763,6 +786,13 @@
             title: 'Whitfield Family Trust Dispute',
             tag: 'Trusts & Estates · Fiduciary Duty',
             docs: [
+                {
+                    name: 'Whitfield Family Trust Dispute — Case File',
+                    cite: 'Matter No. 2026-PR-0562',
+                    type: 'Case File',
+                    summary: 'Sample case summary memo: parties, facts, procedural posture, and the legal issues this matter turns on.',
+                    pdf: '../assets/demos/legal/whitfield-case-summary.pdf',
+                },
                 {
                     name: 'Meinhard v. Salmon',
                     cite: '249 N.Y. 458 (1928)',
@@ -813,20 +843,27 @@
         lawBoxList.hidden = false;
         lawBoxList.innerHTML = '';
         cfg.docs.forEach((doc) => {
-            const isExternal = doc.type !== 'Firm Policy';
-            const el = document.createElement(isExternal ? 'a' : 'button');
+            const isDownload = doc.type === 'Case File';
+            const isExternal = doc.type === 'Case Law' || doc.type === 'Statute';
+            const el = document.createElement((isExternal || isDownload) ? 'a' : 'button');
             el.className = 'corpus-doc doc-type-' + doc.type.replace(/\s+/g, '-').toLowerCase();
+            let hint = '— click to open';
             if (isExternal) {
                 el.href = doc.url;
                 el.target = '_blank';
                 el.rel = 'noopener';
+                hint = '— opens real source ↗';
+            } else if (isDownload) {
+                el.href = doc.pdf;
+                el.download = '';
+                hint = '— download PDF ↓';
             }
             el.innerHTML = `
                 <span class="doc-type-tag">${doc.type}</span>
-                <span class="row">📄 ${doc.name} <span class="cite">${doc.cite}</span><span class="open-hint">${isExternal ? '— opens real source ↗' : '— click to open'}</span></span>
+                <span class="row">📄 ${doc.name} <span class="cite">${doc.cite}</span><span class="open-hint">${hint}</span></span>
                 <span class="summary">${doc.summary}</span>
             `;
-            if (!isExternal) el.addEventListener('click', () => openDocModal(doc));
+            if (!isExternal && !isDownload) el.addEventListener('click', () => openDocModal(doc));
             lawBoxList.appendChild(el);
         });
 
