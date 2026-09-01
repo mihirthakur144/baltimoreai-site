@@ -306,8 +306,9 @@
         .doc-mock h4 { color: #111; font-size: 0.95rem; border-bottom: 2px solid #222; padding-bottom: 6px; margin-bottom: 14px; }
         .doc-mock .doc-row { margin-bottom: 9px; line-height: 1.5; position: relative; padding: 2px 4px; border-radius: 3px; transition: background 0.3s; }
         .doc-mock .doc-row.scanning { background: rgba(10,10,10,0.1); }
-        .doc-mock .doc-row.found { background: rgba(34,197,94,0.16); }
-        .doc-mock .doc-row.flagged { background: rgba(255,111,76,0.16); }
+        .doc-mock .doc-row.standard { background: rgba(34,197,94,0.16); }
+        .doc-mock .doc-row.anomaly { background: rgba(217,164,6,0.2); }
+        .doc-mock .doc-row.redflag { background: rgba(239,68,68,0.18); }
         .doc-mock .label { color: #555; font-weight: bold; display: inline-block; min-width: 150px; }
 
         .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; min-height: 380px; color: var(--ink-faint); text-align: center; padding: 30px; }
@@ -322,12 +323,15 @@
         .field.visible { opacity: 1; transform: translateY(0); }
         .field-label { font-size: 0.7rem; color: var(--ink-faint); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
         .field-value { font-size: 0.92rem; color: var(--ink); font-weight: 500; }
+        .field-note { font-size: 0.8rem; color: var(--ink-muted); line-height: 1.5; margin-top: 6px; }
         .field-confidence { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
         .field-confidence .bar { flex: 1; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
         .field-confidence .fill { height: 100%; background: #16a34a; width: 0%; transition: width 0.6s ease-out; }
-        .field-confidence .pct { font-size: 0.7rem; color: #16a34a; font-weight: 700; min-width: 90px; text-align: right; }
-        .field.flagged .fill { background: var(--brand-accent); }
-        .field.flagged .pct { color: var(--brand-accent); }
+        .field-confidence .pct { font-size: 0.7rem; color: #16a34a; font-weight: 700; min-width: 110px; text-align: right; }
+        .field.anomaly .fill { background: #d97706; }
+        .field.anomaly .pct { color: #b45309; }
+        .field.redflag .fill { background: #ef4444; }
+        .field.redflag .pct { color: #dc2626; }
 
         .summary-bar {
             margin-top: 14px; padding: 14px 16px; border-radius: 10px;
@@ -994,65 +998,135 @@
     inputEl.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(inputEl.value); } });
 
     // ═══════════ PANEL 2: CONTRACT REVIEW (staged) ═══════════
+    // Modeled on the section structure of real filed contracts (SEC EDGAR
+    // exhibits — a master services agreement, a commercial lease, and a
+    // mutual NDA), with original fictional terms. Each field carries a
+    // tier — 'standard' (industry-accepted), 'anomaly' (unusual, worth a
+    // note), or 'redflag' (real risk) — plus a one-line note explaining why,
+    // so the review can be summarized by category afterward.
     const CR_DOCS = {
         services: {
-            stat: '1 page · 220 KB · services_agreement_v3.pdf',
+            stat: '3 pages · 480 KB · services_agreement_v3.pdf',
             html: `
-                <h4>SAMPLE SERVICES AGREEMENT</h4>
-                <div class="doc-row" data-field="parties"><span class="label">Parties:</span> Acme Consulting LLC and Bethesda Retail Group Inc.</div>
-                <div class="doc-row" data-field="term"><span class="label">Term:</span> 12 months, auto-renews unless terminated with 30 days notice</div>
-                <div class="doc-row" data-field="payment"><span class="label">Payment Terms:</span> Net 45, 1.5% late fee per month</div>
-                <div class="doc-row" data-field="liability"><span class="label">Limitation of Liability:</span> Capped at fees paid in prior 12 months</div>
-                <div class="doc-row" data-field="indemnity"><span class="label">Indemnification:</span> Mutual, silent on IP infringement claims</div>
-                <div class="doc-row" data-field="termination"><span class="label">Termination for Convenience:</span> Not present in this draft</div>
-                <div class="doc-row" data-field="law"><span class="label">Governing Law:</span> State of Maryland</div>
+                <h4>MASTER SERVICES AGREEMENT (SAMPLE)</h4>
+                <div class="doc-row" data-field="parties"><span class="label">Parties:</span> Acme Consulting LLC ("Consultant") and Bethesda Retail Group Inc. ("Client")</div>
+                <div class="doc-row" data-field="relationship"><span class="label">Relationship:</span> Independent contractor; no partnership, agency, or employment created</div>
+                <div class="doc-row" data-field="scope"><span class="label">Scope of Services:</span> Governed by signed Statements of Work (SOWs) incorporating this Agreement by reference</div>
+                <div class="doc-row" data-field="term"><span class="label">Term:</span> 12 months from Effective Date, auto-renews for successive 12-month terms absent 30 days' notice</div>
+                <div class="doc-row" data-field="fees"><span class="label">Fees:</span> Per SOW; invoiced monthly in arrears</div>
+                <div class="doc-row" data-field="payment"><span class="label">Payment Terms:</span> Net 45 from invoice date; 1.5%/month late fee on overdue amounts</div>
+                <div class="doc-row" data-field="ip"><span class="label">IP Ownership:</span> Client owns work product upon full payment; Consultant retains pre-existing IP and tools</div>
+                <div class="doc-row" data-field="confidentiality"><span class="label">Confidentiality:</span> Mutual, survives 3 years post-termination</div>
+                <div class="doc-row" data-field="liability"><span class="label">Limitation of Liability:</span> Aggregate liability capped at fees paid in the preceding 12 months</div>
+                <div class="doc-row" data-field="specialdamages"><span class="label">Waiver of Special Damages:</span> Mutual waiver of consequential, indirect, and punitive damages</div>
+                <div class="doc-row" data-field="indemnity"><span class="label">Indemnification:</span> Mutual, silent on third-party IP infringement claims</div>
+                <div class="doc-row" data-field="termination"><span class="label">Termination for Convenience:</span> Not present — only for-cause termination with a 30-day cure period</div>
+                <div class="doc-row" data-field="insurance"><span class="label">Insurance:</span> Consultant to carry $1M general liability; no professional E&amp;O requirement</div>
+                <div class="doc-row" data-field="nonsolicit"><span class="label">Non-Solicitation:</span> Mutual, 12 months post-termination, covers employees and contractors</div>
+                <div class="doc-row" data-field="assignment"><span class="label">Assignment:</span> Neither party may assign without consent, except to a successor by merger or asset sale</div>
+                <div class="doc-row" data-field="dispute"><span class="label">Dispute Resolution:</span> Binding arbitration (AAA Commercial Rules) in Wilmington, DE; jury trial waived</div>
+                <div class="doc-row" data-field="law"><span class="label">Governing Law:</span> State of Delaware</div>
             `,
             fields: [
-                { key: 'parties', label: 'Parties', value: 'Standard, both entities properly defined', score: 98 },
-                { key: 'term', label: 'Term', value: '12-month auto-renewal, standard notice period', score: 95 },
-                { key: 'payment', label: 'Payment Terms', value: 'Net 45 is looser than the firm’s Net 30 default', score: 78 },
-                { key: 'liability', label: 'Limitation of Liability', value: 'Standard cap, mutual', score: 88 },
-                { key: 'indemnity', label: 'Indemnification', value: 'Missing IP infringement carve-out — flag for review', score: 55 },
-                { key: 'termination', label: 'Termination for Convenience', value: 'Clause absent entirely — recommend adding', score: 30 },
-                { key: 'law', label: 'Governing Law', value: 'Standard, matches firm jurisdiction', score: 97 },
+                { key: 'parties', label: 'Parties', tier: 'standard', value: 'Both entities properly defined', score: 98 },
+                { key: 'relationship', label: 'Relationship of the Parties', tier: 'standard', value: 'Standard independent-contractor language', score: 96 },
+                { key: 'scope', label: 'Scope of Services', tier: 'standard', value: 'Standard SOW-incorporation structure', score: 94 },
+                { key: 'term', label: 'Term', tier: 'standard', value: '12-month auto-renewal, standard notice period', score: 91 },
+                { key: 'fees', label: 'Fees', tier: 'standard', value: 'Standard SOW-based fee structure', score: 92 },
+                { key: 'payment', label: 'Payment Terms', tier: 'anomaly', value: 'Net 45 is looser than the firm’s Net 30 default', note: 'Not unreasonable, but worth confirming Client’s cash-flow team is comfortable extending 15 days beyond the usual term.', score: 72 },
+                { key: 'ip', label: 'IP Ownership', tier: 'anomaly', value: 'Work product transfers only upon full payment', note: 'Ties IP ownership to payment completion — if a payment dispute arises mid-project, ownership of interim deliverables is ambiguous.', score: 70 },
+                { key: 'confidentiality', label: 'Confidentiality', tier: 'standard', value: 'Mutual, standard 3-year survival', score: 93 },
+                { key: 'liability', label: 'Limitation of Liability', tier: 'standard', value: 'Standard cap at 12 months’ fees, mutual', score: 88 },
+                { key: 'specialdamages', label: 'Waiver of Special Damages', tier: 'standard', value: 'Standard mutual waiver, matches market template', score: 90 },
+                { key: 'indemnity', label: 'Indemnification', tier: 'redflag', value: 'Missing IP infringement carve-out', note: 'If a third party claims Consultant’s deliverable infringes their IP, this draft doesn’t clearly obligate Consultant to indemnify Client for it — add an explicit carve-out.', score: 55 },
+                { key: 'termination', label: 'Termination for Convenience', tier: 'redflag', value: 'Clause absent entirely', note: 'Client is locked in for a full 12-month term with no exit except proving material breach — recommend adding a termination-for-convenience right with reasonable notice.', score: 28 },
+                { key: 'insurance', label: 'Insurance', tier: 'anomaly', value: 'No professional errors & omissions (E&O) coverage required', note: 'General liability alone doesn’t cover claims arising from professional mistakes in the consulting work itself — worth requiring E&O given the engagement type.', score: 68 },
+                { key: 'nonsolicit', label: 'Non-Solicitation', tier: 'standard', value: 'Standard mutual 12-month non-solicit', score: 91 },
+                { key: 'assignment', label: 'Assignment', tier: 'standard', value: 'Standard consent requirement with M&A carve-out', score: 93 },
+                { key: 'dispute', label: 'Dispute Resolution', tier: 'anomaly', value: 'Mandatory arbitration, venue in Consultant’s home state', note: 'Delaware venue is more convenient for Consultant than for Client (Maryland-based) — a minor home-field tilt worth raising in negotiation.', score: 65 },
+                { key: 'law', label: 'Governing Law', tier: 'anomaly', value: 'Delaware law, though Client is Maryland-based', note: 'Not unusual for a services vendor to specify its own state, but pair this with the arbitration venue above when negotiating.', score: 67 },
             ],
         },
         lease: {
-            stat: '1 page · 260 KB · commercial_lease_draft.pdf',
+            stat: '4 pages · 610 KB · commercial_lease_draft.pdf',
             html: `
-                <h4>SAMPLE COMMERCIAL LEASE</h4>
+                <h4>COMMERCIAL LEASE AGREEMENT (SAMPLE)</h4>
                 <div class="doc-row" data-field="parties"><span class="label">Landlord / Tenant:</span> Harborview Properties LLC / client entity</div>
+                <div class="doc-row" data-field="premises"><span class="label">Premises:</span> ~4,200 sq ft ground-floor retail suite, Harborview Marketplace, Suite 110</div>
+                <div class="doc-row" data-field="use"><span class="label">Permitted Use:</span> Retail sale of home goods and related e-commerce fulfillment; no other use without consent</div>
+                <div class="doc-row" data-field="term"><span class="label">Term:</span> 7 years from the Commencement Date</div>
+                <div class="doc-row" data-field="renewal"><span class="label">Renewal Option:</span> One 5-year option at 95% of fair-market rent, 180 days' notice required</div>
                 <div class="doc-row" data-field="rent"><span class="label">Base Rent:</span> $28/sq ft, 3% annual escalation</div>
-                <div class="doc-row" data-field="cam"><span class="label">CAM Charges:</span> Uncapped annual increase</div>
-                <div class="doc-row" data-field="assignment"><span class="label">Assignment / Subletting:</span> Requires landlord consent, not unreasonably withheld</div>
-                <div class="doc-row" data-field="force"><span class="label">Force Majeure:</span> Narrow definition, excludes pandemics</div>
-                <div class="doc-row" data-field="renewal"><span class="label">Renewal Option:</span> One 5-year option at market rate</div>
+                <div class="doc-row" data-field="latefee"><span class="label">Late Fee:</span> 5% of monthly rent if not received within 10 days of due date</div>
+                <div class="doc-row" data-field="deposit"><span class="label">Security Deposit:</span> 2 months' rent, held without interest</div>
+                <div class="doc-row" data-field="cam"><span class="label">CAM &amp; Taxes:</span> Passed through pro rata; no annual cap on increases</div>
+                <div class="doc-row" data-field="repairs"><span class="label">Repairs &amp; Maintenance:</span> Landlord handles structural/roof; Tenant handles interior, non-structural</div>
+                <div class="doc-row" data-field="alterations"><span class="label">Alterations:</span> Non-structural changes permitted freely; structural changes need landlord's (not-unreasonably-withheld) consent</div>
+                <div class="doc-row" data-field="insurance"><span class="label">Insurance:</span> Tenant carries $1M/$250K liability and property coverage, Landlord named additional insured</div>
+                <div class="doc-row" data-field="assignment"><span class="label">Assignment / Subletting:</span> Requires landlord consent; landlord may recapture the space on any assignment request</div>
+                <div class="doc-row" data-field="default"><span class="label">Default:</span> 3 late payments in 12 months = default even if cured; 10-day cure period on non-monetary defaults</div>
+                <div class="doc-row" data-field="force"><span class="label">Force Majeure:</span> Excludes pandemics/public health orders; never excuses rent obligations</div>
+                <div class="doc-row" data-field="subordination"><span class="label">Subordination:</span> Automatically subordinate to future mortgages, no guaranteed non-disturbance protection</div>
+                <div class="doc-row" data-field="holdover"><span class="label">Holdover:</span> 150% of last month's rent, month-to-month</div>
+                <div class="doc-row" data-field="dispute"><span class="label">Dispute Resolution:</span> Litigation only, venue in landlord's home county, prevailing party recovers fees</div>
             `,
             fields: [
-                { key: 'parties', label: 'Landlord / Tenant', value: 'Standard, properly identified', score: 97 },
-                { key: 'rent', label: 'Base Rent', value: 'Standard escalation rate for the market', score: 92 },
-                { key: 'cam', label: 'CAM Charges', value: 'No cap on annual increase — flag for negotiation', score: 52 },
-                { key: 'assignment', label: 'Assignment / Subletting', value: 'Standard reasonable-consent language', score: 85 },
-                { key: 'force', label: 'Force Majeure', value: 'Definition excludes pandemics — worth revisiting', score: 58 },
-                { key: 'renewal', label: 'Renewal Option', value: 'Standard single renewal at market rate', score: 90 },
+                { key: 'parties', label: 'Landlord / Tenant', tier: 'standard', value: 'Properly identified', score: 97 },
+                { key: 'premises', label: 'Premises', tier: 'standard', value: 'Clearly described with square footage and suite number', score: 95 },
+                { key: 'use', label: 'Permitted Use', tier: 'standard', value: 'Reasonably broad for the tenant’s business', score: 90 },
+                { key: 'term', label: 'Term', tier: 'standard', value: 'Standard 7-year initial term', score: 94 },
+                { key: 'renewal', label: 'Renewal Option', tier: 'anomaly', value: '180-day renewal notice window', note: 'Longer than the market-typical 90–120 days — easy to miss and forfeit the option if not calendared carefully.', score: 74 },
+                { key: 'rent', label: 'Base Rent', tier: 'standard', value: 'Standard 3% annual escalation for the market', score: 90 },
+                { key: 'latefee', label: 'Late Fee', tier: 'standard', value: 'Matches typical 5%/10-day market terms', score: 89 },
+                { key: 'deposit', label: 'Security Deposit', tier: 'standard', value: 'Standard 2 months, no interest — market-typical', score: 92 },
+                { key: 'cam', label: 'CAM & Taxes', tier: 'redflag', value: 'No cap on annual CAM/tax increases', note: 'Landlord can pass through unlimited operating-cost growth — push for an annual cap (e.g. 5%) or at minimum an audit right.', score: 42 },
+                { key: 'repairs', label: 'Repairs & Maintenance', tier: 'standard', value: 'Standard landlord/tenant repair split', score: 91 },
+                { key: 'alterations', label: 'Alterations', tier: 'standard', value: 'Standard reasonable-consent language for structural work', score: 87 },
+                { key: 'insurance', label: 'Insurance', tier: 'standard', value: 'Standard minimums for a retail space this size', score: 90 },
+                { key: 'assignment', label: 'Assignment / Subletting', tier: 'redflag', value: 'Landlord recapture right on any assignment request', note: 'Goes beyond standard reasonable-consent language — landlord can effectively block an exit via assignment by recapturing the space instead of consenting.', score: 48 },
+                { key: 'default', label: 'Default', tier: 'redflag', value: '3 late payments = default even if cured; only a 10-day non-monetary cure', note: 'Unusually aggressive — market-standard non-monetary cure periods run closer to 30 days, and a “cured but still counts” late-payment trigger stacks the deck toward landlord remedies.', score: 45 },
+                { key: 'force', label: 'Force Majeure', tier: 'redflag', value: 'Excludes pandemics/public health orders, never excuses rent', note: 'Narrower than a standard force majeure clause and leaves Tenant exposed to full rent obligations during exactly the kind of disruption this clause exists for.', score: 40 },
+                { key: 'subordination', label: 'Subordination', tier: 'anomaly', value: 'Automatic subordination, no guaranteed non-disturbance protection', note: 'If Landlord defaults on its mortgage, Tenant has no contractual guarantee the lease survives foreclosure — worth negotiating an SNDA (subordination, non-disturbance, and attornment) agreement.', score: 66 },
+                { key: 'holdover', label: 'Holdover', tier: 'anomaly', value: '150% holdover rent', note: 'Steeper than the typical 125–150% range — sits at the top edge of what’s market-standard.', score: 70 },
+                { key: 'dispute', label: 'Dispute Resolution', tier: 'anomaly', value: 'Litigation only, landlord’s home-county venue', note: 'No arbitration option, and the fixed venue favors Landlord logistically — not unusual for a lease, but worth flagging as a negotiation point.', score: 68 },
             ],
         },
         nda: {
-            stat: '1 page · 140 KB · mutual_nda_draft.pdf',
+            stat: '2 pages · 190 KB · mutual_nda_draft.pdf',
             html: `
-                <h4>SAMPLE MUTUAL NDA</h4>
-                <div class="doc-row" data-field="definition"><span class="label">Confidential Info:</span> Broad definition, standard exclusions</div>
-                <div class="doc-row" data-field="term"><span class="label">Term:</span> 3 years post-termination</div>
-                <div class="doc-row" data-field="residuals"><span class="label">Residuals Clause:</span> Broad carve-out favors the recipient</div>
-                <div class="doc-row" data-field="return"><span class="label">Return / Destruction:</span> Required within 30 days of request</div>
+                <h4>MUTUAL NON-DISCLOSURE AGREEMENT (SAMPLE)</h4>
+                <div class="doc-row" data-field="parties"><span class="label">Parties:</span> Client and Prospective Partner Co., evaluating a joint distribution arrangement</div>
+                <div class="doc-row" data-field="purpose"><span class="label">Purpose:</span> Limited to evaluating the potential joint distribution and licensing arrangement</div>
+                <div class="doc-row" data-field="definition"><span class="label">Confidential Info:</span> Broad — any technical, business, or financial information, marked or not</div>
+                <div class="doc-row" data-field="exclusions"><span class="label">Exclusions:</span> Standard five: already known, public, third-party, independently developed, written release</div>
+                <div class="doc-row" data-field="marking"><span class="label">Marking:</span> Not required; oral disclosures must be confirmed in writing within 30 days</div>
+                <div class="doc-row" data-field="term"><span class="label">Term:</span> Agreement runs 1 year; confidentiality survives 3 years from last disclosure</div>
+                <div class="doc-row" data-field="care"><span class="label">Standard of Care:</span> Same degree of care as own confidential information</div>
+                <div class="doc-row" data-field="residuals"><span class="label">Residuals Clause:</span> Broad carve-out for information retained in unaided memory</div>
+                <div class="doc-row" data-field="return"><span class="label">Return / Destruction:</span> Required within 30 days of written request</div>
+                <div class="doc-row" data-field="license"><span class="label">No License Granted:</span> Disclosure grants no IP rights or license</div>
                 <div class="doc-row" data-field="nonsolicit"><span class="label">Non-Solicit:</span> Not included</div>
+                <div class="doc-row" data-field="remedies"><span class="label">Equitable Remedies:</span> Injunctive relief available without bond</div>
+                <div class="doc-row" data-field="dispute"><span class="label">Dispute Resolution:</span> Binding arbitration, AAA Commercial Rules, San Diego County, CA</div>
+                <div class="doc-row" data-field="fees"><span class="label">Legal Fees:</span> Prevailing party recovers reasonable attorneys' fees</div>
+                <div class="doc-row" data-field="securities"><span class="label">Securities Compliance:</span> Parties must comply with applicable U.S. securities laws</div>
             `,
             fields: [
-                { key: 'definition', label: 'Confidential Info', value: 'Standard scope and exclusions', score: 94 },
-                { key: 'term', label: 'Term', value: 'Standard 3-year survival period', score: 90 },
-                { key: 'residuals', label: 'Residuals Clause', value: 'Unusually broad — favors the other side, flag for review', score: 50 },
-                { key: 'return', label: 'Return / Destruction', value: 'Standard 30-day window', score: 91 },
-                { key: 'nonsolicit', label: 'Non-Solicit', value: 'Clause absent — recommend adding if this is a vendor relationship', score: 35 },
+                { key: 'parties', label: 'Parties', tier: 'standard', value: 'Both entities properly defined', score: 96 },
+                { key: 'purpose', label: 'Purpose', tier: 'standard', value: 'Standard purpose limitation', score: 92 },
+                { key: 'definition', label: 'Confidential Info', tier: 'standard', value: 'Standard broad definition', score: 90 },
+                { key: 'exclusions', label: 'Exclusions', tier: 'standard', value: 'Standard five exclusions, matches market template', score: 94 },
+                { key: 'marking', label: 'Marking', tier: 'anomaly', value: 'No marking requirement', note: 'Makes it harder to prove what’s actually “confidential” if a dispute arises later, and the 30-day oral-disclosure window is easy to let lapse.', score: 72 },
+                { key: 'term', label: 'Term', tier: 'anomaly', value: '3-year confidentiality survival', note: 'Longer than this firm’s typical 2-year NDA default — reasonable for a deal involving financial data, but confirm it’s intentional.', score: 69 },
+                { key: 'care', label: 'Standard of Care', tier: 'standard', value: 'Standard "same as own information" language', score: 93 },
+                { key: 'residuals', label: 'Residuals Clause', tier: 'redflag', value: 'Broad residuals carve-out', note: 'Lets the other side’s personnel reuse anything retained in unaided memory, with no compensation owed — meaningfully weakens the practical value of the confidentiality obligation.', score: 50 },
+                { key: 'return', label: 'Return / Destruction', tier: 'standard', value: 'Standard 30-day window', score: 90 },
+                { key: 'license', label: 'No License Granted', tier: 'standard', value: 'Standard no-license language', score: 95 },
+                { key: 'nonsolicit', label: 'Non-Solicit', tier: 'redflag', value: 'Clause absent entirely', note: 'Nothing stops either side from recruiting the other’s key people once they’re read into deal specifics — recommend adding one if diligence proceeds.', score: 38 },
+                { key: 'remedies', label: 'Equitable Remedies', tier: 'standard', value: 'Standard injunctive-relief language', score: 91 },
+                { key: 'dispute', label: 'Dispute Resolution', tier: 'standard', value: 'Standard AAA arbitration clause', score: 88 },
+                { key: 'fees', label: 'Legal Fees', tier: 'standard', value: 'Standard prevailing-party fee-shifting', score: 90 },
+                { key: 'securities', label: 'Securities Compliance', tier: 'anomaly', value: 'Trading-limitation clause included', note: 'Signals this NDA anticipates exposure to material non-public information — confirm insider-list and blackout procedures are actually in place before diligence starts.', score: 70 },
             ],
         },
     };
@@ -1100,7 +1174,12 @@
         crFieldStat.textContent = 'Scanning…';
         const rows = [...crMock.querySelectorAll('.doc-row[data-field]')];
         const fieldByKey = Object.fromEntries(cfg.fields.map(f => [f.key, f]));
-        let reviewed = 0, flagged = 0;
+        const TIER_LABEL = {
+            standard: '✓ Industry-Standard',
+            anomaly: '◐ Anomaly — worth a note',
+            redflag: '⚠ Red Flag — needs review',
+        };
+        let reviewed = 0, redflags = 0, anomalies = 0, standard = 0;
         for (const row of rows) {
             row.classList.add('scanning');
             await sleep(200 + Math.random() * 120);
@@ -1108,17 +1187,19 @@
             const f = fieldByKey[key];
             if (f) {
                 row.classList.remove('scanning');
-                const isFlagged = f.score < 65;
-                row.classList.add(isFlagged ? 'flagged' : 'found');
-                if (isFlagged) flagged++;
+                row.classList.add(f.tier);
+                if (f.tier === 'redflag') redflags++;
+                else if (f.tier === 'anomaly') anomalies++;
+                else standard++;
                 const fieldEl = document.createElement('div');
-                fieldEl.className = 'field' + (isFlagged ? ' flagged' : '');
+                fieldEl.className = 'field' + (f.tier !== 'standard' ? ' ' + f.tier : '');
                 fieldEl.innerHTML = `
-                    <div class="field-label">${f.label}${isFlagged ? ' — ⚠ flagged' : ''}</div>
+                    <div class="field-label">${f.label}</div>
                     <div class="field-value">${f.value}</div>
+                    ${f.note ? `<div class="field-note">${f.note}</div>` : ''}
                     <div class="field-confidence">
                         <div class="bar"><div class="fill"></div></div>
-                        <div class="pct">${isFlagged ? 'Needs review' : 'Standard'}</div>
+                        <div class="pct">${TIER_LABEL[f.tier]}</div>
                     </div>
                 `;
                 crFieldsContainer.appendChild(fieldEl);
@@ -1135,9 +1216,9 @@
             await sleep(70);
         }
         const elapsed = ((performance.now() - t0) / 1000).toFixed(1);
-        crSummaryText.textContent = `✓ Reviewed ${reviewed} clauses in ${elapsed}s — ${flagged} flagged for attorney review`;
+        crSummaryText.textContent = `✓ Reviewed ${reviewed} clauses in ${elapsed}s — ${redflags} red flag${redflags === 1 ? '' : 's'}, ${anomalies} anomal${anomalies === 1 ? 'y' : 'ies'} noted, ${standard} industry-standard`;
         crSummaryBar.classList.add('show');
-        crFieldStat.textContent = `${reviewed} clauses · ${flagged} flagged`;
+        crFieldStat.textContent = `${reviewed} clauses · ${redflags} red flags · ${anomalies} anomalies`;
         crBusy = false; crRunBtn.disabled = false; crRunBtn.textContent = '▶ Review Again';
     }
     crRunBtn.addEventListener('click', crProcess);
