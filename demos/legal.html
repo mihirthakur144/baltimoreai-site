@@ -216,6 +216,14 @@
             border: 1px solid #ffd9c9;
             font-size: 0.78rem; font-weight: 600; margin: 0 2px;
         }
+        .msg.assistant .bubble p { margin: 0 0 10px; }
+        .msg.assistant .bubble h4, .msg.assistant .bubble h5, .msg.assistant .bubble h6 {
+            font-size: 0.98rem; margin: 12px 0 6px; color: var(--ink);
+        }
+        .msg.assistant .bubble ul, .msg.assistant .bubble ol { margin: 0 0 10px; padding-left: 20px; }
+        .msg.assistant .bubble li { margin-bottom: 4px; }
+        .msg.assistant .bubble > *:first-child { margin-top: 0; }
+        .msg.assistant .bubble > *:last-child { margin-bottom: 0; }
         .typing { display: inline-flex; gap: 4px; padding: 4px 0; }
         .typing span { width: 6px; height: 6px; border-radius: 50%; background: var(--ink-faint); animation: blink 1.2s infinite; }
         .typing span:nth-child(2) { animation-delay: 0.2s; }
@@ -578,6 +586,11 @@
 
     <!-- ══════════ PANEL 3: DRAFTING SUPPORT ══════════ -->
     <div class="panel" id="panel-drafting">
+        <div class="doc-tabs" id="draftTabs">
+            <button class="doc-tab active" data-draft="demand">✉️ Demand Letter</button>
+            <button class="doc-tab" data-draft="engagement">🤝 Engagement Letter</button>
+            <button class="doc-tab" data-draft="ceaseanddesist">🛑 Cease &amp; Desist Letter</button>
+        </div>
         <div class="draft-input-row">
             <input class="draft-input" id="draftInput" type="text" value="Draft a demand letter for a late-paying commercial client" readonly>
             <button class="run-btn" id="draftRunBtn" style="margin-top:0;">▶ Generate Draft</button>
@@ -585,14 +598,18 @@
         <div class="draft-grid" id="draftGrid">
             <div class="draft-empty" id="draftEmpty">Click "Generate Draft" to assemble a first pass, section by section.</div>
         </div>
+        <div class="summary-bar" id="draftSummaryBar">
+            <span class="text" id="draftSummaryText">✓ Draft assembled</span>
+            <a class="run-btn" id="draftDownloadBtn" href="#" download style="margin-top:0; text-decoration:none;">⬇ Download as PDF</a>
+        </div>
     </div>
 
     <!-- ══════════ PANEL 4: MEETING INTELLIGENCE ══════════ -->
     <div class="panel" id="panel-meetings">
         <div class="mi-wrap">
             <div class="mi-frame">
-                <svg viewBox="0 0 520 360" xmlns="http://www.w3.org/2000/svg" fill="none">
-                    <rect width="520" height="360" rx="10" fill="#141414"/>
+                <svg viewBox="0 0 520 400" xmlns="http://www.w3.org/2000/svg" fill="none">
+                    <rect width="520" height="400" rx="10" fill="#141414"/>
                     <rect width="520" height="36" rx="10" fill="#1e1e1e"/>
                     <rect y="26" width="520" height="10" fill="#1e1e1e"/>
                     <circle cx="18" cy="18" r="5" fill="#ff5f57"/>
@@ -629,6 +646,16 @@
                     <text x="16" y="174" fill="#bbb" font-size="10" font-family="system-ui">April. Karen, can you reach out to Dr. Holcomb?</text>
                     <text x="16" y="194" fill="#e0967f" font-size="9.5" font-family="system-ui" font-weight="600">Karen Park (00:24:01)</text>
                     <text x="16" y="208" fill="#bbb" font-size="10" font-family="system-ui">Yes — I'll send a request today and CC Marcus.</text>
+                    <text x="16" y="228" fill="#e0967f" font-size="9.5" font-family="system-ui" font-weight="600">Counsel Reyes (00:24:15)</text>
+                    <text x="16" y="242" fill="#bbb" font-size="10" font-family="system-ui">If that gap isn't closed, we're inviting a Rule</text>
+                    <text x="16" y="256" fill="#bbb" font-size="10" font-family="system-ui">37(e) spoliation motion — and Holcomb's testimony</text>
+                    <text x="16" y="270" fill="#bbb" font-size="10" font-family="system-ui">needs to clear Daubert regardless.</text>
+
+                    <rect x="16" y="282" width="250" height="76" rx="8" fill="#1a1a1a" stroke="#2a2a2a" stroke-width="1"/>
+                    <text x="28" y="298" fill="#7dd3fc" font-size="9" font-family="system-ui" font-weight="700">📚 CASE &amp; LAW REFERENCED</text>
+                    <text x="28" y="314" fill="#ddd" font-size="9" font-family="system-ui" font-weight="600">Smith v. Reyes — active matter</text>
+                    <text x="28" y="328" fill="#ddd" font-size="9" font-family="system-ui" font-weight="600">Fed. R. Civ. P. 37(e) · Daubert standard</text>
+                    <text x="28" y="340" fill="#777" font-size="8" font-family="system-ui">re: chain-of-custody gap · Dr. Holcomb's testimony</text>
 
                     <rect x="280" y="100" width="224" height="240" rx="8" fill="#1a1a1a" stroke="#2a2a2a" stroke-width="1"/>
                     <text x="296" y="120" fill="#FF6F4C" font-size="9" font-family="system-ui" font-weight="700">⚡ ACTION ITEMS · 4 detected</text>
@@ -657,13 +684,13 @@
                     <text x="306" y="308" fill="#ddd" font-size="9" font-family="system-ui" font-weight="600">timeline before Wed prep</text>
                     <text x="306" y="320" fill="#777" font-size="8" font-family="system-ui">Marcus Lee · Tue Mar 11</text>
 
-                    <rect x="16" y="320" width="250" height="22" rx="6" fill="rgba(255,111,76,0.14)" stroke="rgba(255,111,76,0.4)" stroke-width="0.5"/>
-                    <text x="28" y="335" fill="#FF6F4C" font-size="9" font-family="system-ui" font-weight="700">📨 Auto-send summary to attendees</text>
+                    <rect x="16" y="366" width="250" height="22" rx="6" fill="rgba(255,111,76,0.14)" stroke="rgba(255,111,76,0.4)" stroke-width="0.5"/>
+                    <text x="28" y="381" fill="#FF6F4C" font-size="9" font-family="system-ui" font-weight="700">📨 Auto-send summary to attendees</text>
                 </svg>
             </div>
             <div class="mi-note">
                 <h3>Meeting Intelligence</h3>
-                <p>Record the call or deposition prep session. Get the transcript, a summary, and action items with owners and due dates automatically.</p>
+                <p>Record the call or deposition prep session. Get the transcript, a summary, action items with owners and due dates, and the cases and legal authorities mentioned — all automatically.</p>
                 <p style="font-size:0.82rem;color:var(--ink-faint);">This one's a concept mockup, not a live demo yet — reach out and we'll walk you through it.</p>
                 <a href="../index.html#contact" class="btn-ask">Ask us about this →</a>
             </div>
@@ -893,9 +920,47 @@
     const history = [];
     let busy = false;
 
-    function renderCitations(text) {
+    function mdInline(s) {
+        return s
+            .replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>')
+            .replace(/(?<!\*)\*([^*\n]+)\*(?!\*)/g, '<em>$1</em>')
+            .replace(/\[([^\]]+)\]/g, '<span class="cite">$1</span>');
+    }
+    // Minimal markdown-to-HTML: headers, bullet/numbered lists, paragraphs,
+    // plus inline bold/italic/citation. The assistant streams full Markdown
+    // (headers, lists) which the chat bubble needs to actually render, not
+    // show as literal "#"/"1." characters.
+    function renderMarkdown(text) {
         const escaped = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-        return escaped.replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>').replace(/\[([^\]]+)\]/g, '<span class="cite">$1</span>');
+        const lines = escaped.split('\n');
+        let html = '', listType = null, para = [];
+        const flushPara = () => { if (para.length) { html += '<p>' + para.join('<br>') + '</p>'; para = []; } };
+        const closeList = () => { if (listType) { html += '</' + listType + '>'; listType = null; } };
+        for (const line of lines) {
+            const h = line.match(/^(#{1,4})\s+(.*)$/);
+            const bullet = line.match(/^\s*[-*]\s+(.*)$/);
+            const numbered = line.match(/^\s*\d+[.)]\s+(.*)$/);
+            if (h) {
+                flushPara(); closeList();
+                const lvl = Math.min(h[1].length + 3, 6);
+                html += `<h${lvl}>${mdInline(h[2])}</h${lvl}>`;
+            } else if (bullet) {
+                flushPara();
+                if (listType !== 'ul') { closeList(); html += '<ul>'; listType = 'ul'; }
+                html += `<li>${mdInline(bullet[1])}</li>`;
+            } else if (numbered) {
+                flushPara();
+                if (listType !== 'ol') { closeList(); html += '<ol>'; listType = 'ol'; }
+                html += `<li>${mdInline(numbered[1])}</li>`;
+            } else if (line.trim() === '') {
+                flushPara(); closeList();
+            } else {
+                closeList();
+                para.push(mdInline(line));
+            }
+        }
+        flushPara(); closeList();
+        return html;
     }
     function addMessage(role, text) {
         const wrap = document.createElement('div');
@@ -905,7 +970,7 @@
         avatar.textContent = role === 'user' ? 'YOU' : 'AI';
         const bubble = document.createElement('div');
         bubble.className = 'bubble';
-        if (role === 'assistant') bubble.innerHTML = renderCitations(text);
+        if (role === 'assistant') bubble.innerHTML = renderMarkdown(text);
         else bubble.textContent = text;
         wrap.appendChild(avatar);
         wrap.appendChild(bubble);
@@ -977,7 +1042,7 @@
                         const evt = JSON.parse(payload);
                         if (evt.type === 'content_block_delta' && evt.delta && evt.delta.type === 'text_delta') {
                             accumulated += evt.delta.text;
-                            bubble.innerHTML = renderCitations(accumulated);
+                            bubble.innerHTML = renderMarkdown(accumulated);
                             messagesEl.scrollTop = messagesEl.scrollHeight;
                         }
                     } catch {}
@@ -1226,21 +1291,75 @@
     crLoadDoc('services');
 
     // ═══════════ PANEL 3: DRAFTING SUPPORT (staged) ═══════════
-    const DRAFT_SECTIONS = [
-        { h: 'Recipient & Reference', body: 'Addressed to the client’s registered agent, referencing Invoice #INV-44219 and the underlying Services Agreement dated the matter’s effective date.', src: 'Firm Client Intake Policy' },
-        { h: 'Statement of Facts', body: 'Summarizes the outstanding balance, original due date, and the 1.5% monthly late fee already accruing under the agreement’s payment terms.', src: 'Services Agreement (client file)' },
-        { h: 'Demand', body: 'Demands payment in full within 10 business days, citing the statutory default interest rate that applies once notice has been given.', src: 'Md. Com. Law § 14-302 (Sample)' },
-        { h: 'Reservation of Rights', body: 'Reserves the right to pursue collection, suspend further services, and seek attorneys’ fees if payment is not received by the deadline.', src: 'Firm Memo — Standard Reservations' },
-        { h: 'Closing', body: 'Provides a direct contact for payment arrangements and notes that this letter does not waive any other rights or remedies available under the agreement.', src: 'Firm Memo — Standard Reservations' },
-    ];
+    // Each generated doc matches a pre-built PDF (assets/demos/legal/) formatted
+    // like a real law firm letter, so the sections shown here are exactly what's
+    // in the downloadable file — not just a UI mockup of a different document.
+    const DRAFT_DOCS = {
+        demand: {
+            prompt: 'Draft a demand letter for a late-paying commercial client',
+            pdf: '../assets/demos/legal/demand-letter-sample.pdf',
+            sections: [
+                { h: 'Recipient & Reference', body: 'Addressed to the client’s registered agent, referencing Invoice #INV-44219 and the underlying Services Agreement dated the matter’s effective date.', src: 'Firm Client Intake Policy' },
+                { h: 'Statement of Facts', body: 'Summarizes the outstanding balance, original due date, and the 1.5% monthly late fee already accruing under the agreement’s payment terms.', src: 'Services Agreement (client file)' },
+                { h: 'Demand', body: 'Demands payment in full within 10 business days, citing the statutory default interest rate that applies once notice has been given.', src: 'Md. Com. Law § 14-302 (Sample)' },
+                { h: 'Reservation of Rights', body: 'Reserves the right to pursue collection, suspend further services, and seek attorneys’ fees if payment is not received by the deadline.', src: 'Firm Memo — Standard Reservations' },
+                { h: 'Closing', body: 'Provides a direct contact for payment arrangements and notes that this letter does not waive any other rights or remedies available under the agreement.', src: 'Firm Memo — Standard Reservations' },
+            ],
+        },
+        engagement: {
+            prompt: 'Draft an engagement letter for a new corporate client',
+            pdf: '../assets/demos/legal/engagement-letter-sample.pdf',
+            sections: [
+                { h: 'Scope of Representation', body: 'Defines the engagement as general corporate and commercial matters — contract review, vendor negotiations, and dispute avoidance — and notes that litigation would require a separate engagement.', src: 'Firm Client Intake Policy' },
+                { h: 'Fee Arrangement', body: 'Sets hourly rates by timekeeper (partner, associate, paralegal), a $5,000 initial retainer replenished when the balance falls below $1,000, and monthly invoicing on Net 30 terms.', src: 'Firm Standard Fee Schedule' },
+                { h: 'Client Responsibilities', body: 'Asks the client to provide accurate information promptly, pay invoices on time, and notify the firm of any change in address or in facts relevant to the matter.', src: 'Firm Memo — Standard Engagement Terms' },
+                { h: 'Confidentiality & Conflicts', body: 'Confirms attorney-client privilege applies, notes the firm has cleared conflicts as of this engagement, and asks the client to flag any future conflicts of interest.', src: 'Firm Client Intake Policy' },
+                { h: 'Termination', body: 'Either party may terminate on written notice; the client remains responsible for fees and costs incurred through the termination date, and the file will be provided on request subject to any unpaid-fee lien.', src: 'Firm Memo — Standard Engagement Terms' },
+            ],
+        },
+        ceaseanddesist: {
+            prompt: 'Draft a cease-and-desist letter for trademark infringement',
+            pdf: '../assets/demos/legal/cease-and-desist-sample.pdf',
+            sections: [
+                { h: 'Notice of Rights', body: 'Identifies the client’s registered trademark, the goods/services it covers, and the date of first use, establishing the basis for the claim.', src: 'Client Trademark Registration (sample)' },
+                { h: 'Infringing Conduct', body: 'Describes the respondent’s use of a confusingly similar mark on competing goods, and where the client’s team observed it.', src: 'Client Intake — Matter File' },
+                { h: 'Demand to Cease', body: 'Demands the respondent stop all use of the infringing mark within 14 days, remove infringing listings and materials, and confirm compliance in writing.', src: 'Firm Memo — Standard IP Demands' },
+                { h: 'Reservation of Rights', body: 'Reserves the right to pursue injunctive relief, damages, and attorneys’ fees under the Lanham Act if the respondent doesn’t comply.', src: '15 U.S.C. § 1114 (Sample)' },
+                { h: 'Response Deadline', body: 'Requires a written response within 14 days, addressed to the firm’s IP counsel, and notes that silence will be treated as a refusal to comply.', src: 'Firm Memo — Standard IP Demands' },
+            ],
+        },
+    };
+    let draftCurrent = 'demand', draftBusy = false;
+    const draftTabsEl = document.getElementById('draftTabs');
+    const draftInputEl = document.getElementById('draftInput');
     const draftGrid = document.getElementById('draftGrid');
     const draftRunBtn = document.getElementById('draftRunBtn');
-    let draftBusy = false;
+    const draftSummaryBar = document.getElementById('draftSummaryBar');
+    const draftSummaryText = document.getElementById('draftSummaryText');
+    const draftDownloadBtn = document.getElementById('draftDownloadBtn');
+
+    function draftLoad(key) {
+        draftCurrent = key;
+        draftInputEl.value = DRAFT_DOCS[key].prompt;
+        draftGrid.innerHTML = `<div class="draft-empty">Click "Generate Draft" to assemble a first pass, section by section.</div>`;
+        draftSummaryBar.classList.remove('show');
+        draftRunBtn.disabled = false;
+        draftRunBtn.textContent = '▶ Generate Draft';
+    }
+    draftTabsEl.addEventListener('click', (e) => {
+        const btn = e.target.closest('.doc-tab');
+        if (!btn || draftBusy) return;
+        document.querySelectorAll('#draftTabs .doc-tab').forEach(t => t.classList.remove('active'));
+        btn.classList.add('active');
+        draftLoad(btn.dataset.draft);
+    });
     async function runDraft() {
         if (draftBusy) return;
         draftBusy = true; draftRunBtn.disabled = true; draftRunBtn.textContent = '⏳ Drafting…';
         draftGrid.innerHTML = '';
-        for (const sec of DRAFT_SECTIONS) {
+        draftSummaryBar.classList.remove('show');
+        const cfg = DRAFT_DOCS[draftCurrent];
+        for (const sec of cfg.sections) {
             await sleep(380);
             const el = document.createElement('div');
             el.className = 'draft-section';
@@ -1248,6 +1367,9 @@
             draftGrid.appendChild(el);
             requestAnimationFrame(() => el.classList.add('visible'));
         }
+        draftSummaryText.textContent = '✓ Draft assembled — ready for attorney review';
+        draftDownloadBtn.href = cfg.pdf;
+        draftSummaryBar.classList.add('show');
         draftBusy = false; draftRunBtn.disabled = false; draftRunBtn.textContent = '▶ Generate Again';
     }
     draftRunBtn.addEventListener('click', runDraft);
